@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +9,7 @@
     <style>
         .bingo-cell {
             transition: all 0.2s ease;
+            cursor: pointer;
         }
         
         .bingo-cell:hover {
@@ -19,6 +19,64 @@
         .bingo-cell.called {
             background-color: #3B82F6;
             color: white;
+        }
+        
+        .bingo-cell.marked {
+            background-color: white !important;
+            color: black !important;
+            border: 2px solid #3B82F6;
+        }
+        
+        /* Number color coding */
+        .number-b {
+            background-color: #3B82F6 !important; /* Blue */
+            color: white !important;
+        }
+        
+        .number-i {
+            background-color: #EF4444 !important; /* Red */
+            color: white !important;
+        }
+        
+        .number-n {
+            background-color: #6B7280 !important; /* Gray */
+            color: white !important;
+        }
+        
+        .number-g {
+            background-color: #10B981 !important; /* Green */
+            color: white !important;
+        }
+        
+        .number-o {
+            background-color: #F59E0B !important; /* Yellow */
+            color: white !important;
+        }
+        
+        /* Lucky number badges color coding */
+        .lucky-badge-b {
+            background-color: #3B82F6 !important; /* Blue */
+            color: white !important;
+        }
+        
+        .lucky-badge-i {
+            background-color: #EF4444 !important; /* Red */
+            color: white !important;
+        }
+        
+        .lucky-badge-n {
+            background-color: #6B7280 !important; /* Gray */
+            color: white !important;
+        }
+        
+        .lucky-badge-g {
+            background-color: #10B981 !important; /* Green */
+            color: white !important;
+        }
+        
+        .lucky-badge-o {
+            background-color: #F59E0B !important; /* Yellow */
+            color: white !important;
         }
         
         .card-container {
@@ -73,6 +131,84 @@
             transform: scale(1.1);
         }
         
+        .pattern-x {
+            background-color: #EF4444 !important;
+            color: white !important;
+        }
+        
+        .pattern-four-corners {
+            background-color: #10B981 !important;
+            color: white !important;
+        }
+        
+        .pattern-blackout {
+            background-color: #ff0000 !important;
+            color: white !important;
+        }
+        
+        .pattern-line {
+            background-color: #F59E0B !important;
+            color: white !important;
+        }
+        
+        .pattern-hallow {
+            background-color: #8B5CF6 !important;
+            color: white !important;
+        }
+        
+        .pattern-selection {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .pattern-selection:hover {
+            transform: scale(1.05);
+        }
+        
+        .pattern-selection.selected {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+        }
+        
+        .pattern-preview {
+            width: 100px;
+            height: 100px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 2px;
+            margin: 0 auto;
+        }
+        
+        .pattern-cell {
+            background-color: #E5E7EB;
+            border-radius: 4px;
+        }
+        
+        .pattern-cell.active {
+            background-color: #3B82F6;
+        }
+        
+        .lucky-chart-tab {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.75rem;
+            padding: 0.5rem 0.25rem;
+        }
+        
+        .lucky-chart-tab.active {
+            background-color: #3B82F6;
+            color: white;
+        }
+        
+        .lucky-chart {
+            display: none;
+        }
+        
+        .lucky-chart.active {
+            display: block;
+        }
+        
         @media print {
             .no-print {
                 display: none !important;
@@ -81,6 +217,36 @@
                 break-inside: avoid;
                 margin-bottom: 20px;
             }
+        }
+        
+        /* New styles for hiding/showing cards */
+        .cards-section {
+            display: none;
+        }
+        
+        .cards-section.visible {
+            display: block;
+        }
+        
+        .cards-placeholder {
+            text-align: center;
+            padding: 3rem;
+            background-color: #f8fafc;
+            border-radius: 0.75rem;
+            border: 2px dashed #cbd5e0;
+        }
+        
+        .cards-placeholder i {
+            font-size: 3rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+        
+        .sample-screenshot {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -104,8 +270,8 @@
                         <p class="text-blue-700 font-medium mb-2">Drag & Drop your screenshots here</p>
                         <p class="text-blue-500 text-sm">or</p>
                         <label for="file-upload" class="mt-3 cursor-pointer inline-block bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-              <i class="fas fa-file-image mr-2"></i>Browse Files
-            </label>
+                            <i class="fas fa-file-image mr-2"></i>Browse Files
+                        </label>
                         <input id="file-upload" type="file" accept="image/*" class="hidden" multiple>
                     </div>
 
@@ -114,9 +280,160 @@
                         <div class="grid grid-cols-3 gap-3" id="uploaded-images"></div>
                     </div>
 
+                    <!-- Sample Screenshot -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-blue-800 mb-2">Sample Screenshot</h3>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <p class="text-gray-600 mb-2">Here's an example of what a Bingo Plus screenshot looks like:</p>
+                            <div class="bg-white p-4 rounded-lg border border-gray-300 inline-block">
+                                <div class="text-center font-bold text-lg mb-2">BINGO PLUS</div>
+                                <div class="grid grid-cols-5 gap-1 mb-2">
+                                    <div class="bg-blue-500 text-white p-2 text-center rounded">B</div>
+                                    <div class="bg-red-500 text-white p-2 text-center rounded">I</div>
+                                    <div class="bg-gray-500 text-white p-2 text-center rounded">N</div>
+                                    <div class="bg-green-500 text-white p-2 text-center rounded">G</div>
+                                    <div class="bg-yellow-500 text-white p-2 text-center rounded">O</div>
+                                </div>
+                                <div class="text-center text-sm text-gray-600">Numbers: 5, 12, 23, 34, 45, 56, 67, 70</div>
+                                <div class="text-center text-xs text-gray-500 mt-2">Upload screenshots like this for analysis</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center mb-6" id="analyze-btn">
-            <i class="fas fa-search mr-2"></i> Analyze Screenshots for Numbers
-          </button>
+                        <i class="fas fa-search mr-2"></i> Analyze Screenshots for Numbers
+                    </button>
+                    
+                    <!-- Lucky Numbers Section - Initially hidden -->
+                    <div class="mb-4 hidden" id="lucky-numbers-section">
+                        <h3 class="text-lg font-semibold text-blue-800 mb-2">Lucky Numbers</h3>
+                        
+                        <!-- Lucky Numbers Tabs -->
+                        <div class="grid grid-cols-4 gap-1 mb-4 bg-gray-100 rounded-lg p-1">
+                            <button class="lucky-chart-tab rounded-md text-center font-medium active" data-chart="20">
+                                Lucky 20
+                            </button>
+                            <button class="lucky-chart-tab rounded-md text-center font-medium" data-chart="25">
+                                Lucky 25
+                            </button>
+                            <button class="lucky-chart-tab rounded-md text-center font-medium" data-chart="30">
+                                Lucky 30
+                            </button>
+                            <button class="lucky-chart-tab rounded-md text-center font-medium" data-chart="35">
+                                Lucky 35
+                            </button>
+                            <button class="lucky-chart-tab rounded-md text-center font-medium" data-chart="40">
+                                Lucky 40
+                            </button>
+                            <button class="lucky-chart-tab rounded-md text-center font-medium" data-chart="44">
+                                Lucky 44
+                            </button>
+                            <button class="lucky-chart-tab rounded-md text-center font-medium" data-chart="48">
+                                Lucky 48
+                            </button>
+                        </div>
+                        
+                        <!-- Lucky Numbers Charts -->
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <!-- Lucky 20 Chart -->
+                            <div id="lucky-chart-20" class="lucky-chart active">
+                                <div class="grid grid-cols-5 gap-2 mb-4">
+                                    <div class="text-center font-bold text-blue-800">B (1-15)</div>
+                                    <div class="text-center font-bold text-red-600">I (16-30)</div>
+                                    <div class="text-center font-bold text-gray-600">N (31-45)</div>
+                                    <div class="text-center font-bold text-green-600">G (46-60)</div>
+                                    <div class="text-center font-bold text-yellow-600">O (61-75)</div>
+                                </div>
+                                <div id="lucky-numbers-20" class="flex flex-wrap gap-2">
+                                    <span class="text-gray-500">No lucky numbers detected yet</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Lucky 25 Chart -->
+                            <div id="lucky-chart-25" class="lucky-chart">
+                                <div class="grid grid-cols-5 gap-2 mb-4">
+                                    <div class="text-center font-bold text-blue-800">B (1-15)</div>
+                                    <div class="text-center font-bold text-red-600">I (16-30)</div>
+                                    <div class="text-center font-bold text-gray-600">N (31-45)</div>
+                                    <div class="text-center font-bold text-green-600">G (46-60)</div>
+                                    <div class="text-center font-bold text-yellow-600">O (61-75)</div>
+                                </div>
+                                <div id="lucky-numbers-25" class="flex flex-wrap gap-2">
+                                    <span class="text-gray-500">No lucky numbers detected yet</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Lucky 30 Chart -->
+                            <div id="lucky-chart-30" class="lucky-chart">
+                                <div class="grid grid-cols-5 gap-2 mb-4">
+                                    <div class="text-center font-bold text-blue-800">B (1-15)</div>
+                                    <div class="text-center font-bold text-red-600">I (16-30)</div>
+                                    <div class="text-center font-bold text-gray-600">N (31-45)</div>
+                                    <div class="text-center font-bold text-green-600">G (46-60)</div>
+                                    <div class="text-center font-bold text-yellow-600">O (61-75)</div>
+                                </div>
+                                <div id="lucky-numbers-30" class="flex flex-wrap gap-2">
+                                    <span class="text-gray-500">No lucky numbers detected yet</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Lucky 35 Chart -->
+                            <div id="lucky-chart-35" class="lucky-chart">
+                                <div class="grid grid-cols-5 gap-2 mb-4">
+                                    <div class="text-center font-bold text-blue-800">B (1-15)</div>
+                                    <div class="text-center font-bold text-red-600">I (16-30)</div>
+                                    <div class="text-center font-bold text-gray-600">N (31-45)</div>
+                                    <div class="text-center font-bold text-green-600">G (46-60)</div>
+                                    <div class="text-center font-bold text-yellow-600">O (61-75)</div>
+                                </div>
+                                <div id="lucky-numbers-35" class="flex flex-wrap gap-2">
+                                    <span class="text-gray-500">No lucky numbers detected yet</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Lucky 40 Chart -->
+                            <div id="lucky-chart-40" class="lucky-chart">
+                                <div class="grid grid-cols-5 gap-2 mb-4">
+                                    <div class="text-center font-bold text-blue-800">B (1-15)</div>
+                                    <div class="text-center font-bold text-red-600">I (16-30)</div>
+                                    <div class="text-center font-bold text-gray-600">N (31-45)</div>
+                                    <div class="text-center font-bold text-green-600">G (46-60)</div>
+                                    <div class="text-center font-bold text-yellow-600">O (61-75)</div>
+                                </div>
+                                <div id="lucky-numbers-40" class="flex flex-wrap gap-2">
+                                    <span class="text-gray-500">No lucky numbers detected yet</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Lucky 44 Chart -->
+                            <div id="lucky-chart-44" class="lucky-chart">
+                                <div class="grid grid-cols-5 gap-2 mb-4">
+                                    <div class="text-center font-bold text-blue-800">B (1-15)</div>
+                                    <div class="text-center font-bold text-red-600">I (16-30)</div>
+                                    <div class="text-center font-bold text-gray-600">N (31-45)</div>
+                                    <div class="text-center font-bold text-green-600">G (46-60)</div>
+                                    <div class="text-center font-bold text-yellow-600">O (61-75)</div>
+                                </div>
+                                <div id="lucky-numbers-44" class="flex flex-wrap gap-2">
+                                    <span class="text-gray-500">No lucky numbers detected yet</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Lucky 48 Chart -->
+                            <div id="lucky-chart-48" class="lucky-chart">
+                                <div class="grid grid-cols-5 gap-2 mb-4">
+                                    <div class="text-center font-bold text-blue-800">B (1-15)</div>
+                                    <div class="text-center font-bold text-red-600">I (16-30)</div>
+                                    <div class="text-center font-bold text-gray-600">N (31-45)</div>
+                                    <div class="text-center font-bold text-green-600">G (46-60)</div>
+                                    <div class="text-center font-bold text-yellow-600">O (61-75)</div>
+                                </div>
+                                <div id="lucky-numbers-48" class="flex flex-wrap gap-2">
+                                    <span class="text-gray-500">No lucky numbers detected yet</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Card Configuration -->
@@ -134,31 +451,196 @@
 
                     <div class="mb-6">
                         <label class="flex items-center">
-              <input type="checkbox" class="rounded text-blue-600 mr-2" id="include-free-space" checked>
-              <span class="text-blue-800">Include free space in center</span>
-            </label>
+                            <input type="checkbox" class="rounded text-blue-600 mr-2" id="include-free-space" checked>
+                            <span class="text-blue-800">Include free space in center</span>
+                        </label>
+                    </div>
+
+                    <!-- Winning Pattern Selector -->
+                    <div class="mb-6">
+                        <label class="block text-blue-800 font-medium mb-2">Winning Pattern</label>
+                        <div class="grid grid-cols-2 gap-3" id="pattern-selection">
+                            <div class="pattern-selection border-2 border-gray-200 rounded-lg p-3 text-center" data-pattern="none">
+                                <div class="pattern-preview mb-2">
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                </div>
+                                <span class="text-sm font-medium">None</span>
+                            </div>
+                            <div class="pattern-selection border-2 border-gray-200 rounded-lg p-3 text-center" data-pattern="four-corners">
+                                <div class="pattern-preview mb-2">
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                </div>
+                                <span class="text-sm font-medium">Four Corners</span>
+                            </div>
+                            <div class="pattern-selection border-2 border-gray-200 rounded-lg p-3 text-center" data-pattern="x">
+                                <div class="pattern-preview mb-2">
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                </div>
+                                <span class="text-sm font-medium">X Pattern</span>
+                            </div>
+                            <div class="pattern-selection border-2 border-gray-200 rounded-lg p-3 text-center" data-pattern="line">
+                                <div class="pattern-preview mb-2">
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                </div>
+                                <span class="text-sm font-medium">T Pattern</span>
+                            </div>
+                            <div class="pattern-selection border-2 border-gray-200 rounded-lg p-3 text-center" data-pattern="hallow">
+                                <div class="pattern-preview mb-2">
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                    <div class="pattern-cell active"></div>
+                                </div>
+                                <span class="text-sm font-medium">Hallow</span>
+                            </div>
+                        </div>
                     </div>
 
                     <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center" id="generate-btn">
-            <i class="fas fa-magic mr-2"></i> Generate Bingo Cards
-          </button>
+                        <i class="fas fa-magic mr-2"></i> Generate Bingo Cards
+                    </button>
                 </div>
             </div>
 
-            <!-- Generated Cards Section -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
+            <!-- Generated Cards Section - Initially hidden -->
+            <div class="cards-section bg-white rounded-xl shadow-lg p-6" id="cards-section">
                 <div class="flex justify-between items-center mb-6 no-print">
                     <h2 class="text-2xl font-bold text-blue-800">Generated Bingo Cards</h2>
                     <div class="flex space-x-2">
                         <button class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg flex items-center" id="download-btn">
-              <i class="fas fa-download mr-2"></i> Download All
-            </button>
+                            <i class="fas fa-download mr-2"></i> Download All
+                        </button>
                         <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg flex items-center" id="print-btn">
-              <i class="fas fa-print mr-2"></i> Print Cards
-            </button>
+                            <i class="fas fa-print mr-2"></i> Print Cards
+                        </button>
                     </div>
                 </div>
 
+                <!-- Placeholder when no cards are generated -->
+                <div class="cards-placeholder" id="cards-placeholder">
+                    <i class="fas fa-dice"></i>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">No Bingo Cards Generated Yet</h3>
+                    <p class="text-gray-500">Configure your settings and click "Generate Bingo Cards" to create your cards.</p>
+                </div>
+
+                <!-- Container for generated cards -->
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="cards-container"></div>
             </div>
         </main>
@@ -169,206 +651,368 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const CARDS_LIMIT = 5;
-            const cardCountInput = document.getElementById('card-count');
-            const decreaseBtn = document.getElementById('decrease-cards');
-            const increaseBtn = document.getElementById('increase-cards');
-            const generateBtn = document.getElementById('generate-btn');
-            const printBtn = document.getElementById('print-btn');
-            const downloadBtn = document.getElementById('download-btn');
-            const cardsContainer = document.getElementById('cards-container');
-            const dragArea = document.getElementById('drag-area');
-            const fileUpload = document.getElementById('file-upload');
-            const uploadedImagesContainer = document.getElementById('uploaded-images');
-            const analyzeBtn = document.getElementById('analyze-btn');
+    document.addEventListener('DOMContentLoaded', function() {
+        const CARDS_LIMIT = 5;
+        const cardCountInput = document.getElementById('card-count');
+        const decreaseBtn = document.getElementById('decrease-cards');
+        const increaseBtn = document.getElementById('increase-cards');
+        const generateBtn = document.getElementById('generate-btn');
+        const printBtn = document.getElementById('print-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const cardsContainer = document.getElementById('cards-container');
+        const cardsSection = document.getElementById('cards-section');
+        const cardsPlaceholder = document.getElementById('cards-placeholder');
+        const dragArea = document.getElementById('drag-area');
+        const fileUpload = document.getElementById('file-upload');
+        const uploadedImagesContainer = document.getElementById('uploaded-images');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const patternSelection = document.getElementById('pattern-selection');
+        const luckyNumbersSection = document.getElementById('lucky-numbers-section');
+        const luckyChartTabs = document.querySelectorAll('.lucky-chart-tab');
 
-            let calledNumbers = [];
-            let uploadedFiles = [];
+        let calledNumbers = [];
+        let uploadedFiles = [];
+        let selectedPattern = 'none';
+        let cardsGenerated = false;
 
-            const COL_KEYS = ['B', 'I', 'N', 'G', 'O'];
-            const COL_RANGES = {
-                B: [1, 15],
-                I: [16, 30],
-                N: [31, 45],
-                G: [46, 60],
-                O: [61, 75]
-            };
+        const COL_KEYS = ['B', 'I', 'N', 'G', 'O'];
+        const COL_RANGES = {
+            B: [1, 15],
+            I: [16, 30],
+            N: [31, 45],
+            G: [46, 60],
+            O: [61, 75]
+        };
 
-            // Card count controls
-            decreaseBtn.addEventListener('click', () => {
-                if (cardCountInput.value > 1) cardCountInput.value--;
-            });
-            increaseBtn.addEventListener('click', () => {
-                if (cardCountInput.value < CARDS_LIMIT) cardCountInput.value++;
-            });
+        // Card count controls
+        decreaseBtn.addEventListener('click', () => {
+            if (cardCountInput.value > 1) cardCountInput.value--;
+        });
+        increaseBtn.addEventListener('click', () => {
+            if (cardCountInput.value < CARDS_LIMIT) cardCountInput.value++;
+        });
 
-            generateBtn.addEventListener('click', generateCards);
-            printBtn.addEventListener('click', () => window.print());
-            downloadBtn.addEventListener('click', () => alert('Download as PDF not yet implemented'));
-            analyzeBtn.addEventListener('click', analyzeScreenshots);
+        generateBtn.addEventListener('click', generateCards);
+        printBtn.addEventListener('click', () => window.print());
+        downloadBtn.addEventListener('click', downloadCards);
+        analyzeBtn.addEventListener('click', analyzeScreenshots);
 
-            // Drag & drop upload
-            dragArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dragArea.classList.add('active');
-            });
-            dragArea.addEventListener('dragleave', () => dragArea.classList.remove('active'));
-            dragArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dragArea.classList.remove('active');
-                handleFiles(e.dataTransfer.files);
-            });
-            fileUpload.addEventListener('change', (e) => handleFiles(e.target.files));
-
-            function handleFiles(files) {
-                for (let i = 0; i < files.length; i++) {
-                    if (files[i].type.startsWith('image/')) {
-                        uploadedFiles.push(files[i]);
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            const imgDiv = document.createElement('div');
-                            imgDiv.className = 'relative';
-                            const img = document.createElement('img');
-                            img.src = e.target.result;
-                            img.className = 'uploaded-image border border-gray-200';
-                            const removeBtn = document.createElement('button');
-                            removeBtn.className = 'absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs';
-                            removeBtn.innerHTML = '&times;';
-                            removeBtn.onclick = () => {
-                                imgDiv.remove();
-                                uploadedFiles = uploadedFiles.filter(f => f !== files[i]);
-                            };
-                            imgDiv.appendChild(img);
-                            imgDiv.appendChild(removeBtn);
-                            uploadedImagesContainer.appendChild(imgDiv);
-                        };
-                        reader.readAsDataURL(files[i]);
-                    }
-                }
-            }
-
-            // Fake OCR analysis -> just create random numbers
-            function analyzeScreenshots() {
-                if (uploadedFiles.length === 0) {
-                    alert('Please upload at least one screenshot first!');
-                    return;
-                }
-                analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Analyzing...';
-                analyzeBtn.classList.add('analysis-animation');
-
-                setTimeout(() => {
-                    let allNumbers = [];
-                    uploadedFiles.forEach(() => {
-                        while (allNumbers.length < 20) {
-                            let num = Math.floor(Math.random() * 75) + 1;
-                            if (!allNumbers.includes(num)) allNumbers.push(num);
-                        }
-                    });
-
-                    calledNumbers = allNumbers;
-                    generateCards();
-
-                    analyzeBtn.innerHTML = '<i class="fas fa-search mr-2"></i> Analyze Screenshots for Numbers';
-                    analyzeBtn.classList.remove('analysis-animation');
-                    alert(`Analyzed ${uploadedFiles.length} screenshot(s). Found ${calledNumbers.length} numbers!`);
-                }, 2000);
-            }
-
-            function groupNumbersByColumn(numbers) {
-                let layout = {
-                    B: [],
-                    I: [],
-                    N: [],
-                    G: [],
-                    O: []
-                };
-                numbers.forEach(num => {
-                    if (num >= 1 && num <= 15) layout.B.push(num);
-                    else if (num >= 16 && num <= 30) layout.I.push(num);
-                    else if (num >= 31 && num <= 45) layout.N.push(num);
-                    else if (num >= 46 && num <= 60) layout.G.push(num);
-                    else if (num >= 61 && num <= 75) layout.O.push(num);
+        // Pattern selection
+        patternSelection.querySelectorAll('.pattern-selection').forEach(el => {
+            el.addEventListener('click', () => {
+                patternSelection.querySelectorAll('.pattern-selection').forEach(e => {
+                    e.classList.remove('selected');
                 });
-                for (let key of COL_KEYS) {
-                    const [min, max] = COL_RANGES[key];
-                    while (layout[key].length < 5) {
-                        let n = Math.floor(Math.random() * (max - min + 1)) + min;
-                        if (!layout[key].includes(n)) layout[key].push(n);
-                    }
-                    layout[key] = shuffleArray(layout[key]).slice(0, 5);
+                el.classList.add('selected');
+                selectedPattern = el.dataset.pattern;
+            });
+        });
+
+        // Lucky chart tabs
+        luckyChartTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                luckyChartTabs.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Hide all charts
+                document.querySelectorAll('.lucky-chart').forEach(chart => {
+                    chart.classList.remove('active');
+                });
+                
+                // Show selected chart
+                const chartId = `lucky-chart-${tab.dataset.chart}`;
+                document.getElementById(chartId).classList.add('active');
+            });
+        });
+
+        // Set default pattern
+        patternSelection.querySelector('.pattern-selection[data-pattern="none"]').classList.add('selected');
+
+        // Drag & drop upload
+        dragArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dragArea.classList.add('active');
+        });
+        dragArea.addEventListener('dragleave', () => dragArea.classList.remove('active'));
+        dragArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragArea.classList.remove('active');
+            handleFiles(e.dataTransfer.files);
+        });
+        fileUpload.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        function handleFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].type.startsWith('image/')) {
+                    uploadedFiles.push(files[i]);
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const imgDiv = document.createElement('div');
+                        imgDiv.className = 'relative';
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'uploaded-image border border-gray-200';
+                        const removeBtn = document.createElement('button');
+                        removeBtn.className = 'absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs';
+                        removeBtn.innerHTML = '&times;';
+                        removeBtn.onclick = () => {
+                            imgDiv.remove();
+                            uploadedFiles = uploadedFiles.filter(f => f !== files[i]);
+                        };
+                        imgDiv.appendChild(img);
+                        imgDiv.appendChild(removeBtn);
+                        uploadedImagesContainer.appendChild(imgDiv);
+                    };
+                    reader.readAsDataURL(files[i]);
                 }
-                return layout;
+            }
+        }
+
+        // Fake OCR analysis
+        function analyzeScreenshots() {
+            if (uploadedFiles.length === 0) {
+                alert('Please upload at least one screenshot first!');
+                return;
+            }
+            analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Analyzing...';
+            analyzeBtn.classList.add('analysis-animation');
+
+            setTimeout(() => {
+                // Generate different sets of numbers for each chart
+                const lucky20Numbers = generateLuckyNumbers(20);
+                const lucky25Numbers = generateLuckyNumbers(25);
+                const lucky30Numbers = generateLuckyNumbers(30);
+                const lucky35Numbers = generateLuckyNumbers(35);
+                const lucky40Numbers = generateLuckyNumbers(40);
+                const lucky44Numbers = generateLuckyNumbers(44);
+                const lucky48Numbers = generateLuckyNumbers(48);
+                
+                // Use the 20-number set for bingo cards
+                calledNumbers = lucky20Numbers;
+                
+                // Update all lucky number charts
+                updateLuckyNumbersChart('20', lucky20Numbers);
+                updateLuckyNumbersChart('25', lucky25Numbers);
+                updateLuckyNumbersChart('30', lucky30Numbers);
+                updateLuckyNumbersChart('35', lucky35Numbers);
+                updateLuckyNumbersChart('40', lucky40Numbers);
+                updateLuckyNumbersChart('44', lucky44Numbers);
+                updateLuckyNumbersChart('48', lucky48Numbers);
+                
+                // Show lucky numbers section after analysis
+                luckyNumbersSection.classList.remove('hidden');
+                
+                analyzeBtn.innerHTML = '<i class="fas fa-search mr-2"></i> Analyze Screenshots for Numbers';
+                analyzeBtn.classList.remove('analysis-animation');
+            }, 2000);
+        }
+
+        function generateLuckyNumbers(count) {
+            let numbers = [];
+            while (numbers.length < count) {
+                let num = Math.floor(Math.random() * 75) + 1;
+                if (!numbers.includes(num)) numbers.push(num);
+            }
+            return numbers.sort((a, b) => a - b);
+        }
+
+        function getLuckyBadgeClass(num) {
+            if (num >= 1 && num <= 15) return 'lucky-badge-b';
+            else if (num >= 16 && num <= 30) return 'lucky-badge-i';
+            else if (num >= 31 && num <= 45) return 'lucky-badge-n';
+            else if (num >= 46 && num <= 60) return 'lucky-badge-g';
+            else if (num >= 61 && num <= 75) return 'lucky-badge-o';
+            return '';
+        }
+
+        function updateLuckyNumbersChart(chartSize, numbers) {
+            const container = document.getElementById(`lucky-numbers-${chartSize}`);
+            container.innerHTML = '';
+            
+            if (numbers.length === 0) {
+                container.innerHTML = '<span class="text-gray-500">No lucky numbers detected yet</span>';
+                return;
+            }
+            
+            numbers.forEach(num => {
+                const badge = document.createElement('span');
+                badge.className = `px-3 py-1 rounded-full number-badge ${getLuckyBadgeClass(num)}`;
+                badge.textContent = num;
+                container.appendChild(badge);
+            });
+        }
+
+        function getNumberClass(num) {
+            if (num >= 1 && num <= 15) return 'number-b';
+            else if (num >= 16 && num <= 30) return 'number-i';
+            else if (num >= 31 && num <= 45) return 'number-n';
+            else if (num >= 46 && num <= 60) return 'number-g';
+            else if (num >= 61 && num <= 75) return 'number-o';
+            return '';
+        }
+
+        function groupNumbersByColumn() {
+            let layout = { B: [], I: [], N: [], G: [], O: [] };
+            
+            // First, add any called numbers to their respective columns
+            calledNumbers.forEach(num => {
+                if (num >= 1 && num <= 15) layout.B.push(num);
+                else if (num >= 16 && num <= 30) layout.I.push(num);
+                else if (num >= 31 && num <= 45) layout.N.push(num);
+                else if (num >= 46 && num <= 60) layout.G.push(num);
+                else if (num >= 61 && num <= 75) layout.O.push(num);
+            });
+            
+            // Then fill each column with random numbers if needed
+            for (let key of COL_KEYS) {
+                const [min, max] = COL_RANGES[key];
+                while (layout[key].length < 5) {
+                    let n = Math.floor(Math.random() * (max - min + 1)) + min;
+                    if (!layout[key].includes(n)) layout[key].push(n);
+                }
+                layout[key] = shuffleArray(layout[key]).slice(0, 5);
+            }
+            return layout;
+        }
+
+        function shuffleArray(arr) {
+            let copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function generateCards() {
+            const cardCount = parseInt(cardCountInput.value);
+            const includeFreeSpace = document.getElementById('include-free-space').checked;
+            cardsContainer.innerHTML = '';
+
+            // If no called numbers, generate some random ones for demo
+            if (!calledNumbers || calledNumbers.length === 0) {
+                calledNumbers = generateLuckyNumbers(20);
+                updateLuckyNumbersChart('20', calledNumbers);
             }
 
-            function shuffleArray(arr) {
-                let copy = [...arr];
-                for (let i = copy.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [copy[i], copy[j]] = [copy[j], copy[i]];
-                }
-                return copy;
-            }
+            for (let i = 1; i <= cardCount; i++) {
+                const columnPools = groupNumbersByColumn();
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'border-2 border-blue-300 rounded-xl p-4 bg-blue-50 card-container';
+                const cardTitle = document.createElement('h3');
+                cardTitle.className = 'text-center font-bold text-blue-800 mb-2';
+                cardTitle.textContent = `Card #${i}`;
+                const cardGrid = document.createElement('div');
+                cardGrid.className = 'grid grid-cols-5 gap-1 mx-auto max-w-xs bingo-card';
 
-            function generateCards() {
-                const cardCount = parseInt(cardCountInput.value);
-                const includeFreeSpace = document.getElementById('include-free-space').checked;
-                cardsContainer.innerHTML = '';
+                // Column headers
+                COL_KEYS.forEach(l => {
+                    const h = document.createElement('div');
+                    h.className = 'bg-blue-100 text-blue-800 font-bold rounded-lg p-2 text-center h-12 flex items-center justify-center';
+                    h.textContent = l;
+                    cardGrid.appendChild(h);
+                });
 
-                if (!calledNumbers || calledNumbers.length === 0) {
-                    calledNumbers = Array.from({
-                        length: 75
-                    }, (_, i) => i + 1);
-                }
+                // Cells
+                for (let row = 0; row < 5; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        const colKey = COL_KEYS[col];
+                        let num = columnPools[colKey][row];
+                        const cell = document.createElement('div');
+                        cell.className = 'bg-white rounded-lg p-2 text-center h-12 flex items-center justify-center bingo-cell';
 
-                for (let i = 1; i <= cardCount; i++) {
-                    const columnPools = groupNumbersByColumn(calledNumbers);
+                        if (includeFreeSpace && row === 2 && col === 2) {
+                            cell.innerHTML = '<i class="fas fa-star text-blue-600"></i>';
+                            cell.classList.add('bg-blue-200');
+                        } else {
+                            cell.textContent = num;
+                            // Add color coding based on number range
+                            cell.classList.add(getNumberClass(num));
+                            
+                            if (calledNumbers.includes(num)) {
+                                cell.classList.add('called');
+                            }
+                        }
 
-                    const cardDiv = document.createElement('div');
-                    cardDiv.className = 'border-2 border-blue-300 rounded-xl p-4 bg-blue-50 card-container';
+                        // Pattern logic
+                        if (selectedPattern === "x") {
+                            if (row === col || row + col === 4) cell.classList.add('pattern-x');
+                        } else if (selectedPattern === "four-corners") {
+                            if ((row === 0 && col === 0) || (row === 0 && col === 4) ||
+                                (row === 4 && col === 0) || (row === 4 && col === 4)) {
+                                cell.classList.add('pattern-four-corners');
+                            }
+                        } else if (selectedPattern === "blackout") {
+                            cell.classList.add('pattern-blackout');
+                        } else if (selectedPattern === "line") { 
+                            if (row === 0 || col === 2) cell.classList.add('pattern-line');
+                        } else if (selectedPattern === "hallow") {
+                            if (row === 0 || row === 4 || col === 0 || col === 4) {
+                                cell.classList.add('pattern-hallow');
+                            }
+                        }
 
-                    const cardTitle = document.createElement('h3');
-                    cardTitle.className = 'text-center font-bold text-blue-800 mb-2';
-                    cardTitle.textContent = `Card #${i}`;
-
-                    const cardGrid = document.createElement('div');
-                    cardGrid.className = 'grid grid-cols-5 gap-1 mx-auto max-w-xs bingo-card';
-
-                    COL_KEYS.forEach(l => {
-                        const h = document.createElement('div');
-                        h.className = 'bg-blue-100 text-blue-800 font-bold rounded-lg p-2 text-center h-12 flex items-center justify-center';
-                        h.textContent = l;
-                        cardGrid.appendChild(h);
-                    });
-
-                    for (let row = 0; row < 5; row++) {
-                        for (let col = 0; col < 5; col++) {
-                            const colKey = COL_KEYS[col];
-                            let num = columnPools[colKey][row];
-                            const cell = document.createElement('div');
-                            cell.className = 'bg-white rounded-lg p-2 text-center h-12 flex items-center justify-center bingo-cell';
-
-                            if (includeFreeSpace && row === 2 && col === 2) {
-                                cell.innerHTML = '<i class="fas fa-star text-blue-600"></i>';
-                                cell.classList.add('bg-blue-200');
+                        // Add click functionality to mark numbers
+                        cell.addEventListener('click', function() {
+                            // Toggle marked state
+                            this.classList.toggle('marked');
+                            
+                            // If marked, remove the original color classes
+                            if (this.classList.contains('marked')) {
+                                this.classList.remove('number-b', 'number-i', 'number-n', 'number-g', 'number-o', 'called');
                             } else {
-                                cell.textContent = num;
+                                // If unmarked, restore the original color class
+                                this.classList.add(getNumberClass(num));
                                 if (calledNumbers.includes(num)) {
-                                    cell.classList.add('called');
+                                    this.classList.add('called');
                                 }
                             }
-                            cell.addEventListener('click', () => cell.classList.toggle('called'));
-                            cardGrid.appendChild(cell);
-                        }
-                    }
+                        });
 
-                    cardDiv.appendChild(cardTitle);
-                    cardDiv.appendChild(cardGrid);
-                    cardsContainer.appendChild(cardDiv);
+                        cardGrid.appendChild(cell);
+                    }
                 }
+
+                cardDiv.appendChild(cardTitle);
+                cardDiv.appendChild(cardGrid);
+                cardsContainer.appendChild(cardDiv);
             }
-        });
+            
+            // Show the cards section and hide the placeholder
+            cardsSection.style.display = 'block';
+            cardsPlaceholder.style.display = 'none';
+            cardsGenerated = true;
+        }
+
+        function downloadCards() {
+            if (!cardsGenerated) {
+                alert('Please generate cards first!');
+                return;
+            }
+            
+            // Create a canvas to render all cards
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const cards = document.querySelectorAll('.bingo-card');
+            
+            if (cards.length === 0) {
+                alert('Please generate cards first!');
+                return;
+            }
+            
+            // For a real implementation, you would need to render each card to the canvas
+            // and then convert to PDF or image. For now, we'll just show an alert.
+            alert('Download functionality would save all cards as a PDF in a real implementation.');
+            
+            // In a real implementation, you would use a library like jsPDF
+            // to create a PDF document with all the cards
+        }
+        
+        // Initially hide the cards section
+        cardsSection.style.display = 'none';
+    });
     </script>
 </body>
-
 </html>
