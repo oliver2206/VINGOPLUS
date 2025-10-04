@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* All previous CSS styles remain the same */
         .bingo-cell {
             transition: all 0.2s ease;
             cursor: pointer;
@@ -32,7 +33,6 @@
             border: 2px dashed #EF4444;
             background-color: #FEF3C7;
         }
-        /* Number color coding */
         
         .number-b {
             background-color: #3B82F6 !important;
@@ -58,7 +58,6 @@
             background-color: #F59E0B !important;
             color: white !important;
         }
-        /* Lucky number badges color coding */
         
         .lucky-badge-b {
             background-color: #3B82F6 !important;
@@ -224,7 +223,6 @@
                 margin-bottom: 20px;
             }
         }
-        /* New styles for hiding/showing cards */
         
         .cards-section {
             display: none;
@@ -254,7 +252,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-top: 10px;
         }
-        /* New styles for probability indicators */
         
         .probability-indicator {
             font-size: 0.75rem;
@@ -311,7 +308,6 @@
             justify-content: space-between;
             margin-top: 1rem;
         }
-        /* Frequency analysis styles */
         
         .frequency-section {
             margin-top: 1.5rem;
@@ -377,6 +373,129 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             margin-top: 0.5rem;
+        }
+        
+        /* New styles for frequency-based generation */
+        .generation-options {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #F0F9FF;
+            border-radius: 0.5rem;
+            border: 1px solid #BAE6FD;
+        }
+        
+        .generation-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            border: 1px solid #E5E7EB;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .generation-option:hover {
+            border-color: #3B82F6;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+        }
+        
+        .generation-option.selected {
+            border-color: #3B82F6;
+            background-color: #EFF6FF;
+        }
+        
+        .option-radio {
+            margin-right: 0.75rem;
+        }
+        
+        .option-content {
+            flex: 1;
+        }
+        
+        .option-title {
+            font-weight: 600;
+            color: #1E40AF;
+        }
+        
+        .option-description {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-top: 0.25rem;
+        }
+        
+        .option-numbers {
+            font-size: 0.75rem;
+            color: #374151;
+            margin-top: 0.25rem;
+        }
+        
+        /* New styles for percentage controls */
+        .percentage-controls {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #FEF3C7;
+            border-radius: 0.5rem;
+            border: 1px solid #F59E0B;
+            display: none;
+        }
+        
+        .percentage-controls.active {
+            display: block;
+        }
+        
+        .percentage-control {
+            margin-bottom: 1rem;
+        }
+        
+        .percentage-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #92400E;
+        }
+        
+        .percentage-value {
+            font-weight: bold;
+            color: #B45309;
+        }
+        
+        .percentage-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #E5E7EB;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .percentage-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #F59E0B;
+            cursor: pointer;
+        }
+        
+        .percentage-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #F59E0B;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .percentage-preview {
+            font-size: 0.875rem;
+            color: #92400E;
+            margin-top: 0.5rem;
+            text-align: center;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -633,6 +752,84 @@
                         </label>
                     </div>
 
+                    <!-- NEW: Frequency-based Generation Options -->
+                    <div class="generation-options">
+                        <h3 class="text-lg font-semibold text-blue-800 mb-3">Generation Strategy</h3>
+                        <p class="text-gray-600 mb-4">Choose how to generate bingo cards based on number frequency:</p>
+                        
+                        <div class="generation-option selected" data-strategy="high-frequency">
+                            <div class="option-radio">
+                                <input type="radio" name="generation-strategy" id="strategy-high" checked>
+                            </div>
+                            <div class="option-content">
+                                <div class="option-title">High Frequency Numbers</div>
+                                <div class="option-description">Use numbers that appeared most frequently (4+ times)</div>
+                                <div class="option-numbers" id="high-frequency-numbers">8, 13, 14, 18, 23, 28, 43, 54, 66</div>
+                            </div>
+                        </div>
+                        
+                        <div class="generation-option" data-strategy="medium-frequency">
+                            <div class="option-radio">
+                                <input type="radio" name="generation-strategy" id="strategy-medium">
+                            </div>
+                            <div class="option-content">
+                                <div class="option-title">Medium Frequency Numbers</div>
+                                <div class="option-description">Use numbers that appeared 3 times</div>
+                                <div class="option-numbers" id="medium-frequency-numbers">5, 6, 15, 16, 20, 27, 30, 31, 32, 35, 41, 45, 47, 52, 55, 56, 60, 61, 64, 65, 67, 68, 69, 70, 73, 75</div>
+                            </div>
+                        </div>
+                        
+                        <div class="generation-option" data-strategy="low-frequency">
+                            <div class="option-radio">
+                                <input type="radio" name="generation-strategy" id="strategy-low">
+                            </div>
+                            <div class="option-content">
+                                <div class="option-title">Low Frequency Numbers</div>
+                                <div class="option-description">Use numbers that appeared 1-2 times</div>
+                                <div class="option-numbers" id="low-frequency-numbers">1, 2, 3, 4, 7, 9, 10, 11, 12, 17, 19, 21, 22, 24, 25, 26, 29, 33, 34, 36, 37, 38, 39, 40, 42, 46, 48, 49, 50, 51, 53, 57, 58, 59, 62, 63, 71, 72, 74</div>
+                            </div>
+                        </div>
+                        
+                        <div class="generation-option" data-strategy="balanced">
+                            <div class="option-radio">
+                                <input type="radio" name="generation-strategy" id="strategy-balanced">
+                            </div>
+                            <div class="option-content">
+                                <div class="option-title">Balanced Distribution</div>
+                                <div class="option-description">Mix numbers from all frequency categories</div>
+                                <div class="option-numbers">Combines high, medium, and low frequency numbers</div>
+                            </div>
+                        </div>
+
+                        <!-- Percentage Controls for Medium and Low Frequency -->
+                        <div class="percentage-controls" id="percentage-controls">
+                            <h4 class="font-semibold text-yellow-800 mb-3">Adjust Number Distribution</h4>
+                            
+                            <div class="percentage-control">
+                                <div class="percentage-label">
+                                    <span>Medium Frequency Numbers</span>
+                                    <span class="percentage-value" id="medium-percentage-value">25%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="25" class="percentage-slider" id="medium-percentage-slider">
+                                <div class="percentage-preview" id="medium-preview">~6 numbers per card</div>
+                            </div>
+                            
+                            <div class="percentage-control">
+                                <div class="percentage-label">
+                                    <span>Low Frequency Numbers</span>
+                                    <span class="percentage-value" id="low-percentage-value">75%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="75" class="percentage-slider" id="low-percentage-slider">
+                                <div class="percentage-preview" id="low-preview">~18 numbers per card</div>
+                            </div>
+                            
+                            <div class="text-xs text-yellow-700 mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                These percentages control how many medium vs low frequency numbers are used in your cards
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Winning Pattern Selector -->
                     <div class="mb-6">
                         <label class="block text-blue-800 font-medium mb-2">Winning Pattern</label>
@@ -881,6 +1078,14 @@
             const luckyNumbersSection = document.getElementById('lucky-numbers-section');
             const frequencySection = document.getElementById('frequency-section');
             const luckyChartTabs = document.querySelectorAll('.lucky-chart-tab');
+            const generationOptions = document.querySelectorAll('.generation-option');
+            const percentageControls = document.getElementById('percentage-controls');
+            const mediumPercentageSlider = document.getElementById('medium-percentage-slider');
+            const lowPercentageSlider = document.getElementById('low-percentage-slider');
+            const mediumPercentageValue = document.getElementById('medium-percentage-value');
+            const lowPercentageValue = document.getElementById('low-percentage-value');
+            const mediumPreview = document.getElementById('medium-preview');
+            const lowPreview = document.getElementById('low-preview');
 
             let calledNumbers = [];
             let uploadedFiles = [];
@@ -890,6 +1095,9 @@
             let numberFrequency = {};
             let isEditMode = false;
             let screenshotNumbers = {};
+            let selectedGenerationStrategy = 'high-frequency';
+            let mediumPercentage = 25;
+            let lowPercentage = 75;
 
             const COL_KEYS = ['B', 'I', 'N', 'G', 'O'];
             const COL_RANGES = {
@@ -924,6 +1132,58 @@
                     selectedPattern = el.dataset.pattern;
                 });
             });
+
+            // Generation strategy selection
+            generationOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    generationOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.querySelector('input').checked = false;
+                    });
+                    option.classList.add('selected');
+                    option.querySelector('input').checked = true;
+                    selectedGenerationStrategy = option.dataset.strategy;
+                    
+                    // Show/hide percentage controls based on selection
+                    if (selectedGenerationStrategy === 'medium-frequency' || selectedGenerationStrategy === 'low-frequency') {
+                        percentageControls.classList.add('active');
+                        updatePercentagePreviews();
+                    } else {
+                        percentageControls.classList.remove('active');
+                    }
+                });
+            });
+
+            // Percentage slider controls
+            mediumPercentageSlider.addEventListener('input', function() {
+                mediumPercentage = parseInt(this.value);
+                lowPercentage = 100 - mediumPercentage;
+                
+                mediumPercentageValue.textContent = mediumPercentage + '%';
+                lowPercentageValue.textContent = lowPercentage + '%';
+                lowPercentageSlider.value = lowPercentage;
+                
+                updatePercentagePreviews();
+            });
+
+            lowPercentageSlider.addEventListener('input', function() {
+                lowPercentage = parseInt(this.value);
+                mediumPercentage = 100 - lowPercentage;
+                
+                lowPercentageValue.textContent = lowPercentage + '%';
+                mediumPercentageValue.textContent = mediumPercentage + '%';
+                mediumPercentageSlider.value = mediumPercentage;
+                
+                updatePercentagePreviews();
+            });
+
+            function updatePercentagePreviews() {
+                const mediumCount = Math.round(24 * (mediumPercentage / 100));
+                const lowCount = 24 - mediumCount;
+                
+                mediumPreview.textContent = `~${mediumCount} numbers per card`;
+                lowPreview.textContent = `~${lowCount} numbers per card`;
+            }
 
             // Lucky chart tabs
             luckyChartTabs.forEach(tab => {
@@ -1049,6 +1309,9 @@
                     updateLuckyNumbersChart('44', lucky44Numbers);
                     updateLuckyNumbersChart('48', lucky48Numbers);
 
+                    // Update generation options with actual numbers
+                    updateGenerationOptions();
+
                     // Show frequency analysis
                     updateFrequencyAnalysis();
 
@@ -1065,6 +1328,29 @@
                     // Show analysis summary
                     showAnalysisSummary();
                 }, 2000);
+            }
+
+            function updateGenerationOptions() {
+                // Group numbers by frequency
+                const highFreqNumbers = [];
+                const mediumFreqNumbers = [];
+                const lowFreqNumbers = [];
+
+                for (let num = 1; num <= 75; num++) {
+                    const freq = numberFrequency[num];
+                    if (freq >= 4) {
+                        highFreqNumbers.push(num);
+                    } else if (freq === 3) {
+                        mediumFreqNumbers.push(num);
+                    } else if (freq >= 1) {
+                        lowFreqNumbers.push(num);
+                    }
+                }
+
+                // Update the UI with actual numbers
+                document.getElementById('high-frequency-numbers').textContent = highFreqNumbers.join(', ');
+                document.getElementById('medium-frequency-numbers').textContent = mediumFreqNumbers.join(', ');
+                document.getElementById('low-frequency-numbers').textContent = lowFreqNumbers.join(', ');
             }
 
             // Simulate OCR extraction from uploaded images
@@ -1296,6 +1582,67 @@
                     O: []
                 };
 
+                // Get numbers based on selected generation strategy
+                let selectedNumbers = [];
+                
+                if (selectedGenerationStrategy === 'high-frequency') {
+                    // Use numbers that appeared 4+ times
+                    for (let num = 1; num <= 75; num++) {
+                        if (numberFrequency[num] >= 4) {
+                            selectedNumbers.push(num);
+                        }
+                    }
+                } else if (selectedGenerationStrategy === 'medium-frequency') {
+                    // Use numbers that appeared 3 times
+                    for (let num = 1; num <= 75; num++) {
+                        if (numberFrequency[num] === 3) {
+                            selectedNumbers.push(num);
+                        }
+                    }
+                } else if (selectedGenerationStrategy === 'low-frequency') {
+                    // Use numbers that appeared 1-2 times
+                    for (let num = 1; num <= 75; num++) {
+                        if (numberFrequency[num] >= 1 && numberFrequency[num] <= 2) {
+                            selectedNumbers.push(num);
+                        }
+                    }
+                } else if (selectedGenerationStrategy === 'balanced') {
+                    // Use a balanced mix from all frequency categories
+                    const highFreq = [];
+                    const mediumFreq = [];
+                    const lowFreq = [];
+                    
+                    for (let num = 1; num <= 75; num++) {
+                        const freq = numberFrequency[num];
+                        if (freq >= 4) {
+                            highFreq.push(num);
+                        } else if (freq === 3) {
+                            mediumFreq.push(num);
+                        } else if (freq >= 1) {
+                            lowFreq.push(num);
+                        }
+                    }
+                    
+                    // Calculate how many of each type to use based on percentages
+                    const mediumCount = Math.round(24 * (mediumPercentage / 100));
+                    const lowCount = 24 - mediumCount;
+                    const highCount = Math.min(8, highFreq.length); // Limit high frequency to 8
+                    
+                    // Mix numbers from all categories
+                    selectedNumbers = [
+                        ...shuffleArray(highFreq).slice(0, highCount),
+                        ...shuffleArray(mediumFreq).slice(0, mediumCount),
+                        ...shuffleArray(lowFreq).slice(0, lowCount)
+                    ];
+                }
+
+                // If no numbers selected (e.g., no analysis done), use all numbers
+                if (selectedNumbers.length === 0) {
+                    for (let num = 1; num <= 75; num++) {
+                        selectedNumbers.push(num);
+                    }
+                }
+
                 // First, add any called numbers to their respective columns
                 calledNumbers.forEach(num => {
                     if (num >= 1 && num <= 15) layout.B.push(num);
@@ -1305,13 +1652,31 @@
                     else if (num >= 61 && num <= 75) layout.O.push(num);
                 });
 
-                // Then fill each column with random numbers if needed
+                // Then fill each column with numbers from the selected strategy
                 for (let key of COL_KEYS) {
                     const [min, max] = COL_RANGES[key];
+                    
+                    // Get numbers from selected strategy that fall in this column's range
+                    const columnNumbers = selectedNumbers.filter(num => num >= min && num <= max);
+                    
+                    // If we don't have enough numbers, add random ones from the range
                     while (layout[key].length < 5) {
-                        let n = Math.floor(Math.random() * (max - min + 1)) + min;
-                        if (!layout[key].includes(n)) layout[key].push(n);
+                        if (columnNumbers.length > 0) {
+                            // Add from our selected numbers
+                            const randomIndex = Math.floor(Math.random() * columnNumbers.length);
+                            const num = columnNumbers[randomIndex];
+                            if (!layout[key].includes(num)) {
+                                layout[key].push(num);
+                            }
+                            // Remove the used number to avoid duplicates
+                            columnNumbers.splice(randomIndex, 1);
+                        } else {
+                            // Add random number from the range
+                            let n = Math.floor(Math.random() * (max - min + 1)) + min;
+                            if (!layout[key].includes(n)) layout[key].push(n);
+                        }
                     }
+                    
                     layout[key] = shuffleArray(layout[key]).slice(0, 5);
                 }
                 return layout;
@@ -1429,10 +1794,21 @@
                     cardDiv.appendChild(cardTitle);
                     cardDiv.appendChild(cardGrid);
 
-                    // Add probability indicator
+                    // Add probability indicator based on strategy
                     const probabilityIndicator = document.createElement('div');
-                    probabilityIndicator.className = 'probability-indicator high-probability';
-                    probabilityIndicator.textContent = 'High Winning Probability';
+                    if (selectedGenerationStrategy === 'high-frequency') {
+                        probabilityIndicator.className = 'probability-indicator high-probability';
+                        probabilityIndicator.textContent = 'High Winning Probability';
+                    } else if (selectedGenerationStrategy === 'medium-frequency') {
+                        probabilityIndicator.className = 'probability-indicator medium-probability';
+                        probabilityIndicator.textContent = 'Medium Winning Probability';
+                    } else if (selectedGenerationStrategy === 'low-frequency') {
+                        probabilityIndicator.className = 'probability-indicator low-probability';
+                        probabilityIndicator.textContent = 'Low Winning Probability';
+                    } else {
+                        probabilityIndicator.className = 'probability-indicator medium-probability';
+                        probabilityIndicator.textContent = 'Balanced Winning Probability';
+                    }
                     cardDiv.appendChild(probabilityIndicator);
 
                     // Add winning pattern indicator
@@ -1442,6 +1818,12 @@
                         patternIndicator.textContent = `Winning Pattern: ${selectedPattern}`;
                         cardDiv.appendChild(patternIndicator);
                     }
+
+                    // Add strategy indicator
+                    const strategyIndicator = document.createElement('div');
+                    strategyIndicator.className = 'text-xs text-center mt-2 text-gray-600';
+                    strategyIndicator.textContent = `Strategy: ${selectedGenerationStrategy.replace('-', ' ')}`;
+                    cardDiv.appendChild(strategyIndicator);
 
                     cardsContainer.appendChild(cardDiv);
                 }
@@ -1619,7 +2001,11 @@
 
             // Initially hide the cards section
             cardsSection.style.display = 'none';
+            // Initialize percentage previews
+            updatePercentagePreviews();
         });
     </script>
+</body>
 
 </html>
+    
