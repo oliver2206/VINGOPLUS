@@ -59,6 +59,25 @@
             color: white !important;
         }
         
+        /* Enhanced frequency color coding */
+        .frequency-high {
+            background-color: #EF4444 !important;
+            color: white !important;
+            border: 2px solid #DC2626 !important;
+        }
+        
+        .frequency-medium {
+            background-color: #F59E0B !important;
+            color: white !important;
+            border: 2px solid #D97706 !important;
+        }
+        
+        .frequency-low {
+            background-color: #FBBF24 !important;
+            color: black !important;
+            border: 2px solid #D97706 !important;
+        }
+        
         .lucky-badge-b {
             background-color: #3B82F6 !important;
             color: white !important;
@@ -431,11 +450,10 @@
             margin-top: 0.25rem;
         }
         
-        /* New styles for percentage controls */
+        /* Enhanced percentage controls with color coding */
         .percentage-controls {
             margin-top: 1rem;
             padding: 1rem;
-            background-color: #FEF3C7;
             border-radius: 0.5rem;
             border: 1px solid #F59E0B;
             display: none;
@@ -454,19 +472,16 @@
             justify-content: space-between;
             margin-bottom: 0.5rem;
             font-weight: 600;
-            color: #92400E;
         }
         
         .percentage-value {
             font-weight: bold;
-            color: #B45309;
         }
         
         .percentage-slider {
             width: 100%;
             height: 6px;
             border-radius: 3px;
-            background: #E5E7EB;
             outline: none;
             -webkit-appearance: none;
         }
@@ -477,7 +492,6 @@
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: #F59E0B;
             cursor: pointer;
         }
         
@@ -485,17 +499,123 @@
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: #F59E0B;
             cursor: pointer;
             border: none;
         }
         
         .percentage-preview {
             font-size: 0.875rem;
-            color: #92400E;
             margin-top: 0.5rem;
             text-align: center;
             font-weight: 600;
+        }
+
+        /* Color coding for percentage controls */
+        .high-percentage-control .percentage-label {
+            color: #DC2626;
+        }
+        
+        .high-percentage-control .percentage-value {
+            color: #DC2626;
+        }
+        
+        .high-percentage-control .percentage-slider {
+            background: #FECACA;
+        }
+        
+        .high-percentage-control .percentage-slider::-webkit-slider-thumb {
+            background: #EF4444;
+        }
+        
+        .high-percentage-control .percentage-slider::-moz-range-thumb {
+            background: #EF4444;
+        }
+        
+        .high-percentage-control .percentage-preview {
+            color: #DC2626;
+        }
+        
+        .medium-percentage-control .percentage-label {
+            color: #D97706;
+        }
+        
+        .medium-percentage-control .percentage-value {
+            color: #D97706;
+        }
+        
+        .medium-percentage-control .percentage-slider {
+            background: #FDE68A;
+        }
+        
+        .medium-percentage-control .percentage-slider::-webkit-slider-thumb {
+            background: #F59E0B;
+        }
+        
+        .medium-percentage-control .percentage-slider::-moz-range-thumb {
+            background: #F59E0B;
+        }
+        
+        .medium-percentage-control .percentage-preview {
+            color: #D97706;
+        }
+        
+        .low-percentage-control .percentage-label {
+            color: #D97706;
+        }
+        
+        .low-percentage-control .percentage-value {
+            color: #D97706;
+        }
+        
+        .low-percentage-control .percentage-slider {
+            background: #FEF3C7;
+        }
+        
+        .low-percentage-control .percentage-slider::-webkit-slider-thumb {
+            background: #FBBF24;
+        }
+        
+        .low-percentage-control .percentage-slider::-moz-range-thumb {
+            background: #FBBF24;
+        }
+        
+        .low-percentage-control .percentage-preview {
+            color: #D97706;
+        }
+
+        /* Frequency legend */
+        .frequency-legend {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .frequency-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .frequency-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid #000;
+        }
+        
+        .frequency-high-color {
+            background-color: #EF4444;
+        }
+        
+        .frequency-medium-color {
+            background-color: #F59E0B;
+        }
+        
+        .frequency-low-color {
+            background-color: #FBBF24;
         }
     </style>
 </head>
@@ -764,7 +884,7 @@
                             <div class="option-content">
                                 <div class="option-title">High Frequency Numbers</div>
                                 <div class="option-description">Use numbers that appeared most frequently (4+ times)</div>
-                                <div class="option-numbers" id="high-frequency-numbers">8, 13, 14, 18, 23, 28, 43, 54, 66</div>
+                                <div class="option-numbers" id="high-frequency-numbers">Upload screenshots to see numbers</div>
                             </div>
                         </div>
                         
@@ -775,7 +895,7 @@
                             <div class="option-content">
                                 <div class="option-title">Medium Frequency Numbers</div>
                                 <div class="option-description">Use numbers that appeared 3 times</div>
-                                <div class="option-numbers" id="medium-frequency-numbers">5, 6, 15, 16, 20, 27, 30, 31, 32, 35, 41, 45, 47, 52, 55, 56, 60, 61, 64, 65, 67, 68, 69, 70, 73, 75</div>
+                                <div class="option-numbers" id="medium-frequency-numbers">Upload screenshots to see numbers</div>
                             </div>
                         </div>
                         
@@ -786,7 +906,7 @@
                             <div class="option-content">
                                 <div class="option-title">Low Frequency Numbers</div>
                                 <div class="option-description">Use numbers that appeared 1-2 times</div>
-                                <div class="option-numbers" id="low-frequency-numbers">1, 2, 3, 4, 7, 9, 10, 11, 12, 17, 19, 21, 22, 24, 25, 26, 29, 33, 34, 36, 37, 38, 39, 40, 42, 46, 48, 49, 50, 51, 53, 57, 58, 59, 62, 63, 71, 72, 74</div>
+                                <div class="option-numbers" id="low-frequency-numbers">Upload screenshots to see numbers</div>
                             </div>
                         </div>
                         
@@ -801,31 +921,40 @@
                             </div>
                         </div>
 
-                        <!-- Percentage Controls for Medium and Low Frequency -->
-                        <div class="percentage-controls" id="percentage-controls">
+                        <!-- Updated Percentage Controls for High, Medium and Low Frequency -->
+                        <div class="percentage-controls active" id="percentage-controls">
                             <h4 class="font-semibold text-yellow-800 mb-3">Adjust Number Distribution</h4>
                             
-                            <div class="percentage-control">
+                            <div class="percentage-control high-percentage-control">
                                 <div class="percentage-label">
-                                    <span>Medium Frequency Numbers</span>
-                                    <span class="percentage-value" id="medium-percentage-value">25%</span>
+                                    <span>High Frequency Numbers</span>
+                                    <span class="percentage-value" id="high-percentage-value">75%</span>
                                 </div>
-                                <input type="range" min="0" max="100" value="25" class="percentage-slider" id="medium-percentage-slider">
-                                <div class="percentage-preview" id="medium-preview">~6 numbers per card</div>
+                                <input type="range" min="0" max="100" value="75" class="percentage-slider" id="high-percentage-slider">
+                                <div class="percentage-preview" id="high-preview">~18 numbers per card</div>
                             </div>
                             
-                            <div class="percentage-control">
+                            <div class="percentage-control medium-percentage-control">
+                                <div class="percentage-label">
+                                    <span>Medium Frequency Numbers</span>
+                                    <span class="percentage-value" id="medium-percentage-value">20%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="20" class="percentage-slider" id="medium-percentage-slider">
+                                <div class="percentage-preview" id="medium-preview">~5 numbers per card</div>
+                            </div>
+                            
+                            <div class="percentage-control low-percentage-control">
                                 <div class="percentage-label">
                                     <span>Low Frequency Numbers</span>
-                                    <span class="percentage-value" id="low-percentage-value">75%</span>
+                                    <span class="percentage-value" id="low-percentage-value">5%</span>
                                 </div>
-                                <input type="range" min="0" max="100" value="75" class="percentage-slider" id="low-percentage-slider">
-                                <div class="percentage-preview" id="low-preview">~18 numbers per card</div>
+                                <input type="range" min="0" max="100" value="5" class="percentage-slider" id="low-percentage-slider">
+                                <div class="percentage-preview" id="low-preview">~1 numbers per card</div>
                             </div>
                             
                             <div class="text-xs text-yellow-700 mt-2">
                                 <i class="fas fa-info-circle mr-1"></i>
-                                These percentages control how many medium vs low frequency numbers are used in your cards
+                                These percentages control how many high, medium, and low frequency numbers are used in your cards
                             </div>
                         </div>
                     </div>
@@ -1080,10 +1209,15 @@
             const luckyChartTabs = document.querySelectorAll('.lucky-chart-tab');
             const generationOptions = document.querySelectorAll('.generation-option');
             const percentageControls = document.getElementById('percentage-controls');
+            
+            // New percentage sliders
+            const highPercentageSlider = document.getElementById('high-percentage-slider');
             const mediumPercentageSlider = document.getElementById('medium-percentage-slider');
             const lowPercentageSlider = document.getElementById('low-percentage-slider');
+            const highPercentageValue = document.getElementById('high-percentage-value');
             const mediumPercentageValue = document.getElementById('medium-percentage-value');
             const lowPercentageValue = document.getElementById('low-percentage-value');
+            const highPreview = document.getElementById('high-preview');
             const mediumPreview = document.getElementById('medium-preview');
             const lowPreview = document.getElementById('low-preview');
 
@@ -1095,9 +1229,10 @@
             let numberFrequency = {};
             let isEditMode = false;
             let screenshotNumbers = {};
-            let selectedGenerationStrategy = 'high-frequency';
-            let mediumPercentage = 25;
-            let lowPercentage = 75;
+            let selectedGenerationStrategy = 'balanced';
+            let highPercentage = 75;
+            let mediumPercentage = 20;
+            let lowPercentage = 5;
 
             const COL_KEYS = ['B', 'I', 'N', 'G', 'O'];
             const COL_RANGES = {
@@ -1145,7 +1280,7 @@
                     selectedGenerationStrategy = option.dataset.strategy;
                     
                     // Show/hide percentage controls based on selection
-                    if (selectedGenerationStrategy === 'medium-frequency' || selectedGenerationStrategy === 'low-frequency') {
+                    if (selectedGenerationStrategy === 'balanced') {
                         percentageControls.classList.add('active');
                         updatePercentagePreviews();
                     } else {
@@ -1155,32 +1290,52 @@
             });
 
             // Percentage slider controls
+            highPercentageSlider.addEventListener('input', function() {
+                highPercentage = parseInt(this.value);
+                const remaining = 100 - highPercentage;
+                mediumPercentage = Math.round(remaining * 0.8); // 80% of remaining
+                lowPercentage = remaining - mediumPercentage;
+                
+                updatePercentageSliders();
+                updatePercentagePreviews();
+            });
+
             mediumPercentageSlider.addEventListener('input', function() {
                 mediumPercentage = parseInt(this.value);
-                lowPercentage = 100 - mediumPercentage;
+                const remaining = 100 - mediumPercentage;
+                highPercentage = Math.round(remaining * 0.75); // 75% of remaining
+                lowPercentage = remaining - highPercentage;
                 
-                mediumPercentageValue.textContent = mediumPercentage + '%';
-                lowPercentageValue.textContent = lowPercentage + '%';
-                lowPercentageSlider.value = lowPercentage;
-                
+                updatePercentageSliders();
                 updatePercentagePreviews();
             });
 
             lowPercentageSlider.addEventListener('input', function() {
                 lowPercentage = parseInt(this.value);
-                mediumPercentage = 100 - lowPercentage;
+                const remaining = 100 - lowPercentage;
+                highPercentage = Math.round(remaining * 0.75); // 75% of remaining
+                mediumPercentage = remaining - highPercentage;
                 
-                lowPercentageValue.textContent = lowPercentage + '%';
-                mediumPercentageValue.textContent = mediumPercentage + '%';
-                mediumPercentageSlider.value = mediumPercentage;
-                
+                updatePercentageSliders();
                 updatePercentagePreviews();
             });
 
-            function updatePercentagePreviews() {
-                const mediumCount = Math.round(24 * (mediumPercentage / 100));
-                const lowCount = 24 - mediumCount;
+            function updatePercentageSliders() {
+                highPercentageSlider.value = highPercentage;
+                mediumPercentageSlider.value = mediumPercentage;
+                lowPercentageSlider.value = lowPercentage;
                 
+                highPercentageValue.textContent = highPercentage + '%';
+                mediumPercentageValue.textContent = mediumPercentage + '%';
+                lowPercentageValue.textContent = lowPercentage + '%';
+            }
+
+            function updatePercentagePreviews() {
+                const highCount = Math.round(24 * (highPercentage / 100));
+                const mediumCount = Math.round(24 * (mediumPercentage / 100));
+                const lowCount = 24 - highCount - mediumCount;
+                
+                highPreview.textContent = `~${highCount} numbers per card`;
                 mediumPreview.textContent = `~${mediumCount} numbers per card`;
                 lowPreview.textContent = `~${lowCount} numbers per card`;
             }
@@ -1347,10 +1502,34 @@
                     }
                 }
 
-                // Update the UI with actual numbers
-                document.getElementById('high-frequency-numbers').textContent = highFreqNumbers.join(', ');
-                document.getElementById('medium-frequency-numbers').textContent = mediumFreqNumbers.join(', ');
-                document.getElementById('low-frequency-numbers').textContent = lowFreqNumbers.join(', ');
+                // Update the UI with actual numbers from analysis
+                const highFreqElement = document.getElementById('high-frequency-numbers');
+                const mediumFreqElement = document.getElementById('medium-frequency-numbers');
+                const lowFreqElement = document.getElementById('low-frequency-numbers');
+
+                if (highFreqNumbers.length > 0) {
+                    highFreqElement.textContent = highFreqNumbers.join(', ');
+                    highFreqElement.classList.remove('text-gray-500');
+                } else {
+                    highFreqElement.textContent = 'No high frequency numbers detected';
+                    highFreqElement.classList.add('text-gray-500');
+                }
+
+                if (mediumFreqNumbers.length > 0) {
+                    mediumFreqElement.textContent = mediumFreqNumbers.join(', ');
+                    mediumFreqElement.classList.remove('text-gray-500');
+                } else {
+                    mediumFreqElement.textContent = 'No medium frequency numbers detected';
+                    mediumFreqElement.classList.add('text-gray-500');
+                }
+
+                if (lowFreqNumbers.length > 0) {
+                    lowFreqElement.textContent = lowFreqNumbers.join(', ');
+                    lowFreqElement.classList.remove('text-gray-500');
+                } else {
+                    lowFreqElement.textContent = 'No low frequency numbers detected';
+                    lowFreqElement.classList.add('text-gray-500');
+                }
             }
 
             // Simulate OCR extraction from uploaded images
@@ -1573,6 +1752,14 @@
                 return '';
             }
 
+            function getFrequencyClass(num) {
+                const freq = numberFrequency[num] || 0;
+                if (freq >= 4) return 'frequency-high';
+                else if (freq === 3) return 'frequency-medium';
+                else if (freq >= 1) return 'frequency-low';
+                return '';
+            }
+
             function groupNumbersByColumn() {
                 let layout = {
                     B: [],
@@ -1624,9 +1811,9 @@
                     }
                     
                     // Calculate how many of each type to use based on percentages
+                    const highCount = Math.round(24 * (highPercentage / 100));
                     const mediumCount = Math.round(24 * (mediumPercentage / 100));
-                    const lowCount = 24 - mediumCount;
-                    const highCount = Math.min(8, highFreq.length); // Limit high frequency to 8
+                    const lowCount = 24 - highCount - mediumCount;
                     
                     // Mix numbers from all categories
                     selectedNumbers = [
@@ -1739,8 +1926,10 @@
                                 cell.classList.add('bg-blue-200');
                             } else {
                                 cell.textContent = num;
-                                // Add color coding based on number range
-                                cell.classList.add(getNumberClass(num));
+                                
+                                // Add frequency-based color coding
+                                const frequencyClass = getFrequencyClass(num);
+                                cell.classList.add(frequencyClass);
 
                                 if (calledNumbers.includes(num)) {
                                     cell.classList.add('called');
@@ -1776,10 +1965,13 @@
 
                                     // If marked, remove the original color classes
                                     if (this.classList.contains('marked')) {
-                                        this.classList.remove('number-b', 'number-i', 'number-n', 'number-g', 'number-o', 'called');
+                                        this.classList.remove('frequency-high', 'frequency-medium', 'frequency-low', 'called');
                                     } else {
-                                        // If unmarked, restore the original color class
-                                        this.classList.add(getNumberClass(num));
+                                        // If unmarked, restore the original frequency class
+                                        const num = parseInt(this.textContent);
+                                        if (!isNaN(num)) {
+                                            this.classList.add(getFrequencyClass(num));
+                                        }
                                         if (calledNumbers.includes(num)) {
                                             this.classList.add('called');
                                         }
@@ -1793,6 +1985,25 @@
 
                     cardDiv.appendChild(cardTitle);
                     cardDiv.appendChild(cardGrid);
+
+                    // Add frequency legend
+                    const frequencyLegend = document.createElement('div');
+                    frequencyLegend.className = 'frequency-legend';
+                    frequencyLegend.innerHTML = `
+                        <div class="frequency-legend-item">
+                            <div class="frequency-color frequency-high-color"></div>
+                            <span>High Frequency</span>
+                        </div>
+                        <div class="frequency-legend-item">
+                            <div class="frequency-color frequency-medium-color"></div>
+                            <span>Medium Frequency</span>
+                        </div>
+                        <div class="frequency-legend-item">
+                            <div class="frequency-color frequency-low-color"></div>
+                            <span>Low Frequency</span>
+                        </div>
+                    `;
+                    cardDiv.appendChild(frequencyLegend);
 
                     // Add probability indicator based on strategy
                     const probabilityIndicator = document.createElement('div');
@@ -1867,11 +2078,11 @@
                         const input = cell.querySelector('input');
                         if (input) {
                             cell.textContent = input.value || cell.textContent;
-                            // Update the color class based on the new number
+                            // Update the frequency class based on the new number
                             const newNum = parseInt(cell.textContent);
                             if (!isNaN(newNum)) {
-                                cell.classList.remove('number-b', 'number-i', 'number-n', 'number-g', 'number-o');
-                                cell.classList.add(getNumberClass(newNum));
+                                cell.classList.remove('frequency-high', 'frequency-medium', 'frequency-low');
+                                cell.classList.add(getFrequencyClass(newNum));
                             }
                         }
                     });
@@ -1907,11 +2118,11 @@
                     const input = c.querySelector('input');
                     if (input) {
                         c.textContent = input.value || c.textContent;
-                        // Update the color class based on the new number
+                        // Update the frequency class based on the new number
                         const newNum = parseInt(c.textContent);
                         if (!isNaN(newNum)) {
-                            c.classList.remove('number-b', 'number-i', 'number-n', 'number-g', 'number-o');
-                            c.classList.add(getNumberClass(newNum));
+                            c.classList.remove('frequency-high', 'frequency-medium', 'frequency-low');
+                            c.classList.add(getFrequencyClass(newNum));
                         }
                     }
                 });
@@ -1948,11 +2159,11 @@
                         cell.textContent = input.value;
                         cell.classList.remove('editing');
 
-                        // Update the color class based on the new number
+                        // Update the frequency class based on the new number
                         const newNum = parseInt(input.value);
                         if (!isNaN(newNum)) {
-                            cell.classList.remove('number-b', 'number-i', 'number-n', 'number-g', 'number-o');
-                            cell.classList.add(getNumberClass(newNum));
+                            cell.classList.remove('frequency-high', 'frequency-medium', 'frequency-low');
+                            cell.classList.add(getFrequencyClass(newNum));
                         }
                     } else if (e.key === 'Escape') {
                         // Cancel on Escape
@@ -1966,11 +2177,11 @@
                     cell.textContent = input.value || currentValue;
                     cell.classList.remove('editing');
 
-                    // Update the color class based on the new number
+                    // Update the frequency class based on the new number
                     const newNum = parseInt(cell.textContent);
                     if (!isNaN(newNum)) {
-                        cell.classList.remove('number-b', 'number-i', 'number-n', 'number-g', 'number-o');
-                        cell.classList.add(getNumberClass(newNum));
+                        cell.classList.remove('frequency-high', 'frequency-medium', 'frequency-low');
+                        cell.classList.add(getFrequencyClass(newNum));
                     }
                 });
             }
@@ -2008,4 +2219,3 @@
 </body>
 
 </html>
-    
