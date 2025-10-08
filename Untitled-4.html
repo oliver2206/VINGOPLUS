@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bingo Card Simulator with Multi-Pattern Detection</title>
+    <title>Bingo Card Simulator - Multiple Patterns</title>
     <style>
         * {
             box-sizing: border-box;
@@ -21,7 +20,7 @@
         }
         
         .container {
-            max-width: 1600px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
@@ -135,11 +134,6 @@
             background: #ff8c00;
         }
         
-        .key.last-four {
-            background: #dc3545;
-            animation: red-pulse 2s infinite;
-        }
-        
         .key.disabled {
             background: #6c757d;
             cursor: not-allowed;
@@ -149,23 +143,6 @@
         .key.disabled:hover {
             transform: none;
             background: #6c757d;
-        }
-        
-        .ball-counter {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ffc107;
-            color: #000;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         .cards-container {
@@ -189,16 +166,8 @@
             transform: translateY(-5px);
         }
         
-        .bingo-card.almost-winning {
-            box-shadow: 0 0 0 3px #ffc107;
-        }
-        
-        .bingo-card.combined {
-            box-shadow: 0 0 0 3px #17a2b8;
-        }
-        
         .bingo-card.winning {
-            box-shadow: 0 0 0 4px #28a745, 0 0 20px rgba(40, 167, 69, 0.5);
+            box-shadow: 0 0 0 4px #17a2b8, 0 0 20px rgba(23, 162, 184, 0.5);
             order: -1;
             animation: celebrate 2s infinite;
         }
@@ -212,7 +181,7 @@
             position: absolute;
             top: -10px;
             right: -10px;
-            background: #28a745;
+            background: #17a2b8;
             color: white;
             border-radius: 50%;
             width: 30px;
@@ -262,24 +231,6 @@
             z-index: 10;
         }
         
-        .multi-pattern-badge {
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            background: #ff922b;
-            color: white;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.8rem;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            z-index: 10;
-        }
-        
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -319,48 +270,34 @@
             transform: scale(0.95);
         }
         
-        .bingo-cell.highlighted {
+        .bingo-cell.t-pattern-win {
             background: #17a2b8;
             color: white;
-            animation: pulse 1.5s infinite;
+            animation: t-pattern-pulse 2s infinite;
         }
         
-        .bingo-cell.pattern-win {
+        .bingo-cell.corners-win {
             background: #6f42c1;
             color: white;
-            animation: pattern-pulse 2s infinite;
+            animation: corners-pulse 2s infinite;
         }
         
-        .bingo-cell.multi-pattern-win {
-            background: linear-gradient(45deg, #6f42c1, #ff6b6b);
+        .bingo-cell.diagonal1-win {
+            background: #20c997;
             color: white;
-            animation: multi-pattern-pulse 1.5s infinite;
+            animation: diagonal1-pulse 2s infinite;
         }
         
-        .bingo-cell.empty-cross {
-            background: #ffffff;
-            border: 2px solid #dc3545;
-            color: #333;
-        }
-        
-        .bingo-cell.last-four {
-            background: #dc3545;
+        .bingo-cell.diagonal2-win {
+            background: #fd7e14;
             color: white;
-            animation: red-pulse 2s infinite;
+            animation: diagonal2-pulse 2s infinite;
         }
         
-        .bingo-cell.chess {
-            background: #6c757d;
+        .bingo-cell.chess-win {
+            background: #9c27b0;
             color: white;
-        }
-        
-        .bingo-cell.editable {
-            cursor: pointer;
-            background: #e9ecef;
-        }
-        
-        .bingo-cell.editable:hover {
-            background: #dee2e6;
+            animation: chess-pulse 2s infinite;
         }
         
         .stats {
@@ -414,18 +351,6 @@
             background: #6c757d;
         }
         
-        .combine-btn {
-            background: #17a2b8;
-        }
-        
-        .combine-btn:hover {
-            background: #138496;
-        }
-        
-        .combine-btn:disabled {
-            background: #6c757d;
-        }
-        
         .pattern-controls {
             display: flex;
             justify-content: center;
@@ -449,147 +374,6 @@
             background: #5a359c;
         }
         
-        .analyze-btn {
-            background: #20c997;
-        }
-        
-        .analyze-btn:hover {
-            background: #1ba87e;
-        }
-        
-        .diy-section {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        
-        .diy-card-container {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            color: #333;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .diy-card-container h3 {
-            text-align: center;
-            margin-bottom: 15px;
-            color: #4a00e0;
-        }
-        
-        .diy-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .diy-controls button {
-            padding: 8px 16px;
-            font-size: 0.9rem;
-        }
-        
-        .number-input-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .number-input-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 300px;
-            text-align: center;
-            color: #333;
-        }
-        
-        .number-input-content h3 {
-            margin-bottom: 20px;
-            color: #4a00e0;
-        }
-        
-        .number-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 2px solid #4a00e0;
-            border-radius: 5px;
-            font-size: 1.2rem;
-            text-align: center;
-        }
-        
-        .number-input-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .combination-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .combination-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-            color: #333;
-        }
-        
-        .combination-content h3 {
-            margin-bottom: 20px;
-            color: #4a00e0;
-            text-align: center;
-        }
-        
-        .combination-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .combination-result {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            text-align: center;
-        }
-        
-        .combination-result h4 {
-            margin-bottom: 10px;
-            color: #17a2b8;
-        }
-        
-        .combination-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
         .winning-cards-section {
             margin-bottom: 20px;
         }
@@ -597,7 +381,7 @@
         .winning-cards-section h3 {
             text-align: center;
             margin-bottom: 15px;
-            color: #28a745;
+            color: #17a2b8;
             font-size: 1.5rem;
         }
         
@@ -626,78 +410,22 @@
             margin-bottom: 20px;
         }
         
-        .ball-limit-warning {
-            text-align: center;
-            background: rgba(220, 53, 69, 0.2);
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #dc3545;
-        }
-        
-        .pattern-analysis {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            color: #333;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .pattern-analysis h3 {
-            text-align: center;
-            margin-bottom: 15px;
-            color: #4a00e0;
-        }
-        
-        .pattern-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-        }
-        
-        .pattern-item {
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-            font-weight: bold;
-            transition: all 0.2s ease;
-        }
-        
-        .pattern-item.completed {
-            background: #28a745;
-            color: white;
-        }
-        
-        .pattern-item.multi-completed {
-            background: linear-gradient(45deg, #28a745, #ff6b6b);
-            color: white;
-        }
-        
-        .pattern-item.incomplete {
-            background: #f8f9fa;
-            color: #6c757d;
-        }
-        
-        .pattern-count {
-            font-size: 0.8rem;
-            opacity: 0.9;
-            margin-top: 3px;
-        }
-        
-        @keyframes pulse {
+        @keyframes t-pattern-pulse {
             0% {
                 transform: scale(1);
+                background-color: #17a2b8;
             }
             50% {
                 transform: scale(1.05);
+                background-color: #3ab9cc;
             }
             100% {
                 transform: scale(1);
+                background-color: #17a2b8;
             }
         }
         
-        @keyframes pattern-pulse {
+        @keyframes corners-pulse {
             0% {
                 transform: scale(1);
                 background-color: #6f42c1;
@@ -712,33 +440,48 @@
             }
         }
         
-        @keyframes multi-pattern-pulse {
+        @keyframes diagonal1-pulse {
             0% {
                 transform: scale(1);
-                background: linear-gradient(45deg, #6f42c1, #ff6b6b);
+                background-color: #20c997;
             }
             50% {
                 transform: scale(1.05);
-                background: linear-gradient(45deg, #8b5fdc, #ff8e8e);
+                background-color: #3dd4a7;
             }
             100% {
                 transform: scale(1);
-                background: linear-gradient(45deg, #6f42c1, #ff6b6b);
+                background-color: #20c997;
             }
         }
         
-        @keyframes red-pulse {
+        @keyframes diagonal2-pulse {
             0% {
                 transform: scale(1);
-                background-color: #dc3545;
+                background-color: #fd7e14;
             }
             50% {
                 transform: scale(1.05);
-                background-color: #e4606d;
+                background-color: #fd9843;
             }
             100% {
                 transform: scale(1);
-                background-color: #dc3545;
+                background-color: #fd7e14;
+            }
+        }
+        
+        @keyframes chess-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #9c27b0;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #b23fd1;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #9c27b0;
             }
         }
         
@@ -776,9 +519,6 @@
             .cards-container {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
-            .combination-cards {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
             .winning-cards-container {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
@@ -788,9 +528,6 @@
             .pattern-controls {
                 flex-direction: column;
                 align-items: center;
-            }
-            .pattern-list {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
         }
         
@@ -808,69 +545,37 @@
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <header>
-            <h1>Bingo Card Simulator with Multi-Pattern Detection</h1>
-            <p class="subtitle">Click numbers on the keyboard or use your number keys to mark cards. Cards with multiple winning patterns are highlighted!</p>
+            <h1>Bingo Card Simulator - Multiple Patterns</h1>
+            <p class="subtitle">Click numbers on the keyboard or use your number keys to mark cards. Win with T-pattern, Four Corners, Diagonals, or Chess Pattern!</p>
         </header>
 
         <div class="controls">
             <button id="generateCards">Generate Cards</button>
             <button id="resetGame">Reset Game</button>
-            <button id="createDiyCard">Create DIY Card</button>
-            <button id="analyzePatterns" class="analyze-btn">Analyze Patterns</button>
             <div class="card-count">
                 <label for="cardCount">Cards to generate:</label>
-                <input type="number" id="cardCount" min="1" max="100000000" value="6">
+                <input type="number" id="cardCount" min="1" max="100" value="6">
             </div>
         </div>
 
         <div class="pattern-controls">
-            <button id="patternStandard" class="pattern-btn active">Standard Bingo</button>
             <button id="patternT" class="pattern-btn">T-Pattern</button>
-            <button id="patternX" class="pattern-btn">X-Pattern</button>
-            <button id="patternHollow" class="pattern-btn">Hollow Pattern</button>
             <button id="patternCorners" class="pattern-btn">Four Corners</button>
-            <button id="patternEmptyCross" class="pattern-btn">Empty Cross</button>
+            <button id="patternDiagonal1" class="pattern-btn">Forward Diagonal</button>
+            <button id="patternDiagonal2" class="pattern-btn">Backward Diagonal</button>
             <button id="patternChess" class="pattern-btn">Chess Pattern</button>
+            <button id="patternAll" class="pattern-btn active">All Patterns</button>
         </div>
 
         <div class="undo-section">
             <button id="undoBtn" class="undo-btn" disabled>Undo Last Call</button>
-            <button id="combineCardsBtn" class="combine-btn" disabled>Combine Almost-Winning Cards</button>
-        </div>
-
-        <div id="ballLimitWarning" class="ball-limit-warning" style="display: none;">
-            <strong>⚠️ Ball Limit Reached!</strong> Only 48 balls allowed. The last 4 balls are highlighted in red.
         </div>
 
         <div class="keyboard" id="keyboard">
             <!-- Keyboard numbers 1-75 will be generated here -->
-        </div>
-
-        <div id="patternAnalysis" class="pattern-analysis" style="display: none;">
-            <h3>Pattern Analysis</h3>
-            <div class="pattern-list" id="patternList">
-                <!-- Pattern analysis will be displayed here -->
-            </div>
-        </div>
-
-        <div id="diyCardContainer" class="diy-card-container" style="display: none;">
-            <h3>DIY Bingo Card</h3>
-            <div class="diy-controls">
-                <button id="saveDiyCard">Save DIY Card</button>
-                <button id="cancelDiyCard">Cancel</button>
-            </div>
-            <div class="bingo-card">
-                <div class="card-header">
-                    <span>DIY Card</span>
-                </div>
-                <div class="bingo-grid" id="diyGrid">
-                    <!-- DIY card cells will be generated here -->
-                </div>
-            </div>
         </div>
 
         <!-- Multi-winning cards section -->
@@ -916,38 +621,6 @@
                     <div>Multi-Pattern Bingos</div>
                     <div class="stat-value" id="multiBingoCount">0</div>
                 </div>
-                <div class="stat-item">
-                    <div>Balls Remaining</div>
-                    <div class="stat-value" id="ballsRemaining">48</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="numberInputModal" class="number-input-modal" style="display: none;">
-        <div class="number-input-content">
-            <h3>Enter Number</h3>
-            <input type="number" id="numberInput" class="number-input" min="1" max="75" placeholder="1-75">
-            <div class="number-input-buttons">
-                <button id="confirmNumber">Confirm</button>
-                <button id="cancelNumber">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="combinationModal" class="combination-modal" style="display: none;">
-        <div class="combination-content">
-            <h3>Combine Almost-Winning Cards</h3>
-            <p>Select cards to combine. The new card will contain highlighted numbers from the selected cards.</p>
-            <div class="combination-cards" id="combinationCards">
-                <!-- Almost-winning cards for combination will be displayed here -->
-            </div>
-            <div class="combination-result" id="combinationResult">
-                <!-- Combination result will be displayed here -->
-            </div>
-            <div class="combination-controls">
-                <button id="createCombinedCard">Create Combined Card</button>
-                <button id="cancelCombination">Cancel</button>
             </div>
         </div>
     </div>
@@ -958,119 +631,16 @@
             const gameState = {
                 calledNumbers: new Set(),
                 cards: [],
-                maxCards: 1000000000,
+                maxCards: 100,
                 singleBingos: 0,
                 multiBingos: 0,
                 calledHistory: [], // Track called numbers for undo functionality
                 nextCardId: 1,
-                editingCell: null,
-                combinationThreshold: 48, // Number of called balls needed to enable combination
-                currentPattern: 'standard', // Current winning pattern
-                maxBalls: 48, // Maximum number of balls allowed
-                lastFourBalls: [] // Track the last 4 balls called
+                currentPattern: 'all' // 't', 'corners', 'diagonal1', 'diagonal2', 'chess', or 'all'
             };
 
             // Winning patterns configuration
             const winningPatterns = {
-                standard: {
-                    name: 'Standard Bingo',
-                    check: function(card) {
-                        // Check rows
-                        for (let row = 0; row < 5; row++) {
-                            let rowComplete = true;
-                            for (let col = 0; col < 5; col++) {
-                                const number = card.numbers[col][row];
-                                if (number !== 'FREE' && !card.marked.has(number)) {
-                                    rowComplete = false;
-                                    break;
-                                }
-                            }
-                            if (rowComplete) return {
-                                type: 'row',
-                                index: row
-                            };
-                        }
-
-                        // Check columns
-                        for (let col = 0; col < 5; col++) {
-                            let colComplete = true;
-                            for (let row = 0; row < 5; row++) {
-                                const number = card.numbers[col][row];
-                                if (number !== 'FREE' && !card.marked.has(number)) {
-                                    colComplete = false;
-                                    break;
-                                }
-                            }
-                            if (colComplete) return {
-                                type: 'column',
-                                index: col
-                            };
-                        }
-
-                        // Check diagonals
-                        let diag1Complete = true;
-                        let diag2Complete = true;
-
-                        for (let i = 0; i < 5; i++) {
-                            const number1 = card.numbers[i][i];
-                            const number2 = card.numbers[i][4 - i];
-
-                            if (number1 !== 'FREE' && !card.marked.has(number1)) {
-                                diag1Complete = false;
-                            }
-
-                            if (number2 !== 'FREE' && !card.marked.has(number2)) {
-                                diag2Complete = false;
-                            }
-                        }
-
-                        if (diag1Complete) return {
-                            type: 'diagonal',
-                            index: 1
-                        };
-                        if (diag2Complete) return {
-                            type: 'diagonal',
-                            index: 2
-                        };
-
-                        return null;
-                    },
-                    getWinningCells: function(result) {
-                        const cells = [];
-                        if (result.type === 'row') {
-                            for (let col = 0; col < 5; col++) {
-                                cells.push({
-                                    col: col,
-                                    row: result.index
-                                });
-                            }
-                        } else if (result.type === 'column') {
-                            for (let row = 0; row < 5; row++) {
-                                cells.push({
-                                    col: result.index,
-                                    row: row
-                                });
-                            }
-                        } else if (result.type === 'diagonal') {
-                            if (result.index === 1) {
-                                for (let i = 0; i < 5; i++) {
-                                    cells.push({
-                                        col: i,
-                                        row: i
-                                    });
-                                }
-                            } else {
-                                for (let i = 0; i < 5; i++) {
-                                    cells.push({
-                                        col: i,
-                                        row: 4 - i
-                                    });
-                                }
-                            }
-                        }
-                        return cells;
-                    }
-                },
                 t: {
                     name: 'T-Pattern',
                     check: function(card) {
@@ -1105,110 +675,6 @@
                         for (let row = 1; row < 5; row++) {
                             cells.push({
                                 col: 2,
-                                row: row
-                            });
-                        }
-                        return cells;
-                    }
-                },
-                x: {
-                    name: 'X-Pattern',
-                    check: function(card) {
-                        // Check for X pattern (both diagonals)
-                        let diag1Complete = true;
-                        let diag2Complete = true;
-
-                        for (let i = 0; i < 5; i++) {
-                            const number1 = card.numbers[i][i];
-                            const number2 = card.numbers[i][4 - i];
-
-                            if (number1 !== 'FREE' && !card.marked.has(number1)) {
-                                diag1Complete = false;
-                            }
-
-                            if (number2 !== 'FREE' && !card.marked.has(number2)) {
-                                diag2Complete = false;
-                            }
-                        }
-
-                        if (diag1Complete && diag2Complete) {
-                            return {
-                                type: 'x-pattern'
-                            };
-                        }
-                        return null;
-                    },
-                    getWinningCells: function() {
-                        const cells = [];
-                        // Both diagonals
-                        for (let i = 0; i < 5; i++) {
-                            cells.push({
-                                col: i,
-                                row: i
-                            });
-                            cells.push({
-                                col: i,
-                                row: 4 - i
-                            });
-                        }
-                        // Remove duplicate center cell
-                        return cells.filter((cell, index, self) =>
-                            index === self.findIndex(c => c.col === cell.col && c.row === cell.row)
-                        );
-                    }
-                },
-                hollow: {
-                    name: 'Hollow Pattern',
-                    check: function(card) {
-                        // Check for hollow pattern (border cells)
-                        const topRowComplete = [0, 1, 2, 3, 4].every(col => {
-                            const number = card.numbers[col][0];
-                            return number === 'FREE' || card.marked.has(number);
-                        });
-
-                        const bottomRowComplete = [0, 1, 2, 3, 4].every(col => {
-                            const number = card.numbers[col][4];
-                            return number === 'FREE' || card.marked.has(number);
-                        });
-
-                        const leftColComplete = [1, 2, 3].every(row => {
-                            const number = card.numbers[0][row];
-                            return number === 'FREE' || card.marked.has(number);
-                        });
-
-                        const rightColComplete = [1, 2, 3].every(row => {
-                            const number = card.numbers[4][row];
-                            return number === 'FREE' || card.marked.has(number);
-                        });
-
-                        if (topRowComplete && bottomRowComplete && leftColComplete && rightColComplete) {
-                            return {
-                                type: 'hollow-pattern'
-                            };
-                        }
-                        return null;
-                    },
-                    getWinningCells: function() {
-                        const cells = [];
-                        // Top and bottom rows
-                        for (let col = 0; col < 5; col++) {
-                            cells.push({
-                                col: col,
-                                row: 0
-                            });
-                            cells.push({
-                                col: col,
-                                row: 4
-                            });
-                        }
-                        // Left and right columns (excluding corners which are already included)
-                        for (let row = 1; row < 4; row++) {
-                            cells.push({
-                                col: 0,
-                                row: row
-                            });
-                            cells.push({
-                                col: 4,
                                 row: row
                             });
                         }
@@ -1251,95 +717,66 @@
                         ];
                     }
                 },
-                emptyCross: {
-                    name: 'Empty Cross',
+                diagonal1: {
+                    name: 'Forward Diagonal',
                     check: function(card) {
-                        // Check for empty cross pattern (center row and center column NOT marked)
-                        // All other cells must be marked
-
-                        // Check center row (row 2) - should NOT be marked (except FREE space)
-                        let centerRowEmpty = true;
-                        for (let col = 0; col < 5; col++) {
-                            if (col === 2) continue; // Skip FREE space
-                            const number = card.numbers[col][2];
-                            if (number !== 'FREE' && card.marked.has(number)) {
-                                centerRowEmpty = false;
+                        // Check for forward diagonal (top-left to bottom-right)
+                        let diagonalComplete = true;
+                        for (let i = 0; i < 5; i++) {
+                            const number = card.numbers[i][i];
+                            if (number !== 'FREE' && !card.marked.has(number)) {
+                                diagonalComplete = false;
                                 break;
                             }
                         }
 
-                        // Check center column (col 2) - should NOT be marked (except FREE space)
-                        let centerColEmpty = true;
-                        for (let row = 0; row < 5; row++) {
-                            if (row === 2) continue; // Skip FREE space
-                            const number = card.numbers[2][row];
-                            if (number !== 'FREE' && card.marked.has(number)) {
-                                centerColEmpty = false;
-                                break;
-                            }
-                        }
-
-                        // Check all other cells - should be marked
-                        let otherCellsComplete = true;
-                        for (let row = 0; row < 5; row++) {
-                            for (let col = 0; col < 5; col++) {
-                                // Skip center row and center column (except FREE space)
-                                if ((row === 2 && col !== 2) || (col === 2 && row !== 2)) {
-                                    continue;
-                                }
-                                const number = card.numbers[col][row];
-                                if (number !== 'FREE' && !card.marked.has(number)) {
-                                    otherCellsComplete = false;
-                                    break;
-                                }
-                            }
-                            if (!otherCellsComplete) break;
-                        }
-
-                        if (centerRowEmpty && centerColEmpty && otherCellsComplete) {
+                        if (diagonalComplete) {
                             return {
-                                type: 'empty-cross'
+                                type: 'diagonal1'
                             };
                         }
                         return null;
                     },
                     getWinningCells: function() {
                         const cells = [];
-                        // All cells except center row and center column
-                        for (let row = 0; row < 5; row++) {
-                            for (let col = 0; col < 5; col++) {
-                                // Skip center row and center column (except FREE space)
-                                if ((row === 2 && col !== 2) || (col === 2 && row !== 2)) {
-                                    continue;
-                                }
-                                cells.push({
-                                    col: col,
-                                    row: row
-                                });
-                            }
+                        // Forward diagonal (top-left to bottom-right)
+                        for (let i = 0; i < 5; i++) {
+                            cells.push({
+                                col: i,
+                                row: i
+                            });
                         }
                         return cells;
-                    },
-                    getEmptyCells: function() {
-                        // Return the cells that should be empty (center row and center column except FREE)
-                        const cells = [];
-                        // Center row (except FREE space)
-                        for (let col = 0; col < 5; col++) {
-                            if (col !== 2) { // Skip FREE space
-                                cells.push({
-                                    col: col,
-                                    row: 2
-                                });
+                    }
+                },
+                diagonal2: {
+                    name: 'Backward Diagonal',
+                    check: function(card) {
+                        // Check for backward diagonal (top-right to bottom-left)
+                        let diagonalComplete = true;
+                        for (let i = 0; i < 5; i++) {
+                            const number = card.numbers[i][4 - i];
+                            if (number !== 'FREE' && !card.marked.has(number)) {
+                                diagonalComplete = false;
+                                break;
                             }
                         }
-                        // Center column (except FREE space)
-                        for (let row = 0; row < 5; row++) {
-                            if (row !== 2) { // Skip FREE space
-                                cells.push({
-                                    col: 2,
-                                    row: row
-                                });
-                            }
+
+                        if (diagonalComplete) {
+                            return {
+                                type: 'diagonal2'
+                            };
+                        }
+                        return null;
+                    },
+                    getWinningCells: function() {
+                        const cells = [];
+                        // Backward diagonal (top-right to bottom-left)
+                        for (let i = 0; i < 5; i++) {
+                            cells.push({
+                                col: i,
+                                row: 4 - i
+                            });
                         }
                         return cells;
                     }
@@ -1348,30 +785,26 @@
                     name: 'Chess Pattern',
                     check: function(card) {
                         // Check for chess pattern (alternating cells like a chessboard)
-                        // This pattern requires all cells with (row+col) even to be marked
-                        // and all cells with (row+col) odd to be unmarked (except FREE space)
-
-                        let chessComplete = true;
+                        let chessPatternComplete = true;
+                        
                         for (let row = 0; row < 5; row++) {
                             for (let col = 0; col < 5; col++) {
-                                const number = card.numbers[col][row];
-                                const isEvenCell = (row + col) % 2 === 0;
-
-                                // Skip FREE space
-                                if (number === 'FREE') continue;
-
-                                if (isEvenCell && !card.marked.has(number)) {
-                                    chessComplete = false;
-                                    break;
-                                } else if (!isEvenCell && card.marked.has(number)) {
-                                    chessComplete = false;
-                                    break;
+                                // Skip the free space
+                                if (col === 2 && row === 2) continue;
+                                
+                                // Check if this cell should be marked in the chess pattern
+                                if ((row + col) % 2 === 0) {
+                                    const number = card.numbers[col][row];
+                                    if (number !== 'FREE' && !card.marked.has(number)) {
+                                        chessPatternComplete = false;
+                                        break;
+                                    }
                                 }
                             }
-                            if (!chessComplete) break;
+                            if (!chessPatternComplete) break;
                         }
 
-                        if (chessComplete) {
+                        if (chessPatternComplete) {
                             return {
                                 type: 'chess-pattern'
                             };
@@ -1380,25 +813,13 @@
                     },
                     getWinningCells: function() {
                         const cells = [];
-                        // All cells with (row+col) even
+                        // Chess pattern (alternating cells)
                         for (let row = 0; row < 5; row++) {
                             for (let col = 0; col < 5; col++) {
+                                // Skip the free space
+                                if (col === 2 && row === 2) continue;
+                                
                                 if ((row + col) % 2 === 0) {
-                                    cells.push({
-                                        col: col,
-                                        row: row
-                                    });
-                                }
-                            }
-                        }
-                        return cells;
-                    },
-                    getEmptyCells: function() {
-                        // Return the cells that should be empty (cells with (row+col) odd)
-                        const cells = [];
-                        for (let row = 0; row < 5; row++) {
-                            for (let col = 0; col < 5; col++) {
-                                if ((row + col) % 2 === 1) {
                                     cells.push({
                                         col: col,
                                         row: row
@@ -1421,41 +842,20 @@
             const generateCardsBtn = document.getElementById('generateCards');
             const resetGameBtn = document.getElementById('resetGame');
             const undoBtn = document.getElementById('undoBtn');
-            const combineCardsBtn = document.getElementById('combineCardsBtn');
-            const createDiyCardBtn = document.getElementById('createDiyCard');
-            const saveDiyCardBtn = document.getElementById('saveDiyCard');
-            const cancelDiyCardBtn = document.getElementById('cancelDiyCard');
-            const diyCardContainer = document.getElementById('diyCardContainer');
-            const diyGrid = document.getElementById('diyGrid');
-            const numberInputModal = document.getElementById('numberInputModal');
-            const numberInput = document.getElementById('numberInput');
-            const confirmNumberBtn = document.getElementById('confirmNumber');
-            const cancelNumberBtn = document.getElementById('cancelNumber');
-            const combinationModal = document.getElementById('combinationModal');
-            const combinationCardsEl = document.getElementById('combinationCards');
-            const combinationResultEl = document.getElementById('combinationResult');
-            const createCombinedCardBtn = document.getElementById('createCombinedCard');
-            const cancelCombinationBtn = document.getElementById('cancelCombination');
             const cardCountInput = document.getElementById('cardCount');
             const calledCountEl = document.getElementById('calledCount');
             const cardsInPlayEl = document.getElementById('cardsInPlay');
             const markedCellsEl = document.getElementById('markedCells');
             const singleBingoCountEl = document.getElementById('singleBingoCount');
             const multiBingoCountEl = document.getElementById('multiBingoCount');
-            const ballsRemainingEl = document.getElementById('ballsRemaining');
-            const ballLimitWarning = document.getElementById('ballLimitWarning');
-            const analyzePatternsBtn = document.getElementById('analyzePatterns');
-            const patternAnalysisEl = document.getElementById('patternAnalysis');
-            const patternListEl = document.getElementById('patternList');
 
             // Pattern buttons
-            const patternStandardBtn = document.getElementById('patternStandard');
             const patternTBtn = document.getElementById('patternT');
-            const patternXBtn = document.getElementById('patternX');
-            const patternHollowBtn = document.getElementById('patternHollow');
             const patternCornersBtn = document.getElementById('patternCorners');
-            const patternEmptyCrossBtn = document.getElementById('patternEmptyCross');
+            const patternDiagonal1Btn = document.getElementById('patternDiagonal1');
+            const patternDiagonal2Btn = document.getElementById('patternDiagonal2');
             const patternChessBtn = document.getElementById('patternChess');
+            const patternAllBtn = document.getElementById('patternAll');
 
             // Initialize the keyboard
             function initializeKeyboard() {
@@ -1465,13 +865,6 @@
                     key.className = 'key';
                     key.textContent = i;
                     key.dataset.number = i;
-
-                    // Add ball counter for last 4 balls
-                    const ballCounter = document.createElement('div');
-                    ballCounter.className = 'ball-counter';
-                    ballCounter.textContent = '';
-                    ballCounter.style.display = 'none';
-                    key.appendChild(ballCounter);
 
                     key.addEventListener('click', () => callNumber(i));
                     keyboardEl.appendChild(key);
@@ -1484,24 +877,12 @@
                 const keys = document.querySelectorAll('.key');
                 keys.forEach(key => {
                     const number = parseInt(key.dataset.number);
-                    const ballCounter = key.querySelector('.ball-counter');
 
                     // Reset classes
-                    key.classList.remove('called', 'last-four', 'disabled');
-                    ballCounter.style.display = 'none';
+                    key.classList.remove('called', 'disabled');
 
                     if (gameState.calledNumbers.has(number)) {
                         key.classList.add('called');
-
-                        // Check if this is one of the last 4 balls
-                        const lastFourIndex = gameState.lastFourBalls.indexOf(number);
-                        if (lastFourIndex !== -1) {
-                            key.classList.add('last-four');
-                            ballCounter.textContent = gameState.maxBalls - lastFourIndex;
-                            ballCounter.style.display = 'flex';
-                        }
-                    } else if (gameState.calledNumbers.size >= gameState.maxBalls) {
-                        key.classList.add('disabled');
                     }
                 });
             }
@@ -1512,12 +893,8 @@
                     id: id,
                     numbers: [],
                     marked: new Set(),
-                    isDiy: false,
-                    isCombined: false,
-                    sourceCards: [], // For tracking which cards were combined to create this one
                     hasBingo: false,
                     isMultiPattern: false,
-                    isAlmostWinning: false,
                     winningPatterns: [], // Store ALL winning patterns
                     winningCells: []
                 };
@@ -1562,381 +939,10 @@
                 return card;
             }
 
-            // Create a DIY card template
-            function createDiyCardTemplate() {
-                const card = {
-                    id: 'diy-template',
-                    numbers: [],
-                    marked: new Set(),
-                    isDiy: true,
-                    isCombined: false,
-                    sourceCards: [],
-                    hasBingo: false,
-                    isMultiPattern: false,
-                    isAlmostWinning: false,
-                    winningPatterns: [],
-                    winningCells: []
-                };
-
-                // Initialize with empty cells
-                for (let col = 0; col < 5; col++) {
-                    const columnNumbers = [];
-                    for (let row = 0; row < 5; row++) {
-                        // Free space in the center
-                        if (col === 2 && row === 2) {
-                            columnNumbers.push('FREE');
-                        } else {
-                            columnNumbers.push('');
-                        }
-                    }
-                    card.numbers.push(columnNumbers);
-                }
-
-                return card;
-            }
-
-            // Check if a card is almost winning (needs only 1 number to win)
-            function isAlmostWinning(card) {
-                if (card.hasBingo) return false;
-
-                // Check based on current pattern
-                const pattern = winningPatterns[gameState.currentPattern];
-
-                // For empty cross pattern, check if only one non-center cell is missing
-                if (gameState.currentPattern === 'emptyCross') {
-                    let missingCount = 0;
-                    for (let row = 0; row < 5; row++) {
-                        for (let col = 0; col < 5; col++) {
-                            // Skip center row and center column (except FREE space)
-                            if ((row === 2 && col !== 2) || (col === 2 && row !== 2)) {
-                                continue;
-                            }
-                            const number = card.numbers[col][row];
-                            if (number !== 'FREE' && !card.marked.has(number)) {
-                                missingCount++;
-                            }
-                        }
-                    }
-                    return missingCount === 1;
-                }
-
-                // For chess pattern, check if only one even cell is missing
-                if (gameState.currentPattern === 'chess') {
-                    let missingCount = 0;
-                    for (let row = 0; row < 5; row++) {
-                        for (let col = 0; col < 5; col++) {
-                            const number = card.numbers[col][row];
-                            const isEvenCell = (row + col) % 2 === 0;
-
-                            // Skip FREE space
-                            if (number === 'FREE') continue;
-
-                            if (isEvenCell && !card.marked.has(number)) {
-                                missingCount++;
-                            }
-                        }
-                    }
-                    return missingCount === 1;
-                }
-
-                // For standard patterns, use standard almost-winning detection
-                const standardPattern = winningPatterns.standard;
-
-                // Check rows
-                for (let row = 0; row < 5; row++) {
-                    let missingCount = 0;
-                    for (let col = 0; col < 5; col++) {
-                        const number = card.numbers[col][row];
-                        if (number !== 'FREE' && !card.marked.has(number)) {
-                            missingCount++;
-                        }
-                    }
-                    if (missingCount === 1) return true;
-                }
-
-                // Check columns
-                for (let col = 0; col < 5; col++) {
-                    let missingCount = 0;
-                    for (let row = 0; row < 5; row++) {
-                        const number = card.numbers[col][row];
-                        if (number !== 'FREE' && !card.marked.has(number)) {
-                            missingCount++;
-                        }
-                    }
-                    if (missingCount === 1) return true;
-                }
-
-                // Check diagonals
-                let diag1Missing = 0;
-                let diag2Missing = 0;
-
-                for (let i = 0; i < 5; i++) {
-                    const number1 = card.numbers[i][i];
-                    const number2 = card.numbers[i][4 - i];
-
-                    if (number1 !== 'FREE' && !card.marked.has(number1)) {
-                        diag1Missing++;
-                    }
-
-                    if (number2 !== 'FREE' && !card.marked.has(number2)) {
-                        diag2Missing++;
-                    }
-                }
-
-                if (diag1Missing === 1 || diag2Missing === 1) return true;
-
-                return false;
-            }
-
-            // Get highlighted numbers from almost-winning cards
-            function getHighlightedNumbers(cards) {
-                const highlighted = new Set();
-
-                cards.forEach(card => {
-                    // Check rows
-                    for (let row = 0; row < 5; row++) {
-                        let missingCount = 0;
-                        let missingNumber = null;
-                        for (let col = 0; col < 5; col++) {
-                            const number = card.numbers[col][row];
-                            if (number !== 'FREE' && !card.marked.has(number)) {
-                                missingCount++;
-                                missingNumber = number;
-                            }
-                        }
-                        if (missingCount === 1) {
-                            highlighted.add(missingNumber);
-                        }
-                    }
-
-                    // Check columns
-                    for (let col = 0; col < 5; col++) {
-                        let missingCount = 0;
-                        let missingNumber = null;
-                        for (let row = 0; row < 5; row++) {
-                            const number = card.numbers[col][row];
-                            if (number !== 'FREE' && !card.marked.has(number)) {
-                                missingCount++;
-                                missingNumber = number;
-                            }
-                        }
-                        if (missingCount === 1) {
-                            highlighted.add(missingNumber);
-                        }
-                    }
-
-                    // Check diagonals
-                    let diag1Missing = 0;
-                    let diag1MissingNumber = null;
-                    let diag2Missing = 0;
-                    let diag2MissingNumber = null;
-
-                    for (let i = 0; i < 5; i++) {
-                        const number1 = card.numbers[i][i];
-                        const number2 = card.numbers[i][4 - i];
-
-                        if (number1 !== 'FREE' && !card.marked.has(number1)) {
-                            diag1Missing++;
-                            diag1MissingNumber = number1;
-                        }
-
-                        if (number2 !== 'FREE' && !card.marked.has(number2)) {
-                            diag2Missing++;
-                            diag2MissingNumber = number2;
-                        }
-                    }
-
-                    if (diag1Missing === 1) {
-                        highlighted.add(diag1MissingNumber);
-                    }
-
-                    if (diag2Missing === 1) {
-                        highlighted.add(diag2MissingNumber);
-                    }
-                });
-
-                return Array.from(highlighted);
-            }
-
-            // Create a combined card from highlighted numbers
-            function createCombinedCard(highlightedNumbers, sourceCards) {
-                const card = {
-                    id: gameState.nextCardId++,
-                    numbers: [],
-                    marked: new Set(),
-                    isDiy: false,
-                    isCombined: true,
-                    sourceCards: sourceCards.map(c => c.id),
-                    hasBingo: false,
-                    isMultiPattern: false,
-                    isAlmostWinning: false,
-                    winningPatterns: [],
-                    winningCells: []
-                };
-
-                // Bingo columns: B(1-15), I(16-30), N(31-45), G(46-60), O(61-75)
-                const ranges = [{
-                    min: 1,
-                    max: 15
-                }, {
-                    min: 16,
-                    max: 30
-                }, {
-                    min: 31,
-                    max: 45
-                }, {
-                    min: 46,
-                    max: 60
-                }, {
-                    min: 61,
-                    max: 75
-                }];
-
-                // Generate numbers for each column
-                for (let col = 0; col < 5; col++) {
-                    const range = ranges[col];
-                    const columnNumbers = [];
-
-                    // Try to use highlighted numbers first
-                    const availableHighlighted = highlightedNumbers.filter(num =>
-                        num >= range.min && num <= range.max
-                    );
-
-                    // Use up to 1 highlighted number per column
-                    if (availableHighlighted.length > 0) {
-                        const randomIndex = Math.floor(Math.random() * availableHighlighted.length);
-                        columnNumbers.push(availableHighlighted[randomIndex]);
-                        // Remove from highlighted numbers to avoid duplicates
-                        highlightedNumbers = highlightedNumbers.filter(num => num !== availableHighlighted[randomIndex]);
-                    }
-
-                    // Fill remaining slots with random numbers
-                    while (columnNumbers.length < 5) {
-                        const num = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
-                        if (!columnNumbers.includes(num)) {
-                            columnNumbers.push(num);
-                        }
-                    }
-
-                    card.numbers.push(columnNumbers);
-                }
-
-                // Free space in the center
-                card.numbers[2][2] = 'FREE';
-
-                return card;
-            }
-
-            // Show combination modal
-            function showCombinationModal() {
-                const almostWinningCards = gameState.cards.filter(card =>
-                    !card.hasBingo && isAlmostWinning(card)
-                );
-
-                if (almostWinningCards.length === 0) {
-                    alert('No almost-winning cards available for combination.');
-                    return;
-                }
-
-                combinationCardsEl.innerHTML = '';
-                combinationResultEl.innerHTML = '';
-
-                // Display almost-winning cards
-                almostWinningCards.forEach(card => {
-                    const cardEl = document.createElement('div');
-                    cardEl.className = 'bingo-card almost-winning';
-
-                    const headerEl = document.createElement('div');
-                    headerEl.className = 'card-header';
-                    headerEl.innerHTML = `<span>Card #${card.id}</span>`;
-                    cardEl.appendChild(headerEl);
-
-                    const gridEl = document.createElement('div');
-                    gridEl.className = 'bingo-grid';
-
-                    // Column headers
-                    const headers = ['B', 'I', 'N', 'G', 'O'];
-                    for (let i = 0; i < 5; i++) {
-                        const headerCell = document.createElement('div');
-                        headerCell.className = 'bingo-cell';
-                        headerCell.textContent = headers[i];
-                        headerCell.style.background = '#4a00e0';
-                        headerCell.style.color = 'white';
-                        gridEl.appendChild(headerCell);
-                    }
-
-                    // Card numbers with highlighting
-                    for (let row = 0; row < 5; row++) {
-                        for (let col = 0; col < 5; col++) {
-                            const cell = document.createElement('div');
-                            cell.className = 'bingo-cell';
-
-                            const number = card.numbers[col][row];
-                            cell.textContent = number;
-
-                            if (number === 'FREE') {
-                                cell.classList.add('free');
-                            } else if (card.marked.has(number)) {
-                                cell.classList.add('marked');
-                            } else {
-                                // Check if this is a highlighted (missing) number
-                                if (isAlmostWinning(card)) {
-                                    // For simplicity, we'll highlight all unmarked numbers in almost-winning cards
-                                    cell.classList.add('highlighted');
-                                }
-                            }
-
-                            gridEl.appendChild(cell);
-                        }
-                    }
-
-                    cardEl.appendChild(gridEl);
-                    combinationCardsEl.appendChild(cardEl);
-                });
-
-                // Get highlighted numbers
-                const highlightedNumbers = getHighlightedNumbers(almostWinningCards);
-
-                // Display combination result preview
-                const resultHeader = document.createElement('h4');
-                resultHeader.textContent = 'Highlighted Numbers for New Card';
-                combinationResultEl.appendChild(resultHeader);
-
-                const numbersList = document.createElement('div');
-                numbersList.style.display = 'flex';
-                numbersList.style.flexWrap = 'wrap';
-                numbersList.style.gap = '8px';
-                numbersList.style.justifyContent = 'center';
-                numbersList.style.marginTop = '10px';
-
-                highlightedNumbers.forEach(num => {
-                    const numEl = document.createElement('div');
-                    numEl.className = 'bingo-cell highlighted';
-                    numEl.textContent = num;
-                    numEl.style.width = '40px';
-                    numEl.style.height = '40px';
-                    numbersList.appendChild(numEl);
-                });
-
-                combinationResultEl.appendChild(numbersList);
-
-                // Store selected cards for combination
-                combinationModal.selectedCards = almostWinningCards;
-                combinationModal.highlightedNumbers = highlightedNumbers;
-
-                combinationModal.style.display = 'flex';
-            }
-
             // Render a Bingo card
             function renderBingoCard(card) {
                 const cardEl = document.createElement('div');
                 cardEl.className = 'bingo-card';
-                if (card.isAlmostWinning && !card.hasBingo) {
-                    cardEl.classList.add('almost-winning');
-                }
-                if (card.isCombined) {
-                    cardEl.classList.add('combined');
-                }
                 if (card.hasBingo) {
                     if (card.isMultiPattern) {
                         cardEl.classList.add('multi-winning');
@@ -1948,11 +954,7 @@
 
                 const headerEl = document.createElement('div');
                 headerEl.className = 'card-header';
-                let headerText = `${card.isDiy ? 'DIY ' : ''}Card #${card.id}`;
-                if (card.isCombined) {
-                    headerText += ' (Combined)';
-                }
-                headerEl.innerHTML = `<span>${headerText}</span>`;
+                headerEl.innerHTML = `<span>Card #${card.id}</span>`;
                 cardEl.appendChild(headerEl);
 
                 // Add winning badge if the card has bingo
@@ -1964,12 +966,12 @@
                         multiWinningBadge.title = `${card.winningPatterns.length} patterns completed!`;
                         cardEl.appendChild(multiWinningBadge);
 
-                        // Add multi-pattern badge
-                        const multiPatternBadge = document.createElement('div');
-                        multiPatternBadge.className = 'multi-pattern-badge';
-                        multiPatternBadge.textContent = 'M';
-                        multiPatternBadge.title = 'Multiple Patterns: ' + card.winningPatterns.map(p => p.name).join(', ');
-                        cardEl.appendChild(multiPatternBadge);
+                        // Add pattern badge
+                        const patternBadge = document.createElement('div');
+                        patternBadge.className = 'pattern-badge';
+                        patternBadge.textContent = 'M';
+                        patternBadge.title = 'Multiple Patterns: ' + card.winningPatterns.map(p => p.name).join(', ');
+                        cardEl.appendChild(patternBadge);
                     } else {
                         const winningBadge = document.createElement('div');
                         winningBadge.className = 'winning-badge';
@@ -1980,7 +982,14 @@
                         if (card.winningPatterns.length > 0) {
                             const patternBadge = document.createElement('div');
                             patternBadge.className = 'pattern-badge';
-                            patternBadge.textContent = card.winningPatterns[0].type.charAt(0).toUpperCase();
+                            const patternType = card.winningPatterns[0].type;
+                            let badgeText = '';
+                            if (patternType === 't-pattern') badgeText = 'T';
+                            else if (patternType === 'four-corners') badgeText = 'C';
+                            else if (patternType === 'diagonal1') badgeText = 'D1';
+                            else if (patternType === 'diagonal2') badgeText = 'D2';
+                            else if (patternType === 'chess-pattern') badgeText = 'CH';
+                            patternBadge.textContent = badgeText;
                             patternBadge.title = card.winningPatterns[0].name;
                             cardEl.appendChild(patternBadge);
                         }
@@ -2011,48 +1020,45 @@
                         cell.textContent = number;
 
                         // Check if this cell is part of a winning pattern
-                        const isWinningCell = card.winningCells.some(wc => wc.col === col && wc.row === row);
-
-                        // For empty cross pattern, highlight the empty cells
-                        const isEmptyCrossCell = card.hasBingo &&
-                            card.winningPatterns.some(p => p.type === 'empty-cross') &&
-                            winningPatterns.emptyCross.getEmptyCells().some(ec => ec.col === col && ec.row === row);
-
-                        // For chess pattern, highlight the empty cells
-                        const isChessEmptyCell = card.hasBingo &&
-                            card.winningPatterns.some(p => p.type === 'chess-pattern') &&
-                            winningPatterns.chess.getEmptyCells().some(ec => ec.col === col && ec.row === row);
-
-                        // Check if this number is one of the last 4 balls
-                        const isLastFourBall = gameState.lastFourBalls.includes(parseInt(number));
+                        const isTWin = card.winningPatterns.some(p => 
+                            p.type === 't-pattern' && 
+                            winningPatterns.t.getWinningCells(p).some(wc => wc.col === col && wc.row === row)
+                        );
+                        
+                        const isCornersWin = card.winningPatterns.some(p => 
+                            p.type === 'four-corners' && 
+                            winningPatterns.corners.getWinningCells(p).some(wc => wc.col === col && wc.row === row)
+                        );
+                        
+                        const isDiagonal1Win = card.winningPatterns.some(p => 
+                            p.type === 'diagonal1' && 
+                            winningPatterns.diagonal1.getWinningCells(p).some(wc => wc.col === col && wc.row === row)
+                        );
+                        
+                        const isDiagonal2Win = card.winningPatterns.some(p => 
+                            p.type === 'diagonal2' && 
+                            winningPatterns.diagonal2.getWinningCells(p).some(wc => wc.col === col && wc.row === row)
+                        );
+                        
+                        const isChessWin = card.winningPatterns.some(p => 
+                            p.type === 'chess-pattern' && 
+                            winningPatterns.chess.getWinningCells(p).some(wc => wc.col === col && wc.row === row)
+                        );
 
                         if (number === 'FREE') {
                             cell.classList.add('free');
-                        } else if (isEmptyCrossCell) {
-                            cell.classList.add('empty-cross');
-                        } else if (isChessEmptyCell) {
-                            cell.classList.add('chess');
-                        } else if (isLastFourBall && card.marked.has(number)) {
-                            cell.classList.add('last-four');
-                        } else if (isWinningCell) {
-                            if (card.isMultiPattern) {
-                                cell.classList.add('multi-pattern-win');
-                            } else {
-                                cell.classList.add('pattern-win');
-                            }
+                        } else if (isTWin) {
+                            cell.classList.add('t-pattern-win');
+                        } else if (isCornersWin) {
+                            cell.classList.add('corners-win');
+                        } else if (isDiagonal1Win) {
+                            cell.classList.add('diagonal1-win');
+                        } else if (isDiagonal2Win) {
+                            cell.classList.add('diagonal2-win');
+                        } else if (isChessWin) {
+                            cell.classList.add('chess-win');
                         } else if (card.marked.has(number)) {
                             cell.classList.add('marked');
-                        } else if (card.isAlmostWinning && isAlmostWinning(card) && !card.hasBingo) {
-                            // Highlight numbers that could complete a bingo
-                            cell.classList.add('highlighted');
-                        }
-
-                        // Make DIY card cells editable (except FREE space)
-                        if (card.isDiy && number !== 'FREE') {
-                            cell.classList.add('editable');
-                            cell.dataset.col = col;
-                            cell.dataset.row = row;
-                            cell.addEventListener('click', () => editDiyCell(card, col, row, cell));
                         }
 
                         gridEl.appendChild(cell);
@@ -2063,73 +1069,12 @@
                 return cardEl;
             }
 
-            // Edit a DIY card cell
-            function editDiyCell(card, col, row, cell) {
-                gameState.editingCell = {
-                    card,
-                    col,
-                    row,
-                    cell
-                };
-                numberInput.value = card.numbers[col][row] || '';
-                numberInputModal.style.display = 'flex';
-                numberInput.focus();
-            }
-
-            // Save DIY card
-            function saveDiyCard() {
-                const diyCard = {
-                    id: gameState.nextCardId++,
-                    numbers: [],
-                    marked: new Set(),
-                    isDiy: true,
-                    isCombined: false,
-                    sourceCards: [],
-                    hasBingo: false,
-                    isMultiPattern: false,
-                    isAlmostWinning: false,
-                    winningPatterns: [],
-                    winningCells: []
-                };
-
-                // Copy numbers from the DIY template
-                for (let col = 0; col < 5; col++) {
-                    const columnNumbers = [];
-                    for (let row = 0; row < 5; row++) {
-                        const cell = document.querySelector(`#diyGrid .bingo-cell[data-col="${col}"][data-row="${row}"]`);
-                        columnNumbers.push(cell.textContent || '');
-                    }
-                    diyCard.numbers.push(columnNumbers);
-                }
-
-                // Add to game state
-                gameState.cards.push(diyCard);
-
-                // Hide DIY card container
-                diyCardContainer.style.display = 'none';
-
-                // Update display
-                updateCards();
-            }
-
             // Call a number
             function callNumber(number) {
                 if (gameState.calledNumbers.has(number)) return;
 
-                // Check if we've reached the ball limit
-                if (gameState.calledNumbers.size >= gameState.maxBalls) {
-                    alert(`Ball limit reached! Only ${gameState.maxBalls} balls are allowed.`);
-                    return;
-                }
-
                 gameState.calledNumbers.add(number);
                 gameState.calledHistory.push(number); // Add to history for undo
-
-                // Update last four balls
-                gameState.lastFourBalls.push(number);
-                if (gameState.lastFourBalls.length > 4) {
-                    gameState.lastFourBalls.shift();
-                }
 
                 updateCalledNumbers();
                 updateKeyboard();
@@ -2137,21 +1082,11 @@
                 // Update undo button state
                 undoBtn.disabled = false;
 
-                // Update combine button state
-                combineCardsBtn.disabled = gameState.calledNumbers.size < gameState.combinationThreshold;
-
                 // Update cards
                 updateCards();
 
                 // Check for bingos
                 checkBingos();
-
-                // Show/hide ball limit warning
-                if (gameState.calledNumbers.size >= gameState.maxBalls) {
-                    ballLimitWarning.style.display = 'block';
-                } else {
-                    ballLimitWarning.style.display = 'none';
-                }
             }
 
             // Undo the last called number
@@ -2161,17 +1096,8 @@
                 const lastCalled = gameState.calledHistory.pop();
                 gameState.calledNumbers.delete(lastCalled);
 
-                // Remove from last four balls
-                const lastFourIndex = gameState.lastFourBalls.indexOf(lastCalled);
-                if (lastFourIndex !== -1) {
-                    gameState.lastFourBalls.splice(lastFourIndex, 1);
-                }
-
                 // Update undo button state
                 undoBtn.disabled = gameState.calledHistory.length === 0;
-
-                // Update combine button state
-                combineCardsBtn.disabled = gameState.calledNumbers.size < gameState.combinationThreshold;
 
                 updateCalledNumbers();
                 updateKeyboard();
@@ -2184,17 +1110,11 @@
 
                 // Recheck bingos (in case undoing removed a bingo)
                 checkBingos();
-
-                // Hide ball limit warning if we're below the limit
-                if (gameState.calledNumbers.size < gameState.maxBalls) {
-                    ballLimitWarning.style.display = 'none';
-                }
             }
 
             // Update called numbers display
             function updateCalledNumbers() {
                 calledCountEl.textContent = gameState.calledNumbers.size;
-                ballsRemainingEl.textContent = Math.max(0, gameState.maxBalls - gameState.calledNumbers.size);
             }
 
             // Update all cards
@@ -2203,7 +1123,6 @@
                 winningCardsContainer.innerHTML = '';
                 multiWinningCardsContainer.innerHTML = '';
                 let markedCellsCount = 0;
-                let almostWinningCount = 0;
 
                 // Separate winning and non-winning cards
                 const multiWinningCards = [];
@@ -2223,12 +1142,6 @@
                             }
                         }
                     });
-
-                    // Check if card is almost winning
-                    card.isAlmostWinning = isAlmostWinning(card);
-                    if (card.isAlmostWinning) {
-                        almostWinningCount++;
-                    }
 
                     // Separate winning and non-winning cards
                     if (card.hasBingo) {
@@ -2276,10 +1189,9 @@
 
                 markedCellsEl.textContent = markedCellsCount;
                 cardsInPlayEl.textContent = gameState.cards.length;
-                // almostWinningCountEl.textContent = almostWinningCount;
             }
 
-            // Check for bingos - automatically detect ALL patterns
+            // Check for bingos - automatically detect patterns based on current setting
             function checkBingos() {
                 // Reset bingo counts
                 gameState.singleBingos = 0;
@@ -2291,25 +1203,26 @@
                     card.winningPatterns = [];
                     card.winningCells = [];
 
-                    // Check for bingo in ALL patterns
+                    // Check for bingos based on current pattern setting
                     const allWinningPatterns = [];
                     const allWinningCells = new Set();
 
+                    // Check all patterns if enabled
                     for (const patternName in winningPatterns) {
-                        const pattern = winningPatterns[patternName];
-                        const result = pattern.check(card);
+                        if (gameState.currentPattern === 'all' || gameState.currentPattern === patternName) {
+                            const patternResult = winningPatterns[patternName].check(card);
+                            if (patternResult) {
+                                allWinningPatterns.push({
+                                    name: winningPatterns[patternName].name,
+                                    type: patternResult.type
+                                });
 
-                        if (result) {
-                            allWinningPatterns.push({
-                                name: pattern.name,
-                                type: result.type
-                            });
-
-                            // Add all winning cells to the set
-                            const patternCells = pattern.getWinningCells(result);
-                            patternCells.forEach(cell => {
-                                allWinningCells.add(`${cell.col},${cell.row}`);
-                            });
+                                // Add all winning cells to the set
+                                const patternCells = winningPatterns[patternName].getWinningCells(patternResult);
+                                patternCells.forEach(cell => {
+                                    allWinningCells.add(`${cell.col},${cell.row}`);
+                                });
+                            }
                         }
                     }
 
@@ -2341,61 +1254,6 @@
                 updateCards();
             }
 
-            // Analyze patterns for all cards
-            function analyzePatterns() {
-                patternListEl.innerHTML = '';
-
-                // Analyze each card
-                gameState.cards.forEach(card => {
-                    const cardPatterns = [];
-
-                    // Check all patterns for this card
-                    for (const patternName in winningPatterns) {
-                        const pattern = winningPatterns[patternName];
-                        const result = pattern.check(card);
-
-                        if (result) {
-                            cardPatterns.push(pattern.name);
-                        }
-                    }
-
-                    // Create pattern analysis for this card
-                    const cardAnalysis = document.createElement('div');
-                    cardAnalysis.className = 'pattern-item';
-                    cardAnalysis.style.marginBottom = '15px';
-
-                    const cardHeader = document.createElement('div');
-                    cardHeader.style.fontWeight = 'bold';
-                    cardHeader.style.marginBottom = '5px';
-                    cardHeader.textContent = `Card #${card.id}:`;
-                    cardAnalysis.appendChild(cardHeader);
-
-                    if (cardPatterns.length > 0) {
-                        if (cardPatterns.length > 1) {
-                            cardAnalysis.classList.add('multi-completed');
-                            cardHeader.textContent += ` ${cardPatterns.length} patterns completed!`;
-                        } else {
-                            cardAnalysis.classList.add('completed');
-                            cardHeader.textContent += ` ${cardPatterns.length} pattern completed`;
-                        }
-
-                        const patternDetails = document.createElement('div');
-                        patternDetails.style.fontSize = '0.9rem';
-                        patternDetails.style.marginTop = '5px';
-                        patternDetails.textContent = cardPatterns.join(', ');
-                        cardAnalysis.appendChild(patternDetails);
-                    } else {
-                        cardAnalysis.classList.add('incomplete');
-                        cardHeader.textContent += ' No patterns completed';
-                    }
-
-                    patternListEl.appendChild(cardAnalysis);
-                });
-
-                // Show pattern analysis section
-                patternAnalysisEl.style.display = 'block';
-            }
-
             // Generate cards
             function generateCards() {
                 const cardCount = Math.min(parseInt(cardCountInput.value), gameState.maxCards);
@@ -2408,7 +1266,6 @@
                 multiWinningCardsContainer.innerHTML = '';
                 winningCardsSection.style.display = 'none';
                 multiWinningCardsSection.style.display = 'none';
-                patternAnalysisEl.style.display = 'none';
 
                 // Generate new cards
                 for (let i = 0; i < cardCount; i++) {
@@ -2420,12 +1277,6 @@
                 updateCards();
                 updateCalledNumbers();
                 updateKeyboard();
-
-                // Update combine button state
-                combineCardsBtn.disabled = gameState.calledNumbers.size < gameState.combinationThreshold;
-
-                // Hide ball limit warning
-                ballLimitWarning.style.display = 'none';
             }
 
             // Reset the game
@@ -2436,7 +1287,6 @@
                 gameState.singleBingos = 0;
                 gameState.multiBingos = 0;
                 gameState.nextCardId = 1;
-                gameState.lastFourBalls = [];
 
                 // Reset UI
                 initializeKeyboard();
@@ -2445,61 +1295,12 @@
                 multiWinningCardsContainer.innerHTML = '';
                 winningCardsSection.style.display = 'none';
                 multiWinningCardsSection.style.display = 'none';
-                patternAnalysisEl.style.display = 'none';
                 calledCountEl.textContent = '0';
                 cardsInPlayEl.textContent = '0';
                 markedCellsEl.textContent = '0';
                 singleBingoCountEl.textContent = '0';
                 multiBingoCountEl.textContent = '0';
-                ballsRemainingEl.textContent = '48';
                 undoBtn.disabled = true;
-                combineCardsBtn.disabled = true;
-                diyCardContainer.style.display = 'none';
-                combinationModal.style.display = 'none';
-                ballLimitWarning.style.display = 'none';
-            }
-
-            // Initialize DIY card
-            function initializeDiyCard() {
-                diyGrid.innerHTML = '';
-
-                // Column headers
-                const headers = ['B', 'I', 'N', 'G', 'O'];
-                for (let i = 0; i < 5; i++) {
-                    const headerCell = document.createElement('div');
-                    headerCell.className = 'bingo-cell';
-                    headerCell.textContent = headers[i];
-                    headerCell.style.background = '#4a00e0';
-                    headerCell.style.color = 'white';
-                    diyGrid.appendChild(headerCell);
-                }
-
-                // Card cells
-                for (let row = 0; row < 5; row++) {
-                    for (let col = 0; col < 5; col++) {
-                        const cell = document.createElement('div');
-                        cell.className = 'bingo-cell editable';
-
-                        // Free space in the center
-                        if (col === 2 && row === 2) {
-                            cell.textContent = 'FREE';
-                            cell.classList.add('free');
-                            cell.classList.remove('editable');
-                        }
-
-                        cell.dataset.col = col;
-                        cell.dataset.row = row;
-                        cell.addEventListener('click', () => {
-                            if (col !== 2 || row !== 2) { // Don't allow editing FREE space
-                                editDiyCell(null, col, row, cell);
-                            }
-                        });
-
-                        diyGrid.appendChild(cell);
-                    }
-                }
-
-                diyCardContainer.style.display = 'block';
             }
 
             // Set winning pattern
@@ -2507,13 +1308,12 @@
                 gameState.currentPattern = pattern;
 
                 // Update button states
-                patternStandardBtn.classList.toggle('active', pattern === 'standard');
                 patternTBtn.classList.toggle('active', pattern === 't');
-                patternXBtn.classList.toggle('active', pattern === 'x');
-                patternHollowBtn.classList.toggle('active', pattern === 'hollow');
                 patternCornersBtn.classList.toggle('active', pattern === 'corners');
-                patternEmptyCrossBtn.classList.toggle('active', pattern === 'emptyCross');
+                patternDiagonal1Btn.classList.toggle('active', pattern === 'diagonal1');
+                patternDiagonal2Btn.classList.toggle('active', pattern === 'diagonal2');
                 patternChessBtn.classList.toggle('active', pattern === 'chess');
+                patternAllBtn.classList.toggle('active', pattern === 'all');
 
                 // Recheck bingos with new pattern
                 checkBingos();
@@ -2554,64 +1354,16 @@
             generateCardsBtn.addEventListener('click', generateCards);
             resetGameBtn.addEventListener('click', resetGame);
             undoBtn.addEventListener('click', undoLastCall);
-            combineCardsBtn.addEventListener('click', showCombinationModal);
-            createDiyCardBtn.addEventListener('click', initializeDiyCard);
-            saveDiyCardBtn.addEventListener('click', saveDiyCard);
-            cancelDiyCardBtn.addEventListener('click', () => {
-                diyCardContainer.style.display = 'none';
-            });
-            analyzePatternsBtn.addEventListener('click', analyzePatterns);
-            confirmNumberBtn.addEventListener('click', () => {
-                if (gameState.editingCell) {
-                    const {
-                        col,
-                        row,
-                        cell
-                    } = gameState.editingCell;
-                    const value = numberInput.value.trim();
-
-                    // Validate input
-                    if (value === '' || (parseInt(value) >= 1 && parseInt(value) <= 75)) {
-                        cell.textContent = value;
-                    }
-
-                    numberInputModal.style.display = 'none';
-                    gameState.editingCell = null;
-                }
-            });
-            cancelNumberBtn.addEventListener('click', () => {
-                numberInputModal.style.display = 'none';
-                gameState.editingCell = null;
-            });
-            createCombinedCardBtn.addEventListener('click', () => {
-                if (combinationModal.selectedCards && combinationModal.highlightedNumbers) {
-                    const newCard = createCombinedCard(
-                        [...combinationModal.highlightedNumbers],
-                        combinationModal.selectedCards
-                    );
-
-                    gameState.cards.push(newCard);
-                    updateCards();
-                    combinationModal.style.display = 'none';
-
-                    // Show confirmation message
-                    alert(`New combined card #${newCard.id} created with ${combinationModal.highlightedNumbers.length} highlighted numbers!`);
-                }
-            });
-            cancelCombinationBtn.addEventListener('click', () => {
-                combinationModal.style.display = 'none';
-            });
 
             // Pattern button event listeners
-            patternStandardBtn.addEventListener('click', () => setWinningPattern('standard'));
             patternTBtn.addEventListener('click', () => setWinningPattern('t'));
-            patternXBtn.addEventListener('click', () => setWinningPattern('x'));
-            patternHollowBtn.addEventListener('click', () => setWinningPattern('hollow'));
             patternCornersBtn.addEventListener('click', () => setWinningPattern('corners'));
-            patternEmptyCrossBtn.addEventListener('click', () => setWinningPattern('emptyCross'));
+            patternDiagonal1Btn.addEventListener('click', () => setWinningPattern('diagonal1'));
+            patternDiagonal2Btn.addEventListener('click', () => setWinningPattern('diagonal2'));
             patternChessBtn.addEventListener('click', () => setWinningPattern('chess'));
+            patternAllBtn.addEventListener('click', () => setWinningPattern('all'));
 
-            // Limit card count input to max 500
+            // Limit card count input to max 100
             cardCountInput.addEventListener('change', function() {
                 if (this.value > gameState.maxCards) {
                     this.value = gameState.maxCards;
@@ -2626,5 +1378,4 @@
         });
     </script>
 </body>
-
 </html>
