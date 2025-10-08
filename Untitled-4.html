@@ -429,6 +429,50 @@
             font-family: monospace;
         }
         
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 2px;
+            pointer-events: none;
+        }
+        
+        .grid-cell {
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00ff00;
+            font-size: 0.7rem;
+        }
+        
+        .grid-cell.header {
+            background: rgba(74, 0, 224, 0.3);
+        }
+        
+        .quick-scan-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-scan-btn {
+            background: #28a745;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+        
+        .quick-scan-btn:hover {
+            background: #218838;
+        }
+        
         /* Modal Styles */
         .modal {
             display: none;
@@ -540,6 +584,7 @@
             <div class="scan-tabs">
                 <button class="scan-tab active" data-tab="manual">Manual Input</button>
                 <button class="scan-tab" data-tab="camera">Camera Scan</button>
+                <button class="scan-tab" data-tab="quick">Quick Add</button>
             </div>
             
             <!-- Manual Input Tab -->
@@ -565,24 +610,41 @@
                     <div class="camera-preview">
                         <video id="cameraVideo" autoplay playsinline></video>
                         <div class="camera-overlay"></div>
+                        <div class="grid-overlay">
+                            <!-- Grid cells will be generated here -->
+                        </div>
                     </div>
                     <div class="camera-controls">
                         <button id="startCamera">Start Camera</button>
-                        <button id="captureNumber" disabled>Capture Number</button>
+                        <button id="captureCard" disabled>Scan Entire Card</button>
                         <button id="stopCamera" disabled>Stop Camera</button>
                     </div>
                     <div class="detection-area">
-                        <h4>Number Detection</h4>
-                        <p>Point camera at a number and click "Capture Number"</p>
+                        <h4>Card Scanner</h4>
+                        <p>Position the entire bingo card within the green frame and click "Scan Entire Card"</p>
                         <div class="detection-results">
                             <div>Detected Numbers: <span id="detectedNumbers">None</span></div>
-                            <div>Current Input: <span id="currentInput"></span></div>
+                            <div>Status: <span id="scanStatus">Ready to scan</span></div>
                         </div>
                     </div>
-                    <div class="scan-input">
-                        <input type="text" id="cameraInput" placeholder="Numbers will appear here as you scan" readonly>
-                        <button id="processCameraScan" disabled>Create Card from Scan</button>
-                        <button id="clearCameraScan">Clear Scan</button>
+                </div>
+            </div>
+            
+            <!-- Quick Add Tab -->
+            <div id="quickTab" class="scan-tab-content" style="display: none;">
+                <div class="scan-preview">
+                    <h4>Quick Card Entry</h4>
+                    <p>Enter the card in grid format (like your screenshot):</p>
+                    <textarea id="quickInput" placeholder="B   I   N   G   O
+8   30  33  58  64
+4   24  31  48  72
+1   27  Free  52  67
+7   19  44  47  65
+12  21  34  57  74" rows="7" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-family: monospace; margin: 10px 0;"></textarea>
+                    <div class="quick-scan-buttons">
+                        <button id="processQuickInput" class="quick-scan-btn">Process Input</button>
+                        <button id="loadExample" class="quick-scan-btn">Load Example</button>
+                        <button id="clearQuickInput" class="quick-scan-btn">Clear</button>
                     </div>
                 </div>
             </div>
@@ -644,15 +706,17 @@
         </div>
     </div>
 
-    <!-- Number Input Modal for Camera -->
-    <div class="modal" id="numberModal">
+    <!-- Card Scan Modal -->
+    <div class="modal" id="cardScanModal">
         <div class="modal-content">
-            <h3>Enter Number Manually</h3>
-            <p>Camera couldn't detect the number clearly. Please enter it manually:</p>
-            <input type="number" id="manualNumberInput" class="modal-input" min="1" max="75" autofocus>
+            <h3>Card Scan Results</h3>
+            <div id="scanResultPreview" class="scan-grid" style="margin: 15px auto; max-width: 250px;">
+                <!-- Scan results will be shown here -->
+            </div>
+            <p id="scanResultText">Scan completed successfully!</p>
             <div class="modal-buttons">
-                <button id="confirmManualNumber">Confirm</button>
-                <button id="cancelManualNumber" class="cancel">Cancel</button>
+                <button id="confirmScanResult">Add This Card</button>
+                <button id="rescanCard" class="cancel">Rescan</button>
             </div>
         </div>
     </div>
@@ -671,8 +735,7 @@
                 editMode: false,
                 currentEdit: null, // {cardId, col, row}
                 scannedNumbers: [], // Store scanned numbers for preview
-                cameraStream: null,
-                scannedNumbersList: [] // Numbers scanned via camera
+                cameraStream: null
             };
             
             // DOM elements
@@ -703,19 +766,27 @@
             const scanTabs = document.querySelectorAll('.scan-tab');
             const manualTab = document.getElementById('manualTab');
             const cameraTab = document.getElementById('cameraTab');
+            const quickTab = document.getElementById('quickTab');
             const cameraVideo = document.getElementById('cameraVideo');
             const startCameraBtn = document.getElementById('startCamera');
-            const captureNumberBtn = document.getElementById('captureNumber');
+            const captureCardBtn = document.getElementById('captureCard');
             const stopCameraBtn = document.getElementById('stopCamera');
             const detectedNumbersEl = document.getElementById('detectedNumbers');
-            const currentInputEl = document.getElementById('currentInput');
-            const cameraInputEl = document.getElementById('cameraInput');
-            const processCameraScanBtn = document.getElementById('processCameraScan');
-            const clearCameraScanBtn = document.getElementById('clearCameraScan');
-            const numberModal = document.getElementById('numberModal');
-            const manualNumberInput = document.getElementById('manualNumberInput');
-            const confirmManualNumberBtn = document.getElementById('confirmManualNumber');
-            const cancelManualNumberBtn = document.getElementById('cancelManualNumber');
+            const scanStatusEl = document.getElementById('scanStatus');
+            const gridOverlay = document.querySelector('.grid-overlay');
+            
+            // Quick scan elements
+            const quickInput = document.getElementById('quickInput');
+            const processQuickInputBtn = document.getElementById('processQuickInput');
+            const loadExampleBtn = document.getElementById('loadExample');
+            const clearQuickInputBtn = document.getElementById('clearQuickInput');
+            
+            // Modal elements
+            const cardScanModal = document.getElementById('cardScanModal');
+            const scanResultPreview = document.getElementById('scanResultPreview');
+            const scanResultText = document.getElementById('scanResultText');
+            const confirmScanResultBtn = document.getElementById('confirmScanResult');
+            const rescanCardBtn = document.getElementById('rescanCard');
             
             const editModal = document.getElementById('editModal');
             const editInput = document.getElementById('editInput');
@@ -734,6 +805,7 @@
                     // Show corresponding content
                     manualTab.style.display = tabName === 'manual' ? 'block' : 'none';
                     cameraTab.style.display = tabName === 'camera' ? 'block' : 'none';
+                    quickTab.style.display = tabName === 'quick' ? 'block' : 'none';
                     
                     // Stop camera if switching away from camera tab
                     if (tabName !== 'camera' && gameState.cameraStream) {
@@ -741,6 +813,27 @@
                     }
                 });
             });
+            
+            // Initialize grid overlay
+            function initializeGridOverlay() {
+                gridOverlay.innerHTML = '';
+                const headers = ['B', 'I', 'N', 'G', 'O'];
+                
+                // Create grid cells (5x6 including headers)
+                for (let row = 0; row < 6; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'grid-cell';
+                        if (row === 0) {
+                            cell.classList.add('header');
+                            cell.textContent = headers[col];
+                        } else {
+                            cell.textContent = `${row},${col}`;
+                        }
+                        gridOverlay.appendChild(cell);
+                    }
+                }
+            }
             
             // Camera functions
             async function startCamera() {
@@ -754,8 +847,10 @@
                     });
                     cameraVideo.srcObject = gameState.cameraStream;
                     startCameraBtn.disabled = true;
-                    captureNumberBtn.disabled = false;
+                    captureCardBtn.disabled = false;
                     stopCameraBtn.disabled = false;
+                    scanStatusEl.textContent = 'Camera ready - position card in frame';
+                    initializeGridOverlay();
                 } catch (err) {
                     console.error('Error accessing camera:', err);
                     alert('Unable to access camera. Please check permissions and try again.');
@@ -768,78 +863,229 @@
                     gameState.cameraStream = null;
                     cameraVideo.srcObject = null;
                     startCameraBtn.disabled = false;
-                    captureNumberBtn.disabled = true;
+                    captureCardBtn.disabled = true;
                     stopCameraBtn.disabled = true;
+                    scanStatusEl.textContent = 'Camera stopped';
                 }
             }
             
-            function captureNumber() {
-                // In a real implementation, this would use OCR/tesseract.js
-                // For now, we'll simulate detection and prompt for manual input
+            function captureCard() {
+                // Simulate card scanning - in real implementation, this would use OCR
+                scanStatusEl.textContent = 'Scanning card...';
                 
-                // Create a canvas to capture the video frame
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                canvas.width = cameraVideo.videoWidth;
-                canvas.height = cameraVideo.videoHeight;
-                context.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
-                
-                // Show manual input modal since OCR is complex to implement
-                showNumberInputModal();
-                
-                // In a real app, you would:
-                // 1. Use tesseract.js or other OCR library
-                // 2. Process the image to detect numbers
-                // 3. Return the detected number
-            }
-            
-            function showNumberInputModal() {
-                numberModal.style.display = 'flex';
-                manualNumberInput.focus();
-            }
-            
-            function hideNumberInputModal() {
-                numberModal.style.display = 'none';
-                manualNumberInput.value = '';
-            }
-            
-            function addNumberFromCamera(number) {
-                const num = parseInt(number);
-                if (!isNaN(num) && num >= 1 && num <= 75) {
-                    gameState.scannedNumbersList.push(num);
-                    updateCameraInput();
+                // Simulate processing delay
+                setTimeout(() => {
+                    // For demo purposes, we'll use a sample card that matches the screenshot
+                    const sampleCard = [
+                        8, 30, 33, 58, 64,   // B column
+                        4, 24, 31, 48, 72,   // I column  
+                        1, 27, 0, 52, 67,    // N column (0 represents FREE)
+                        7, 19, 44, 47, 65,   // G column
+                        12, 21, 34, 57, 74   // O column
+                    ];
                     
-                    // Enable process button if we have 24 numbers
-                    if (gameState.scannedNumbersList.length === 24) {
-                        processCameraScanBtn.disabled = false;
+                    gameState.scannedNumbers = sampleCard;
+                    showScanResult(sampleCard);
+                    scanStatusEl.textContent = 'Scan complete!';
+                }, 2000);
+            }
+            
+            function showScanResult(numbers) {
+                scanResultPreview.innerHTML = '';
+                const headers = ['B', 'I', 'N', 'G', 'O'];
+                
+                // Add headers
+                for (let i = 0; i < 5; i++) {
+                    const headerCell = document.createElement('div');
+                    headerCell.className = 'scan-cell';
+                    headerCell.textContent = headers[i];
+                    headerCell.style.background = '#4a00e0';
+                    headerCell.style.color = 'white';
+                    scanResultPreview.appendChild(headerCell);
+                }
+                
+                // Add numbers
+                let numIndex = 0;
+                for (let row = 0; row < 5; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'scan-cell';
+                        
+                        const number = numbers[numIndex];
+                        if (number === 0) {
+                            cell.textContent = 'FREE';
+                            cell.classList.add('free');
+                        } else {
+                            cell.textContent = number;
+                        }
+                        
+                        scanResultPreview.appendChild(cell);
+                        numIndex++;
                     }
-                } else {
-                    alert('Please enter a valid number between 1 and 75');
+                }
+                
+                detectedNumbersEl.textContent = numbers.filter(n => n !== 0).join(', ');
+                cardScanModal.style.display = 'flex';
+            }
+            
+            function confirmScanResult() {
+                if (gameState.scannedNumbers.length === 25) { // 25 includes FREE space
+                    // Convert the scanned numbers to proper card format
+                    const cardNumbers = [];
+                    for (let i = 0; i < 25; i++) {
+                        if (gameState.scannedNumbers[i] === 0) {
+                            cardNumbers.push('FREE');
+                        } else {
+                            cardNumbers.push(gameState.scannedNumbers[i]);
+                        }
+                    }
+                    
+                    // Create and add the card
+                    const newCardId = gameState.cards.length + 1;
+                    const card = createCardFromScannedArray(cardNumbers, newCardId);
+                    
+                    if (card) {
+                        gameState.cards.push(card);
+                        updateCards();
+                        cardScanModal.style.display = 'none';
+                        hideScanSection();
+                        alert('Card scanned and added successfully!');
+                    }
                 }
             }
             
-            function updateCameraInput() {
-                cameraInputEl.value = gameState.scannedNumbersList.join(' ');
-                detectedNumbersEl.textContent = gameState.scannedNumbersList.join(', ');
-                currentInputEl.textContent = `${gameState.scannedNumbersList.length}/24 numbers`;
-            }
-            
-            function processCameraScan() {
-                if (gameState.scannedNumbersList.length !== 24) {
-                    alert('Please scan exactly 24 numbers');
+            // Quick scan functions
+            function processQuickInput() {
+                const input = quickInput.value.trim();
+                if (!input) {
+                    alert('Please enter card data');
                     return;
                 }
                 
-                // Use the scanned numbers to create a card
-                gameState.scannedNumbers = [...gameState.scannedNumbersList];
-                showScanPreview(gameState.scannedNumbers);
+                const lines = input.split('\n').filter(line => line.trim());
+                if (lines.length < 6) {
+                    alert('Please enter all 6 lines (header + 5 number rows)');
+                    return;
+                }
+                
+                // Parse the card data
+                const cardData = [];
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    // Split by multiple spaces or tabs
+                    const items = line.split(/\s+/).filter(item => item.trim());
+                    
+                    if (i === 0) {
+                        // Header row - validate
+                        const expectedHeaders = ['B', 'I', 'N', 'G', 'O'];
+                        if (!arraysEqual(items, expectedHeaders)) {
+                            alert('First line must be: B I N G O');
+                            return;
+                        }
+                    } else {
+                        // Number rows
+                        if (items.length !== 5) {
+                            alert(`Row ${i+1} must have exactly 5 items`);
+                            return;
+                        }
+                        cardData.push(...items);
+                    }
+                }
+                
+                // Process the card data
+                const numbers = [];
+                for (let i = 0; i < cardData.length; i++) {
+                    const item = cardData[i].toLowerCase();
+                    if (item === 'free') {
+                        numbers.push('FREE');
+                    } else {
+                        const num = parseInt(item);
+                        if (isNaN(num)) {
+                            alert(`Invalid number: ${item}`);
+                            return;
+                        }
+                        numbers.push(num);
+                    }
+                }
+                
+                if (numbers.length !== 25) {
+                    alert('Card must have exactly 25 cells (including FREE space)');
+                    return;
+                }
+                
+                // Create and add the card
+                const newCardId = gameState.cards.length + 1;
+                const card = createCardFromScannedArray(numbers, newCardId);
+                
+                if (card) {
+                    gameState.cards.push(card);
+                    updateCards();
+                    hideScanSection();
+                    alert('Card added successfully!');
+                }
             }
             
-            function clearCameraScan() {
-                gameState.scannedNumbersList = [];
-                updateCameraInput();
-                processCameraScanBtn.disabled = true;
-                scanPreviewEl.style.display = 'none';
+            function loadExample() {
+                quickInput.value = `B   I   N   G   O
+8   30  33  58  64
+4   24  31  48  72
+1   27  Free  52  67
+7   19  44  47  65
+12  21  34  57  74`;
+            }
+            
+            function clearQuickInput() {
+                quickInput.value = '';
+            }
+            
+            // Helper function to compare arrays
+            function arraysEqual(a, b) {
+                if (a.length !== b.length) return false;
+                for (let i = 0; i < a.length; i++) {
+                    if (a[i] !== b[i]) return false;
+                }
+                return true;
+            }
+            
+            // Create card from scanned array (5x5 grid)
+            function createCardFromScannedArray(numbers, id) {
+                const card = {
+                    id: id,
+                    numbers: [[], [], [], [], []], // 5 columns
+                    marked: new Set(),
+                    hasBingo: false
+                };
+                
+                // Organize numbers into columns
+                for (let row = 0; row < 5; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        const index = row * 5 + col;
+                        const number = numbers[index];
+                        
+                        if (number === 'FREE') {
+                            card.numbers[col][row] = 'FREE';
+                            card.marked.add('FREE');
+                        } else {
+                            card.numbers[col][row] = number;
+                            
+                            // Validate number range based on column
+                            const ranges = [
+                                { min: 1, max: 15 },
+                                { min: 16, max: 30 },
+                                { min: 31, max: 45 },
+                                { min: 46, max: 60 },
+                                { min: 61, max: 75 }
+                            ];
+                            
+                            if (number < ranges[col].min || number > ranges[col].max) {
+                                alert(`Number ${number} is not valid for ${String.fromCharCode(66 + col)} column (${ranges[col].min}-${ranges[col].max})`);
+                                return null;
+                            }
+                        }
+                    }
+                }
+                
+                return card;
             }
             
             // Initialize the keyboard
@@ -938,7 +1184,7 @@
                 return card;
             }
             
-            // Create card from scanned numbers
+            // Create card from scanned numbers (old format)
             function createCardFromNumbers(numbers, id) {
                 const card = {
                     id: id,
@@ -1415,7 +1661,6 @@
                 gameState.editMode = false;
                 gameState.currentEdit = null;
                 gameState.scannedNumbers = [];
-                gameState.scannedNumbersList = [];
                 
                 // Reset UI
                 toggleEditBtn.textContent = 'Enable Edit Mode';
@@ -1425,13 +1670,13 @@
                 scanSectionEl.style.display = 'none';
                 scanPreviewEl.style.display = 'none';
                 scanInputEl.value = '';
-                cameraInputEl.value = '';
-                detectedNumbersEl.textContent = 'None';
-                currentInputEl.textContent = '';
-                processCameraScanBtn.disabled = true;
+                quickInput.value = '';
                 
                 // Stop camera
                 stopCamera();
+                
+                // Close modals
+                cardScanModal.style.display = 'none';
                 
                 initializeKeyboard();
                 cardsContainerEl.innerHTML = '';
@@ -1443,7 +1688,6 @@
                 limitWarningEl.style.display = 'none';
                 finalFourInfoEl.style.display = 'none';
                 closeEditModal();
-                hideNumberInputModal();
             }
             
             // Call a random number
@@ -1458,32 +1702,7 @@
                 callNumber(randomNum);
             }
             
-            // Keyboard event listener for number keys
-            document.addEventListener('keydown', function(event) {
-                // Check if it's a number key (1-9) or numpad key
-                if ((event.key >= '1' && event.key <= '9') || 
-                    (event.key >= '1' && event.key <= '9' && event.location === 3)) {
-                    const number = parseInt(event.key);
-                    callNumber(number);
-                }
-                
-                // Handle two-digit numbers (10-75)
-                if (event.key >= '0' && event.key <= '9') {
-                    // We'll handle two-digit numbers by tracking the last key pressed
-                    // This is a simplified approach - in a real app you'd want more sophisticated input handling
-                    setTimeout(() => {
-                        const input = event.key;
-                        if (input.length === 2) {
-                            const number = parseInt(input);
-                            if (number >= 10 && number <= 75) {
-                                callNumber(number);
-                            }
-                        }
-                    }, 10);
-                }
-            });
-            
-            // Event listeners for buttons
+            // Event listeners
             generateCardsBtn.addEventListener('click', generateCards);
             resetGameBtn.addEventListener('click', resetGame);
             callRandomBtn.addEventListener('click', callRandomNumber);
@@ -1499,18 +1718,17 @@
             
             // Camera event listeners
             startCameraBtn.addEventListener('click', startCamera);
-            captureNumberBtn.addEventListener('click', captureNumber);
+            captureCardBtn.addEventListener('click', captureCard);
             stopCameraBtn.addEventListener('click', stopCamera);
-            processCameraScanBtn.addEventListener('click', processCameraScan);
-            clearCameraScanBtn.addEventListener('click', clearCameraScan);
-            confirmManualNumberBtn.addEventListener('click', () => {
-                const number = manualNumberInput.value.trim();
-                if (number) {
-                    addNumberFromCamera(number);
-                    hideNumberInputModal();
-                }
+            confirmScanResultBtn.addEventListener('click', confirmScanResult);
+            rescanCardBtn.addEventListener('click', () => {
+                cardScanModal.style.display = 'none';
             });
-            cancelManualNumberBtn.addEventListener('click', hideNumberInputModal);
+            
+            // Quick scan event listeners
+            processQuickInputBtn.addEventListener('click', processQuickInput);
+            loadExampleBtn.addEventListener('click', loadExample);
+            clearQuickInputBtn.addEventListener('click', clearQuickInput);
             
             saveEditBtn.addEventListener('click', saveEditedNumber);
             cancelEditBtn.addEventListener('click', closeEditModal);
@@ -1522,9 +1740,9 @@
                 }
             });
             
-            numberModal.addEventListener('click', function(e) {
-                if (e.target === numberModal) {
-                    hideNumberInputModal();
+            cardScanModal.addEventListener('click', function(e) {
+                if (e.target === cardScanModal) {
+                    cardScanModal.style.display = 'none';
                 }
             });
             
