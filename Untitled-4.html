@@ -134,6 +134,11 @@
             background: #ff8c00;
         }
         
+        .key.last-four {
+            background: #dc3545;
+            animation: last-four-pulse 1.5s infinite;
+        }
+        
         .key.disabled {
             background: #6c757d;
             cursor: not-allowed;
@@ -145,11 +150,19 @@
             background: #6c757d;
         }
         
+        .cards-scroll-container {
+            max-height: 600px;
+            overflow-y: auto;
+            margin-bottom: 30px;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
         .cards-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
-            margin-bottom: 30px;
         }
         
         .bingo-card {
@@ -294,10 +307,10 @@
             animation: diagonal2-pulse 2s infinite;
         }
         
-        .bingo-cell.chess-win {
+        .bingo-cell.empty-cross-win {
             background: #9c27b0;
             color: white;
-            animation: chess-pulse 2s infinite;
+            animation: empty-cross-pulse 2s infinite;
         }
         
         .stats {
@@ -410,6 +423,97 @@
             margin-bottom: 20px;
         }
         
+        .rounds-chart {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .rounds-chart h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #17a2b8;
+        }
+        
+        .rounds-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .round {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .round-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .round-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .round-count {
+            background: #4a00e0;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .round-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .round-number {
+            background: #4a00e0;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .round-number.called {
+            background: #ff8c00;
+        }
+        
+        .round-number.last-four {
+            background: #dc3545;
+        }
+        
+        .ball-limit-warning {
+            text-align: center;
+            background: rgba(220, 53, 69, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #dc3545;
+        }
+        
+        .another-round-btn {
+            background: #28a745;
+        }
+        
+        .another-round-btn:hover {
+            background: #218838;
+        }
+        
         @keyframes t-pattern-pulse {
             0% {
                 transform: scale(1);
@@ -470,18 +574,33 @@
             }
         }
         
-        @keyframes chess-pulse {
+        @keyframes empty-cross-pulse {
             0% {
                 transform: scale(1);
                 background-color: #9c27b0;
             }
             50% {
                 transform: scale(1.05);
-                background-color: #b23fd1;
+                background-color: #ba68c8;
             }
             100% {
                 transform: scale(1);
                 background-color: #9c27b0;
+            }
+        }
+        
+        @keyframes last-four-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #dc3545;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #e74c3c;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #dc3545;
             }
         }
         
@@ -512,6 +631,86 @@
             }
         }
         
+        /* Custom scrollbar for cards container */
+        .cards-scroll-container::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .cards-scroll-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+        }
+        
+        .cards-scroll-container::-webkit-scrollbar-thumb {
+            background: #4a00e0;
+            border-radius: 6px;
+        }
+        
+        .cards-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #8e2de2;
+        }
+        
+        /* Custom scrollbar for round numbers */
+        .round-numbers::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .round-numbers::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .round-numbers::-webkit-scrollbar-thumb {
+            background: #4a00e0;
+            border-radius: 4px;
+        }
+        
+        .round-numbers::-webkit-scrollbar-thumb:hover {
+            background: #8e2de2;
+        }
+        
+        /* Custom scrollbar for rounds container */
+        .rounds-container::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .rounds-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+        }
+        
+        .rounds-container::-webkit-scrollbar-thumb {
+            background: #4a00e0;
+            border-radius: 6px;
+        }
+        
+        .rounds-container::-webkit-scrollbar-thumb:hover {
+            background: #8e2de2;
+        }
+        
+        /* Custom scrollbar for winning cards containers */
+        .winning-cards-container::-webkit-scrollbar,
+        .multi-winning-cards-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .winning-cards-container::-webkit-scrollbar-track,
+        .multi-winning-cards-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .winning-cards-container::-webkit-scrollbar-thumb,
+        .multi-winning-cards-container::-webkit-scrollbar-thumb {
+            background: #4a00e0;
+            border-radius: 4px;
+        }
+        
+        .winning-cards-container::-webkit-scrollbar-thumb:hover,
+        .multi-winning-cards-container::-webkit-scrollbar-thumb:hover {
+            background: #8e2de2;
+        }
+        
         @media (max-width: 768px) {
             .keyboard {
                 grid-template-columns: repeat(10, 1fr);
@@ -529,6 +728,12 @@
                 flex-direction: column;
                 align-items: center;
             }
+            .rounds-container {
+                grid-template-columns: 1fr;
+            }
+            .cards-scroll-container {
+                max-height: 500px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -542,6 +747,9 @@
             .undo-section {
                 flex-direction: column;
             }
+            .cards-scroll-container {
+                max-height: 400px;
+            }
         }
     </style>
 </head>
@@ -549,12 +757,13 @@
     <div class="container">
         <header>
             <h1>Bingo Card Simulator - Multiple Patterns</h1>
-            <p class="subtitle">Click numbers on the keyboard or use your number keys to mark cards. Win with T-pattern, Four Corners, Diagonals, or Chess Pattern!</p>
+            <p class="subtitle">Click numbers on the keyboard or use your number keys to mark cards. Win with T-pattern, Four Corners, Diagonals, or Empty Cross!</p>
         </header>
 
         <div class="controls">
             <button id="generateCards">Generate Cards</button>
             <button id="resetGame">Reset Game</button>
+            <button id="anotherRound" class="another-round-btn">Another Round</button>
             <div class="card-count">
                 <label for="cardCount">Cards to generate:</label>
                 <input type="number" id="cardCount" min="1" max="100" value="6">
@@ -566,7 +775,7 @@
             <button id="patternCorners" class="pattern-btn">Four Corners</button>
             <button id="patternDiagonal1" class="pattern-btn">Forward Diagonal</button>
             <button id="patternDiagonal2" class="pattern-btn">Backward Diagonal</button>
-            <button id="patternChess" class="pattern-btn">Chess Pattern</button>
+            <button id="patternEmptyCross" class="pattern-btn">Empty Cross</button>
             <button id="patternAll" class="pattern-btn active">All Patterns</button>
         </div>
 
@@ -576,6 +785,11 @@
 
         <div class="keyboard" id="keyboard">
             <!-- Keyboard numbers 1-75 will be generated here -->
+        </div>
+
+        <!-- Ball limit warning -->
+        <div id="ballLimitWarning" class="ball-limit-warning" style="display: none;">
+            <strong>⚠️ Ball Limit Reached!</strong> You have called the maximum of 48 balls. The last 4 balls are highlighted in red.
         </div>
 
         <!-- Multi-winning cards section -->
@@ -594,8 +808,19 @@
             </div>
         </div>
 
-        <div class="cards-container" id="cardsContainer">
-            <!-- Non-winning cards will be displayed here -->
+        <!-- Cards container with auto-scroll -->
+        <div class="cards-scroll-container" id="cardsScrollContainer">
+            <div class="cards-container" id="cardsContainer">
+                <!-- Non-winning cards will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Rounds Chart Section -->
+        <div class="rounds-chart">
+            <h2>🎯 Bingo Balls Results Chart (30 Rounds)</h2>
+            <div class="rounds-container" id="roundsContainer">
+                <!-- Rounds will be generated here -->
+            </div>
         </div>
 
         <div class="stats">
@@ -621,6 +846,14 @@
                     <div>Multi-Pattern Bingos</div>
                     <div class="stat-value" id="multiBingoCount">0</div>
                 </div>
+                <div class="stat-item">
+                    <div>Balls Remaining</div>
+                    <div class="stat-value" id="ballsRemaining">48</div>
+                </div>
+                <div class="stat-item">
+                    <div>Current Round</div>
+                    <div class="stat-value" id="currentRound">1</div>
+                </div>
             </div>
         </div>
     </div>
@@ -636,8 +869,18 @@
                 multiBingos: 0,
                 calledHistory: [], // Track called numbers for undo functionality
                 nextCardId: 1,
-                currentPattern: 'all' // 't', 'corners', 'diagonal1', 'diagonal2', 'chess', or 'all'
+                currentPattern: 'all', // 't', 'corners', 'diagonal1', 'diagonal2', 'emptyCross', or 'all'
+                maxBalls: 48, // Maximum number of balls that can be called per round
+                lastFourBalls: [], // Track the last 4 balls called
+                currentRound: 1,
+                maxRounds: 30,
+                rounds: []
             };
+
+            // Initialize rounds array
+            for (let i = 0; i < gameState.maxRounds; i++) {
+                gameState.rounds.push({ numbers: [], lastFour: [] });
+            }
 
             // Winning patterns configuration
             const winningPatterns = {
@@ -781,45 +1024,64 @@
                         return cells;
                     }
                 },
-                chess: {
-                    name: 'Chess Pattern',
+                emptyCross: {
+                    name: 'Empty Cross',
                     check: function(card) {
-                        // Check for chess pattern (alternating cells like a chessboard)
-                        let chessPatternComplete = true;
+                        // Check for empty cross pattern (all cells marked EXCEPT middle row and middle column)
+                        let patternComplete = true;
                         
-                        for (let row = 0; row < 5; row++) {
-                            for (let col = 0; col < 5; col++) {
-                                // Skip the free space
-                                if (col === 2 && row === 2) continue;
-                                
-                                // Check if this cell should be marked in the chess pattern
-                                if ((row + col) % 2 === 0) {
+                        // Check all cells except middle row and middle column
+                        for (let col = 0; col < 5; col++) {
+                            for (let row = 0; row < 5; row++) {
+                                // Skip middle row (row 2) and middle column (col 2)
+                                if (row !== 2 && col !== 2) {
                                     const number = card.numbers[col][row];
                                     if (number !== 'FREE' && !card.marked.has(number)) {
-                                        chessPatternComplete = false;
+                                        patternComplete = false;
                                         break;
                                     }
                                 }
                             }
-                            if (!chessPatternComplete) break;
+                            if (!patternComplete) break;
+                        }
+                        
+                        // Check that middle row and middle column are NOT marked (except FREE space)
+                        if (patternComplete) {
+                            for (let col = 0; col < 5; col++) {
+                                if (col !== 2) { // Skip FREE space
+                                    const number = card.numbers[col][2];
+                                    if (number !== 'FREE' && card.marked.has(number)) {
+                                        patternComplete = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            for (let row = 0; row < 5; row++) {
+                                if (row !== 2) { // Skip FREE space
+                                    const number = card.numbers[2][row];
+                                    if (number !== 'FREE' && card.marked.has(number)) {
+                                        patternComplete = false;
+                                        break;
+                                    }
+                                }
+                            }
                         }
 
-                        if (chessPatternComplete) {
+                        if (patternComplete) {
                             return {
-                                type: 'chess-pattern'
+                                type: 'empty-cross'
                             };
                         }
                         return null;
                     },
                     getWinningCells: function() {
                         const cells = [];
-                        // Chess pattern (alternating cells)
-                        for (let row = 0; row < 5; row++) {
-                            for (let col = 0; col < 5; col++) {
-                                // Skip the free space
-                                if (col === 2 && row === 2) continue;
-                                
-                                if ((row + col) % 2 === 0) {
+                        // All cells EXCEPT middle row and middle column
+                        for (let col = 0; col < 5; col++) {
+                            for (let row = 0; row < 5; row++) {
+                                // Skip middle row (row 2) and middle column (col 2)
+                                if (row !== 2 && col !== 2) {
                                     cells.push({
                                         col: col,
                                         row: row
@@ -835,12 +1097,15 @@
             // DOM elements
             const keyboardEl = document.getElementById('keyboard');
             const cardsContainerEl = document.getElementById('cardsContainer');
+            const cardsScrollContainer = document.getElementById('cardsScrollContainer');
             const winningCardsSection = document.getElementById('winningCardsSection');
             const winningCardsContainer = document.getElementById('winningCardsContainer');
             const multiWinningCardsSection = document.getElementById('multiWinningCardsSection');
             const multiWinningCardsContainer = document.getElementById('multiWinningCardsContainer');
+            const roundsContainer = document.getElementById('roundsContainer');
             const generateCardsBtn = document.getElementById('generateCards');
             const resetGameBtn = document.getElementById('resetGame');
+            const anotherRoundBtn = document.getElementById('anotherRound');
             const undoBtn = document.getElementById('undoBtn');
             const cardCountInput = document.getElementById('cardCount');
             const calledCountEl = document.getElementById('calledCount');
@@ -848,13 +1113,16 @@
             const markedCellsEl = document.getElementById('markedCells');
             const singleBingoCountEl = document.getElementById('singleBingoCount');
             const multiBingoCountEl = document.getElementById('multiBingoCount');
+            const ballsRemainingEl = document.getElementById('ballsRemaining');
+            const currentRoundEl = document.getElementById('currentRound');
+            const ballLimitWarning = document.getElementById('ballLimitWarning');
 
             // Pattern buttons
             const patternTBtn = document.getElementById('patternT');
             const patternCornersBtn = document.getElementById('patternCorners');
             const patternDiagonal1Btn = document.getElementById('patternDiagonal1');
             const patternDiagonal2Btn = document.getElementById('patternDiagonal2');
-            const patternChessBtn = document.getElementById('patternChess');
+            const patternEmptyCrossBtn = document.getElementById('patternEmptyCross');
             const patternAllBtn = document.getElementById('patternAll');
 
             // Initialize the keyboard
@@ -879,12 +1147,83 @@
                     const number = parseInt(key.dataset.number);
 
                     // Reset classes
-                    key.classList.remove('called', 'disabled');
+                    key.classList.remove('called', 'disabled', 'last-four');
 
                     if (gameState.calledNumbers.has(number)) {
                         key.classList.add('called');
+                        
+                        // Check if this is one of the last 4 balls
+                        if (gameState.lastFourBalls.includes(number)) {
+                            key.classList.add('last-four');
+                        }
+                    }
+                    
+                    // Disable keys if ball limit reached
+                    if (gameState.calledNumbers.size >= gameState.maxBalls && !gameState.calledNumbers.has(number)) {
+                        key.classList.add('disabled');
                     }
                 });
+                
+                // Update balls remaining
+                const ballsRemaining = gameState.maxBalls - gameState.calledNumbers.size;
+                ballsRemainingEl.textContent = Math.max(0, ballsRemaining);
+                
+                // Update current round
+                currentRoundEl.textContent = gameState.currentRound;
+                
+                // Show/hide ball limit warning
+                if (gameState.calledNumbers.size >= gameState.maxBalls) {
+                    ballLimitWarning.style.display = 'block';
+                } else {
+                    ballLimitWarning.style.display = 'none';
+                }
+            }
+
+            // Update rounds chart
+            function updateRoundsChart() {
+                roundsContainer.innerHTML = '';
+                
+                for (let i = 0; i < gameState.maxRounds; i++) {
+                    const round = gameState.rounds[i];
+                    const roundEl = document.createElement('div');
+                    roundEl.className = 'round';
+                    
+                    const roundHeader = document.createElement('div');
+                    roundHeader.className = 'round-header';
+                    
+                    const roundTitle = document.createElement('div');
+                    roundTitle.className = 'round-title';
+                    roundTitle.textContent = `Round ${i + 1}`;
+                    
+                    const roundCount = document.createElement('div');
+                    roundCount.className = 'round-count';
+                    roundCount.textContent = `${round.numbers.length}/48 Balls`;
+                    
+                    roundHeader.appendChild(roundTitle);
+                    roundHeader.appendChild(roundCount);
+                    roundEl.appendChild(roundHeader);
+                    
+                    const roundNumbers = document.createElement('div');
+                    roundNumbers.className = 'round-numbers';
+                    
+                    round.numbers.forEach(number => {
+                        const numberEl = document.createElement('div');
+                        numberEl.className = 'round-number';
+                        numberEl.textContent = number;
+                        
+                        // Check if this number is in the last four of its round
+                        if (round.lastFour.includes(number)) {
+                            numberEl.classList.add('last-four');
+                        } else {
+                            numberEl.classList.add('called');
+                        }
+                        
+                        roundNumbers.appendChild(numberEl);
+                    });
+                    
+                    roundEl.appendChild(roundNumbers);
+                    roundsContainer.appendChild(roundEl);
+                }
             }
 
             // Generate a random Bingo card
@@ -988,7 +1327,7 @@
                             else if (patternType === 'four-corners') badgeText = 'C';
                             else if (patternType === 'diagonal1') badgeText = 'D1';
                             else if (patternType === 'diagonal2') badgeText = 'D2';
-                            else if (patternType === 'chess-pattern') badgeText = 'CH';
+                            else if (patternType === 'empty-cross') badgeText = 'X';
                             patternBadge.textContent = badgeText;
                             patternBadge.title = card.winningPatterns[0].name;
                             cardEl.appendChild(patternBadge);
@@ -1040,9 +1379,9 @@
                             winningPatterns.diagonal2.getWinningCells(p).some(wc => wc.col === col && wc.row === row)
                         );
                         
-                        const isChessWin = card.winningPatterns.some(p => 
-                            p.type === 'chess-pattern' && 
-                            winningPatterns.chess.getWinningCells(p).some(wc => wc.col === col && wc.row === row)
+                        const isEmptyCrossWin = card.winningPatterns.some(p => 
+                            p.type === 'empty-cross' && 
+                            winningPatterns.emptyCross.getWinningCells(p).some(wc => wc.col === col && wc.row === row)
                         );
 
                         if (number === 'FREE') {
@@ -1055,8 +1394,8 @@
                             cell.classList.add('diagonal1-win');
                         } else if (isDiagonal2Win) {
                             cell.classList.add('diagonal2-win');
-                        } else if (isChessWin) {
-                            cell.classList.add('chess-win');
+                        } else if (isEmptyCrossWin) {
+                            cell.classList.add('empty-cross-win');
                         } else if (card.marked.has(number)) {
                             cell.classList.add('marked');
                         }
@@ -1072,12 +1411,42 @@
             // Call a number
             function callNumber(number) {
                 if (gameState.calledNumbers.has(number)) return;
+                
+                // Check if ball limit reached for current round
+                if (gameState.calledNumbers.size >= gameState.maxBalls) {
+                    // Move to next round
+                    if (gameState.currentRound < gameState.maxRounds) {
+                        gameState.currentRound++;
+                        gameState.calledNumbers.clear();
+                        gameState.calledHistory = [];
+                        gameState.lastFourBalls = [];
+                    } else {
+                        return; // All rounds completed
+                    }
+                }
 
                 gameState.calledNumbers.add(number);
                 gameState.calledHistory.push(number); // Add to history for undo
 
+                // Update current round numbers
+                const currentRoundData = gameState.rounds[gameState.currentRound - 1];
+                currentRoundData.numbers.push(number);
+                
+                // Update last four balls for current round
+                currentRoundData.lastFour.push(number);
+                if (currentRoundData.lastFour.length > 4) {
+                    currentRoundData.lastFour.shift(); // Remove the oldest ball if we have more than 4
+                }
+
+                // Update last four balls for display
+                gameState.lastFourBalls.push(number);
+                if (gameState.lastFourBalls.length > 4) {
+                    gameState.lastFourBalls.shift(); // Remove the oldest ball if we have more than 4
+                }
+
                 updateCalledNumbers();
                 updateKeyboard();
+                updateRoundsChart();
 
                 // Update undo button state
                 undoBtn.disabled = false;
@@ -1096,11 +1465,31 @@
                 const lastCalled = gameState.calledHistory.pop();
                 gameState.calledNumbers.delete(lastCalled);
 
+                // Remove from current round
+                const currentRoundData = gameState.rounds[gameState.currentRound - 1];
+                const roundIndex = currentRoundData.numbers.indexOf(lastCalled);
+                if (roundIndex !== -1) {
+                    currentRoundData.numbers.splice(roundIndex, 1);
+                }
+
+                // Remove from last four balls of current round
+                const lastFourIndex = currentRoundData.lastFour.indexOf(lastCalled);
+                if (lastFourIndex !== -1) {
+                    currentRoundData.lastFour.splice(lastFourIndex, 1);
+                }
+
+                // Remove from display last four balls
+                const displayLastFourIndex = gameState.lastFourBalls.indexOf(lastCalled);
+                if (displayLastFourIndex !== -1) {
+                    gameState.lastFourBalls.splice(displayLastFourIndex, 1);
+                }
+
                 // Update undo button state
                 undoBtn.disabled = gameState.calledHistory.length === 0;
 
                 updateCalledNumbers();
                 updateKeyboard();
+                updateRoundsChart();
 
                 // Update cards
                 updateCards();
@@ -1117,11 +1506,13 @@
                 calledCountEl.textContent = gameState.calledNumbers.size;
             }
 
-            // Update all cards
+            // Update all cards - FIXED: Winning cards stay visible in their respective sections
             function updateCards() {
+                // Clear all containers first
                 cardsContainerEl.innerHTML = '';
                 winningCardsContainer.innerHTML = '';
                 multiWinningCardsContainer.innerHTML = '';
+                
                 let markedCellsCount = 0;
 
                 // Separate winning and non-winning cards
@@ -1143,6 +1534,10 @@
                         }
                     });
 
+                    // Count marked cells
+                    markedCellsCount += card.marked.size;
+                    if (card.marked.has('FREE')) markedCellsCount--; // Don't count FREE space
+
                     // Separate winning and non-winning cards
                     if (card.hasBingo) {
                         if (card.isMultiPattern) {
@@ -1153,10 +1548,6 @@
                     } else {
                         nonWinningCards.push(card);
                     }
-
-                    // Count marked cells
-                    markedCellsCount += card.marked.size;
-                    if (card.marked.has('FREE')) markedCellsCount--; // Don't count FREE space
                 });
 
                 // Display multi-winning cards in a special section at the top
@@ -1189,6 +1580,13 @@
 
                 markedCellsEl.textContent = markedCellsCount;
                 cardsInPlayEl.textContent = gameState.cards.length;
+
+                // Auto-scroll functionality - show scrollbar if more than 6 cards
+                if (gameState.cards.length > 6) {
+                    cardsScrollContainer.style.overflowY = 'auto';
+                } else {
+                    cardsScrollContainer.style.overflowY = 'hidden';
+                }
             }
 
             // Check for bingos - automatically detect patterns based on current setting
@@ -1214,7 +1612,8 @@
                             if (patternResult) {
                                 allWinningPatterns.push({
                                     name: winningPatterns[patternName].name,
-                                    type: patternResult.type
+                                    type: patternResult.type,
+                                    result: patternResult
                                 });
 
                                 // Add all winning cells to the set
@@ -1250,7 +1649,7 @@
                 singleBingoCountEl.textContent = gameState.singleBingos;
                 multiBingoCountEl.textContent = gameState.multiBingos;
 
-                // Update cards display to show winning cards on top
+                // Update cards display to show winning cards in their respective sections
                 updateCards();
             }
 
@@ -1261,6 +1660,17 @@
                 // Clear existing cards
                 gameState.cards = [];
                 gameState.nextCardId = 1;
+                gameState.currentRound = 1;
+                gameState.calledNumbers.clear();
+                gameState.calledHistory = [];
+                gameState.lastFourBalls = [];
+                
+                // Reset rounds
+                gameState.rounds = [];
+                for (let i = 0; i < gameState.maxRounds; i++) {
+                    gameState.rounds.push({ numbers: [], lastFour: [] });
+                }
+                
                 cardsContainerEl.innerHTML = '';
                 winningCardsContainer.innerHTML = '';
                 multiWinningCardsContainer.innerHTML = '';
@@ -1277,6 +1687,7 @@
                 updateCards();
                 updateCalledNumbers();
                 updateKeyboard();
+                updateRoundsChart();
             }
 
             // Reset the game
@@ -1287,6 +1698,14 @@
                 gameState.singleBingos = 0;
                 gameState.multiBingos = 0;
                 gameState.nextCardId = 1;
+                gameState.currentRound = 1;
+                gameState.lastFourBalls = [];
+                
+                // Reset rounds
+                gameState.rounds = [];
+                for (let i = 0; i < gameState.maxRounds; i++) {
+                    gameState.rounds.push({ numbers: [], lastFour: [] });
+                }
 
                 // Reset UI
                 initializeKeyboard();
@@ -1300,7 +1719,14 @@
                 markedCellsEl.textContent = '0';
                 singleBingoCountEl.textContent = '0';
                 multiBingoCountEl.textContent = '0';
+                ballsRemainingEl.textContent = '48';
+                currentRoundEl.textContent = '1';
+                ballLimitWarning.style.display = 'none';
                 undoBtn.disabled = true;
+                updateRoundsChart();
+                
+                // Reset scroll container
+                cardsScrollContainer.style.overflowY = 'hidden';
             }
 
             // Set winning pattern
@@ -1312,11 +1738,37 @@
                 patternCornersBtn.classList.toggle('active', pattern === 'corners');
                 patternDiagonal1Btn.classList.toggle('active', pattern === 'diagonal1');
                 patternDiagonal2Btn.classList.toggle('active', pattern === 'diagonal2');
-                patternChessBtn.classList.toggle('active', pattern === 'chess');
+                patternEmptyCrossBtn.classList.toggle('active', pattern === 'emptyCross');
                 patternAllBtn.classList.toggle('active', pattern === 'all');
 
                 // Recheck bingos with new pattern
                 checkBingos();
+            }
+
+            // Another Round button functionality
+            function anotherRound() {
+                // Save current called numbers to current round
+                const currentRoundData = gameState.rounds[gameState.currentRound - 1];
+                currentRoundData.numbers = [...gameState.calledNumbers];
+                currentRoundData.lastFour = [...gameState.lastFourBalls];
+                
+                // Move to next round
+                if (gameState.currentRound < gameState.maxRounds) {
+                    gameState.currentRound++;
+                    gameState.calledNumbers.clear();
+                    gameState.calledHistory = [];
+                    gameState.lastFourBalls = [];
+                    
+                    // Update displays
+                    updateCalledNumbers();
+                    updateKeyboard();
+                    updateRoundsChart();
+                    
+                    // Show confirmation
+                    alert(`Round ${gameState.currentRound - 1} saved! Starting Round ${gameState.currentRound}.`);
+                } else {
+                    alert('All rounds completed! Reset the game to start over.');
+                }
             }
 
             // Keyboard event listener for number keys
@@ -1353,6 +1805,7 @@
             // Event listeners for buttons
             generateCardsBtn.addEventListener('click', generateCards);
             resetGameBtn.addEventListener('click', resetGame);
+            anotherRoundBtn.addEventListener('click', anotherRound);
             undoBtn.addEventListener('click', undoLastCall);
 
             // Pattern button event listeners
@@ -1360,7 +1813,7 @@
             patternCornersBtn.addEventListener('click', () => setWinningPattern('corners'));
             patternDiagonal1Btn.addEventListener('click', () => setWinningPattern('diagonal1'));
             patternDiagonal2Btn.addEventListener('click', () => setWinningPattern('diagonal2'));
-            patternChessBtn.addEventListener('click', () => setWinningPattern('chess'));
+            patternEmptyCrossBtn.addEventListener('click', () => setWinningPattern('emptyCross'));
             patternAllBtn.addEventListener('click', () => setWinningPattern('all'));
 
             // Limit card count input to max 100
@@ -1375,6 +1828,7 @@
             // Initialize the game
             initializeKeyboard();
             generateCards();
+            updateRoundsChart();
         });
     </script>
 </body>
