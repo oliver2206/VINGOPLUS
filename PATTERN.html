@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Position-Based Bingo Card Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: #4a00e0;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            background: #8e2de2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        button.secondary {
+            background: #3498db;
+        }
+        
+        button.secondary:hover {
+            background: #2980b9;
+        }
+        
+        .card-input-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-input-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+        
+        .bingo-input-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .input-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-weight: bold;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .input-cell.header {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .input-cell.header.B {
+            background: #e74c3c;
+        }
+        
+        .input-cell.header.I {
+            background: #3498db;
+        }
+        
+        .input-cell.header.N {
+            background: #2ecc71;
+        }
+        
+        .input-cell.header.G {
+            background: #f39c12;
+        }
+        
+        .input-cell.header.O {
+            background: #9b59b6;
+        }
+        
+        .input-cell.colored {
+            background: #4a00e0;
+            color: white;
+        }
+        
+        .input-cell.colored input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            font-size: 1rem;
+        }
+        
+        .input-cell.colored input::placeholder {
+            color: #ccc;
+        }
+        
+        .input-cell.colored input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .input-cell.white {
+            background: white;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: #6c757d;
+        }
+        
+        .input-cell.free {
+            background: #ffd700;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .bingo-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px;
+            color: #333;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .bingo-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: bold;
+            border-bottom: 2px solid #4a00e0;
+            padding-bottom: 5px;
+        }
+        
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+        
+        .bingo-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-weight: bold;
+            border: 1px solid #dee2e6;
+            transition: all 0.2s ease;
+        }
+        
+        .bingo-cell.header {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .bingo-cell.header.B {
+            background: #e74c3c;
+        }
+        
+        .bingo-cell.header.I {
+            background: #3498db;
+        }
+        
+        .bingo-cell.header.N {
+            background: #2ecc71;
+        }
+        
+        .bingo-cell.header.G {
+            background: #f39c12;
+        }
+        
+        .bingo-cell.header.O {
+            background: #9b59b6;
+        }
+        
+        .bingo-cell.user-number {
+            background: #4a00e0;
+            color: white;
+            border: 2px solid #8e2de2;
+        }
+        
+        .bingo-cell.generated {
+            background: white;
+            color: #333;
+        }
+        
+        .bingo-cell.free {
+            background: #ffd700;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .instructions h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        
+        .instructions ul {
+            list-style-position: inside;
+            margin-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .card-count {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+        
+        .card-count input {
+            width: 80px;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+        }
+        
+        .legend-user {
+            background: #4a00e0;
+        }
+        
+        .legend-generated {
+            background: white;
+        }
+        
+        .legend-free {
+            background: #ffd700;
+        }
+        
+        @media (max-width: 768px) {
+            .bingo-input-grid {
+                max-width: 350px;
+                gap: 5px;
+                padding: 10px;
+            }
+            .cards-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            .bingo-input-grid {
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Position-Based Bingo Card Generator</h1>
+            <p class="subtitle">Enter your numbers in purple boxes, we'll generate the white boxes!</p>
+        </header>
+        <div class="controls"><button id="generateCards">Generate Cards</button><button id="reshuffleCards" class="secondary">Reshuffle Cards</button><button id="resetInputs">Reset Inputs</button>
+            <div class="card-count"><label for="cardCount">Cards to generate:</label><input type="number" id="cardCount" min="1" max="10" value="3"></div>
+        </div>
+        <div class="card-input-section">
+            <h2>Enter Your Numbers (Purple Boxes Only)</h2>
+            <div class="bingo-input-grid" id="bingoInputGrid">
+                <!-- Input grid will be generated here -->
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color legend-user"></div><span>Your Numbers</span></div>
+                <div class="legend-item">
+                    <div class="legend-color legend-generated"></div><span>Auto-generated</span></div>
+                <div class="legend-item">
+                    <div class="legend-color legend-free"></div><span>FREE Space</span></div>
+            </div>
+        </div>
+        <div class="cards-container" id="cardsContainer">
+            <!-- Generated cards will appear here -->
+        </div>
+        <div class="instructions">
+            <h2>How to Use</h2>
+            <ul>
+                <li><strong>Purple Boxes:</strong>Enter your chosen numbers in the exact positions you want them</li>
+                <li><strong>White Boxes:</strong>The system will automatically generate valid numbers for these positions</li>
+                <li><strong>FREE Space:</strong>The center cell (N column, 3rd row) is always FREE and cannot be changed</li>
+                <li><strong>B Column:</strong>Numbers 1-15 | <strong>I Column:</strong>Numbers 16-30</li>
+                <li><strong>N Column:</strong>Numbers 31-45 | <strong>G Column:</strong>Numbers 46-60</li>
+                <li><strong>O Column:</strong>Numbers 61-75</li>
+                <li>Click "Generate Cards" to create multiple cards with your fixed numbers in the same positions</li>
+                <li><strong>Your numbers (purple) stay the same across all cards,
+only auto-generated numbers (white) change</strong></li>
+                <li><strong>Click "Reshuffle Cards" to generate new auto-generated numbers while keeping your numbers in place</strong></li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+                // DOM elements
+                const bingoInputGridEl = document.getElementById('bingoInputGrid');
+                const cardsContainerEl = document.getElementById('cardsContainer');
+                const generateCardsBtn = document.getElementById('generateCards');
+                const reshuffleCardsBtn = document.getElementById('reshuffleCards');
+                const resetInputsBtn = document.getElementById('resetInputs');
+                const cardCountInput = document.getElementById('cardCount');
+                // Bingo column ranges
+                const columnRanges = {
+                    'B': {
+                        min: 1,
+                        max: 15
+                    },
+                    'I': {
+                        min: 16,
+                        max: 30
+                    },
+                    'N': {
+                        min: 31,
+                        max: 45
+                    },
+                    'G': {
+                        min: 46,
+                        max: 60
+                    },
+                    'O': {
+                        min: 61,
+                        max: 75
+                    }
+                };
+                // Define which cells are colored (user input) vs white (generated)
+                // Based on your screenshot: positions where you placed your numbers
+                const coloredPositions = [
+                    [0, 0], // B1 - 2
+                    [0, 2], // B3 - 2
+                    [0, 4], // B5 - 9
+                    [1, 1], // I2 - 17
+                    [1, 3], // I4 - 24
+                    [2, 0], // N1 - 32
+                    [2, 4], // N5 - 36
+                    [3, 1], // G2 - 46
+                    [3, 3], // G4 - 47
+                    [4, 0], // O1 - 62
+                    [4, 2], // O3 - 63
+                    [4, 4] // O5 - 64
+                ];
+                // Store current user numbers for reshuffling
+                let currentUserNumbers = {};
+                // Initialize input grid
+                function initializeInputGrid() {
+                    bingoInputGridEl.innerHTML = '';
+                    const headers = ['B', 'I', 'N', 'G', 'O'];
+                    // Create column headers
+                    headers.forEach(header => {
+                        const headerCell = document.createElement('div');
+                        headerCell.className = `input-cell header $ {
+                header
+            }
+            `;
+                        headerCell.textContent = header;
+                        bingoInputGridEl.appendChild(headerCell);
+                    });
+                    // Create 25 cells (5x5 grid)
+                    for (let row = 0; row < 5; row++) {
+                        for (let col = 0; col < 5; col++) {
+                            const cell = document.createElement('div');
+                            const isColored = coloredPositions.some(pos => pos[0] === col && pos[1] === row);
+                            const isFreeSpace = col === 2 && row === 2;
+                            if (isFreeSpace) {
+                                cell.className = 'input-cell free';
+                                cell.textContent = 'FREE';
+                            } else if (isColored) {
+                                cell.className = 'input-cell colored';
+                                const input = document.createElement('input');
+                                input.type = 'number';
+                                input.placeholder = '?';
+                                input.dataset.col = col;
+                                input.dataset.row = row;
+                                // Set range based on column
+                                const columnName = headers[col];
+                                input.min = columnRanges[columnName].min;
+                                input.max = columnRanges[columnName].max;
+                                input.placeholder = `$ {
+                        columnRanges[columnName].min
+                    }
+                    -$ {
+                        columnRanges[columnName].max
+                    }
+                    `;
+                                cell.appendChild(input);
+                            } else {
+                                cell.className = 'input-cell white';
+                                cell.textContent = 'Auto';
+                                cell.title = 'This will be auto-generated';
+                            }
+                            bingoInputGridEl.appendChild(cell);
+                        }
+                    }
+                }
+                // Get user input numbers with their positions
+                function getUserInputNumbers() {
+                    const userNumbers = {};
+                    coloredPositions.forEach(([col, row]) => {
+                        const input = bingoInputGridEl.querySelector(`input[data-col="${col}"][data-row="${row}"]`);
+                        if (input && input.value) {
+                            const number = parseInt(input.value);
+                            if (!isNaN(number)) {
+                                const key = `$ {
+                        col
+                    }
+                    , $ {
+                        row
+                    }
+                    `;
+                                userNumbers[key] = {
+                                    number: number,
+                                    col: col,
+                                    row: row
+                                };
+                            }
+                        }
+                    });
+                    return userNumbers;
+                }
+                // Generate random numbers for empty positions
+                function generateBingoCard(cardId, userNumbers) {
+                    const card = {
+                        id: cardId,
+                        numbers: [],
+                        userPositions: userNumbers
+                    };
+                    // Initialize empty 5x5 grid
+                    for (let col = 0; col < 5; col++) {
+                        card.numbers[col] = new Array(5).fill(null);
+                    }
+                    // Set FREE space
+                    card.numbers[2][2] = 'FREE';
+                    // Place user numbers in their fixed positions
+                    Object.values(userNumbers).forEach(({
+                        number,
+                        col,
+                        row
+                    }) => {
+                        card.numbers[col][row] = number;
+                    });
+                    // Generate numbers for empty positions
+                    const headers = ['B', 'I', 'N', 'G', 'O'];
+                    for (let col = 0; col < 5; col++) {
+                        const columnName = headers[col];
+                        const range = columnRanges[columnName];
+                        // Get existing numbers in this column
+                        const existingNumbers = [];
+                        for (let row = 0; row < 5; row++) {
+                            if (card.numbers[col][row] && card.numbers[col][row] !== 'FREE') {
+                                existingNumbers.push(card.numbers[col][row]);
+                            }
+                        }
+                        // Generate numbers for empty positions in this column
+                        for (let row = 0; row < 5; row++) {
+                            if (card.numbers[col][row] === null) {
+                                const newNumber = generateUniqueNumber(range, existingNumbers);
+                                card.numbers[col][row] = newNumber;
+                                existingNumbers.push(newNumber);
+                            }
+                        }
+                        // Sort the column (except FREE space)
+                        const columnNumbers = [];
+                        const freePosition = col === 2 ? 2 : -1; // N column has FREE at row 2
+                        for (let row = 0; row < 5; row++) {
+                            if (row !== freePosition) {
+                                columnNumbers.push(card.numbers[col][row]);
+                            }
+                        }
+                        columnNumbers.sort((a, b) => a - b);
+                        // Put sorted numbers back (skipping FREE space)
+                        let sortedIndex = 0;
+                        for (let row = 0; row < 5; row++) {
+                            if (row !== freePosition) {
+                                card.numbers[col][row] = columnNumbers[sortedIndex];
+                                sortedIndex++;
+                            }
+                        }
+                    }
+                    return card;
+                }
+                // Generate a unique number within range
+                function generateUniqueNumber(range, existingNumbers) {
+                    let newNumber;
+                    let attempts = 0;
+                    do {
+                        newNumber = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+                        attempts++;
+                        // Prevent infinite loop
+                        if (attempts > 100) {
+                            console.warn('Could not find unique number after 100 attempts');
+                            break;
+                        }
+                    }
+                    while (existingNumbers.includes(newNumber));
+                    return newNumber;
+                }
+                // Render a bingo card
+                function renderBingoCard(card) {
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'bingo-card';
+                    const headerEl = document.createElement('div');
+                    headerEl.className = 'card-header';
+                    headerEl.innerHTML = `<span>Card #$ {
+            card.id
+        }
+        </span>`;
+                    cardEl.appendChild(headerEl);
+                    const gridEl = document.createElement('div');
+                    gridEl.className = 'bingo-grid';
+                    // Column headers
+                    const headers = ['B', 'I', 'N', 'G', 'O'];
+                    headers.forEach(header => {
+                        const cell = document.createElement('div');
+                        cell.className = `bingo-cell header $ {
+                header
+            }
+            `;
+                        cell.textContent = header;
+                        gridEl.appendChild(cell);
+                    });
+                    // Card numbers (organized by rows)
+                    for (let row = 0; row < 5; row++) {
+                        for (let col = 0; col < 5; col++) {
+                            const cell = document.createElement('div');
+                            const number = card.numbers[col][row];
+                            cell.textContent = number;
+                            if (number === 'FREE') {
+                                cell.className = 'bingo-cell free';
+                            } else {
+                                const isUserNumber = card.userPositions[`$ {
+                        col
+                    }
+                    , $ {
+                        row
+                    }
+                    `] !== undefined;
+                                if (isUserNumber) {
+                                    cell.className = 'bingo-cell user-number';
+                                    cell.title = 'Your number';
+                                } else {
+                                    cell.className = 'bingo-cell generated';
+                                    cell.title = 'Auto-generated number';
+                                }
+                            }
+                            gridEl.appendChild(cell);
+                        }
+                    }
+                    cardEl.appendChild(gridEl);
+                    return cardEl;
+                }
+                // Generate multiple cards with consistent user numbers
+                function generateCards() {
+                    const cardCount = parseInt(cardCountInput.value) || 3;
+                    currentUserNumbers = getUserInputNumbers();
+                    // Validate user inputs
+                    if (!validateUserInputs(currentUserNumbers)) {
+                        return;
+                    }
+                    cardsContainerEl.innerHTML = '';
+                    // Generate all cards with the same user numbers
+                    for (let i = 1; i <= cardCount; i++) {
+                        const card = generateBingoCard(i, currentUserNumbers);
+                        const cardEl = renderBingoCard(card);
+                        cardsContainerEl.appendChild(cardEl);
+                    }
+                }
+                // Reshuffle existing cards with new auto-generated numbers
+                function reshuffleCards() {
+                    const cardCount = parseInt(cardCountInput.value) || 3;
+                    // If no cards exist yet, generate them first
+                    if (cardsContainerEl.children.length === 0) {
+                        generateCards();
+                        return;
+                    }
+                    cardsContainerEl.innerHTML = '';
+                    // Generate all cards with the same user numbers
+                    for (let i = 1; i <= cardCount; i++) {
+                        const card = generateBingoCard(i, currentUserNumbers);
+                        const cardEl = renderBingoCard(card);
+                        cardsContainerEl.appendChild(cardEl);
+                    }
+                }
+                // Validate user inputs
+                function validateUserInputs(userNumbers) {
+                    const headers = ['B', 'I', 'N', 'G', 'O'];
+                    for (const [position, data] of Object.entries(userNumbers)) {
+                        const [col, row] = position.split(',').map(Number);
+                        const columnName = headers[col];
+                        const range = columnRanges[columnName];
+                        const number = data.number;
+                        if (number < range.min || number > range.max) {
+                            alert(`Number $ {
+                    number
+                }
+                is not valid for $ {
+                    columnName
+                }
+                column ($ {
+                    range.min
+                }
+                -$ {
+                    range.max
+                }
+                )`);
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                // Reset all inputs
+                function resetInputs() {
+                    initializeInputGrid();
+                    cardsContainerEl.innerHTML = '';
+                    currentUserNumbers = {};
+                }
+                // Event listeners
+                generateCardsBtn.addEventListener('click', generateCards);
+                reshuffleCardsBtn.addEventListener('click', reshuffleCards);
+                resetInputsBtn.addEventListener('click', resetInputs);
+                // Limit card count input
+                cardCountInput.addEventListener('change', function() {
+                    if (this.value > 10) this.value = 10;
+                    if (this.value < 1) this.value = 1;
+                });
+                // Initialize the application
+                initializeInputGrid();
+            }
+
+        );
+    </script>
+</body>
+
+</html>
