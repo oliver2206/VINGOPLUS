@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -211,7 +211,7 @@
 
       <div style="margin:6px 0 10px 0;">
         <div class="master-grid" id="masterGrid" aria-label="Master Bingo inputs (optional)">
-          <!-- Create 25 master inputs (center will show FREE and be disabled) -->
+          <!-- 25 master inputs -->
           <!-- Row 1 -->
           <div class="master-cell"><input class="master-input" data-pos="r0c0" placeholder="B1" /></div>
           <div class="master-cell"><input class="master-input" data-pos="r0c1" placeholder="I1" /></div>
@@ -258,7 +258,6 @@
   </div>
 
   <script>
-    // Column ranges used for classic Bingo (B, I, N, G, O)
     const columnRanges = [
       {min:1, max:15},   // B
       {min:16, max:30},  // I
@@ -267,7 +266,6 @@
       {min:61, max:75}   // O
     ];
 
-    // Simple seeded RNG (mulberry32) and helpers
     function mulberry32(seed) {
       let a = seed >>> 0;
       return function() {
@@ -280,7 +278,6 @@
     }
 
     function seededShuffle(array, rand) {
-      // Fisher-Yates with provided random function (0..1)
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(rand() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
@@ -288,20 +285,17 @@
       return array;
     }
 
-    // Utility to create a numeric pool for a column
     function createRange(min, max) {
       const arr = [];
       for (let i = min; i <= max; i++) arr.push(i);
       return arr;
     }
 
-    // Read master inputs into a 5x5 matrix (strings). Center will be "FREE"
     function readMasterGrid() {
       const inputs = document.querySelectorAll('.master-input');
-      // create 5x5 array
       const grid = Array.from({length:5}, () => Array(5).fill(''));
       inputs.forEach(inp => {
-        const pos = inp.dataset.pos; // like r2c3
+        const pos = inp.dataset.pos;
         if (!pos) return;
         const m = pos.match(/^r(\d)c(\d)$/);
         if (!m) return;
@@ -309,42 +303,51 @@
         const c = parseInt(m[2],10);
         grid[r][c] = inp.disabled ? 'FREE' : (inp.value || '').trim();
       });
-      // Ensure center fixed
       grid[2][2] = 'FREE';
       return grid;
     }
 
-    // Generate a single card using master overrides and seeded RNG
+    // ✅ Updated generateCard function (no duplicate numbers per card)
     function generateCard(masterGrid, rand) {
-      // For each column, create a pool
       const pools = columnRanges.map(cr => createRange(cr.min, cr.max));
-      // Shuffle each pool for random draw order
       pools.forEach((p, idx) => seededShuffle(p, rand));
 
+      const usedNumbers = new Set();
       const card = Array.from({length:5}, () => Array(5).fill(''));
+
       for (let r = 0; r < 5; r++) {
         for (let c = 0; c < 5; c++) {
           if (r === 2 && c === 2) {
             card[r][c] = 'FREE';
             continue;
           }
+
           const override = masterGrid[r][c];
           if (override) {
-            // If user entered something, use it verbatim
-            card[r][c] = override;
+            if (override !== 'FREE' && !usedNumbers.has(override)) {
+              card[r][c] = override;
+              usedNumbers.add(override);
+            } else {
+              let val;
+              do {
+                val = pools[c].pop();
+              } while (usedNumbers.has(val) && pools[c].length > 0);
+              card[r][c] = String(val);
+              usedNumbers.add(val);
+            }
           } else {
-            // Draw a number for this column ensuring it hasn't been used already in this card column
-            // Pools are per-column and shuffled, so just pop the next available.
-            // Convert to string for display.
-            const val = pools[c].pop();
-            card[r][c] = val !== undefined ? String(val) : '';
+            let val;
+            do {
+              val = pools[c].pop();
+            } while (usedNumbers.has(val) && pools[c].length > 0);
+            card[r][c] = String(val);
+            usedNumbers.add(val);
           }
         }
       }
       return card;
     }
 
-    // Render cards into DOM
     function renderCards(cards) {
       const container = document.getElementById('cards');
       container.innerHTML = '';
@@ -357,68 +360,47 @@
 
         const gridEl = document.createElement('div');
         gridEl.className = 'grid';
-        // First, header row labels (render as header-like cells)
-        // But to keep grid alignment, we'll render the 25 cells directly.
         for (let r = 0; r < 5; r++) {
           for (let c = 0; c < 5; c++) {
             const cell = document.createElement('div');
-            // style classes
             cell.className = 'cell';
             if (r === 2 && c === 2) {
               cell.classList.add('free');
-              cell.setAttribute('aria-label', 'Free space');
             } else {
-              // Check if matches any master input (to show different style); but simpler: color auto/override
-              // If the value is non-numeric (user override text) or matches a master input, make it purple-ish
               const text = card[r][c];
-              // Try to detect whether original master input had a value: we cannot easily know now - so mark numbers as auto (white) and anything non-numeric or multi-char as input style
-              if (text && isNaN(Number(text))) {
-                cell.classList.add('input-cell');
-              } else {
-                cell.classList.add('auto-cell');
-              }
+              if (text && isNaN(Number(text))) cell.classList.add('input-cell');
+              else cell.classList.add('auto-cell');
             }
             cell.textContent = card[r][c];
             gridEl.appendChild(cell);
           }
         }
-
         cardEl.appendChild(gridEl);
         container.appendChild(cardEl);
       });
     }
 
-    // Hook up generate button
     document.getElementById('generateBtn').addEventListener('click', () => {
       const count = Math.max(1, Math.min(100, parseInt(document.getElementById('cardsCount').value || '1', 10)));
       const seedInput = (document.getElementById('seed').value || '').trim();
-      // Determine numeric seed
       let numericSeed;
       if (seedInput === '') {
-        // random seed
         numericSeed = Math.floor(Math.random() * 4294967295);
       } else {
-        // Hash the seed string to a 32-bit number (simple)
         numericSeed = cyrb53(seedInput) >>> 0;
       }
-      // create RNG
       const rand = mulberry32(numericSeed);
-
       const master = readMasterGrid();
-
       const cards = [];
       for (let i = 0; i < count; i++) {
-        // Use a derived seed per card so multiple cards vary predictably with the base seed
         const cardSeed = (numericSeed + i + 1) >>> 0;
         const cardRand = mulberry32(cardSeed);
         const card = generateCard(master, cardRand);
         cards.push(card);
       }
-
       renderCards(cards);
     });
 
-    // Simple string hash -> 32-bit number (cyrb53 variant)
     function cyrb53(str, seed = 0) {
       let h1 = 0xDEADBEEF ^ seed, h2 = 0x41C6CE57 ^ seed;
       for (let i = 0, ch; i < str.length; i++) {
@@ -431,10 +413,9 @@
       return 4294967296 * (2097151 & h2) + (h1 >>> 0);
     }
 
-    // Optionally, generate an initial set on load
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('generateBtn').click();
     });
   </script>
 </body>
-    </html>
+</html>
