@@ -56,6 +56,10 @@
     border-radius:10px;
     cursor:pointer;
     font-weight:600;
+    transition: background 0.2s;
+  }
+  button:hover{
+    background:#3a15b0;
   }
   .cards{
     margin-top:12px;
@@ -252,7 +256,11 @@
       <div><span class="swatch" style="background:var(--yellow)"></span> Free space</div>
     </div>
 
-    <div class="cards" id="cards" aria-live="polite"></div>
+    <div class="cards" id="cards" aria-live="polite">
+      <div style="width:100%;text-align:center;padding:40px;color:#fff;font-style:italic;">
+        Click "Generate" to create your Bingo cards
+      </div>
+    </div>
 
     <div class="footer-note">Enter values into the master grid (optional). Leave blank to auto-fill numbers automatically from each column's range. Then click Generate.</div>
   </div>
@@ -307,50 +315,75 @@
       return grid;
     }
 
-    // ✅ Updated generateCard function (no duplicate numbers per card)
-    function generateCard(masterGrid, rand) {
+    // Fixed generateCard function - ensures no duplicate numbers across all cards
+    function generateCards(masterGrid, count, rand) {
+      const cards = [];
+      const usedNumbers = new Set();
+      
+      // Create pools for each column
       const pools = columnRanges.map(cr => createRange(cr.min, cr.max));
       pools.forEach((p, idx) => seededShuffle(p, rand));
-
-      const usedNumbers = new Set();
-      const card = Array.from({length:5}, () => Array(5).fill(''));
-
-      for (let r = 0; r < 5; r++) {
-        for (let c = 0; c < 5; c++) {
-          if (r === 2 && c === 2) {
-            card[r][c] = 'FREE';
-            continue;
-          }
-
-          const override = masterGrid[r][c];
-          if (override) {
-            if (override !== 'FREE' && !usedNumbers.has(override)) {
-              card[r][c] = override;
-              usedNumbers.add(override);
-            } else {
-              let val;
-              do {
-                val = pools[c].pop();
-              } while (usedNumbers.has(val) && pools[c].length > 0);
-              card[r][c] = String(val);
-              usedNumbers.add(val);
+      
+      // Track available numbers per column
+      const availableNumbers = pools.map(pool => [...pool]);
+      
+      for (let cardIndex = 0; cardIndex < count; cardIndex++) {
+        const card = Array.from({length:5}, () => Array(5).fill(''));
+        
+        for (let r = 0; r < 5; r++) {
+          for (let c = 0; c < 5; c++) {
+            if (r === 2 && c === 2) {
+              card[r][c] = 'FREE';
+              continue;
             }
-          } else {
-            let val;
-            do {
-              val = pools[c].pop();
-            } while (usedNumbers.has(val) && pools[c].length > 0);
-            card[r][c] = String(val);
-            usedNumbers.add(val);
+            
+            const override = masterGrid[r][c];
+            if (override && override !== 'FREE') {
+              // Use the override value if available and not already used
+              if (!usedNumbers.has(override)) {
+                card[r][c] = override;
+                usedNumbers.add(override);
+              } else {
+                // Find an available number from the column
+                let val;
+                while (availableNumbers[c].length > 0) {
+                  val = availableNumbers[c].shift();
+                  if (!usedNumbers.has(val)) {
+                    card[r][c] = String(val);
+                    usedNumbers.add(val);
+                    break;
+                  }
+                }
+              }
+            } else {
+              // Find an available number from the column
+              let val;
+              while (availableNumbers[c].length > 0) {
+                val = availableNumbers[c].shift();
+                if (!usedNumbers.has(val)) {
+                  card[r][c] = String(val);
+                  usedNumbers.add(val);
+                  break;
+                }
+              }
+            }
           }
         }
+        cards.push(card);
       }
-      return card;
+      
+      return cards;
     }
 
     function renderCards(cards) {
       const container = document.getElementById('cards');
       container.innerHTML = '';
+      
+      if (cards.length === 0) {
+        container.innerHTML = '<div style="width:100%;text-align:center;padding:40px;color:#fff;font-style:italic;">Click "Generate" to create your Bingo cards</div>';
+        return;
+      }
+      
       cards.forEach((card, idx) => {
         const cardEl = document.createElement('div');
         cardEl.className = 'card';
@@ -391,13 +424,9 @@
       }
       const rand = mulberry32(numericSeed);
       const master = readMasterGrid();
-      const cards = [];
-      for (let i = 0; i < count; i++) {
-        const cardSeed = (numericSeed + i + 1) >>> 0;
-        const cardRand = mulberry32(cardSeed);
-        const card = generateCard(master, cardRand);
-        cards.push(card);
-      }
+      
+      // Generate all cards at once to ensure no duplicates across cards
+      const cards = generateCards(master, count, rand);
       renderCards(cards);
     });
 
@@ -413,9 +442,7 @@
       return 4294967296 * (2097151 & h2) + (h1 >>> 0);
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('generateBtn').click();
-    });
+    // Removed the automatic generation on page load
   </script>
 </body>
 </html>
