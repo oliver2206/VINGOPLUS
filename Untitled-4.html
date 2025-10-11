@@ -579,7 +579,7 @@
             background: #dc3545;
         }
         
-        /* Edit Card Modal */
+        /* Edit Card Modal - IMPROVED */
         .modal {
             display: none;
             position: fixed;
@@ -598,7 +598,7 @@
             border-radius: 10px;
             padding: 20px;
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
             color: #333;
@@ -631,6 +631,28 @@
             color: #dc3545;
         }
         
+        .edit-instructions {
+            background: #e7f3ff;
+            border-left: 4px solid #4a00e0;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .edit-instructions h4 {
+            color: #4a00e0;
+            margin-bottom: 5px;
+        }
+        
+        .edit-instructions ul {
+            padding-left: 20px;
+        }
+        
+        .edit-instructions li {
+            margin-bottom: 5px;
+        }
+        
         .edit-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -649,6 +671,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
+            position: relative;
         }
         
         .edit-cell:hover {
@@ -658,6 +681,7 @@
         .edit-cell.free {
             background: #ffc107;
             color: #000;
+            cursor: default;
         }
         
         .edit-cell.editing {
@@ -665,23 +689,74 @@
             color: white;
         }
         
-        .number-input {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+        .edit-cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1rem;
+            outline: none;
+            color: inherit;
         }
         
-        .number-input input {
-            flex: 1;
-            padding: 10px;
+        .edit-cell input:focus {
+            background: #e9ecef;
+            color: #333;
+        }
+        
+        .quick-input-section {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .quick-input-section h3 {
+            margin-bottom: 10px;
+            color: #4a00e0;
+            font-size: 1.1rem;
+        }
+        
+        .quick-input-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        
+        .quick-input-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
             border-radius: 5px;
             border: 1px solid #dee2e6;
-            font-size: 1rem;
+            font-size: 0.8rem;
             text-align: center;
+            padding: 10px 5px;
         }
         
-        .number-input button {
-            padding: 10px 20px;
+        .quick-input-cell .column-title {
+            font-weight: bold;
+            color: #4a00e0;
+            margin-bottom: 8px;
+        }
+        
+        .quick-input-cell input {
+            width: 100%;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            padding: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .quick-input-cell input:focus {
+            border-color: #4a00e0;
+            outline: none;
         }
         
         .modal-actions {
@@ -726,6 +801,38 @@
         
         .card-action-btn.delete:hover {
             background: #c82333;
+        }
+        
+        .validation-message {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .validation-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .validation-message.success {
+            background: #d1edff;
+            color: #0c5460;
+            border: 1px solid #b8daff;
+        }
+        
+        .column-ranges {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .column-range {
+            text-align: center;
+            flex: 1;
         }
         
         @keyframes t-pattern-pulse {
@@ -967,6 +1074,9 @@
             .cards-scroll-container {
                 max-height: 500px;
             }
+            .quick-input-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
         
         @media (max-width: 480px) {
@@ -982,6 +1092,9 @@
             }
             .cards-scroll-container {
                 max-height: 400px;
+            }
+            .quick-input-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -1092,21 +1205,47 @@
         </div>
     </div>
 
-    <!-- Edit Card Modal -->
+    <!-- Edit Card Modal - IMPROVED -->
     <div id="editCardModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title" id="modalTitle">Create Bingo Card</div>
                 <button class="close-btn" id="closeModal">×</button>
             </div>
+            
+            <div class="edit-instructions">
+                <h4>How to Create Your Bingo Card:</h4>
+                <ul>
+                    <li><strong>Option 1:</strong> Use the Quick Column Input below to easily type numbers for each column</li>
+                    <li><strong>Option 2:</strong> Click on any white cell in the grid to edit it directly</li>
+                    <li><strong>Auto-Fill:</strong> Use the Auto-Fill button to automatically fill empty cells with valid numbers</li>
+                    <li><strong>Column Ranges:</strong> B(1-15), I(16-30), N(31-45), G(46-60), O(61-75)</li>
+                </ul>
+            </div>
+            
+            <div class="column-ranges">
+                <div class="column-range">B: 1-15</div>
+                <div class="column-range">I: 16-30</div>
+                <div class="column-range">N: 31-45</div>
+                <div class="column-range">G: 46-60</div>
+                <div class="column-range">O: 61-75</div>
+            </div>
+            
+            <div class="quick-input-section">
+                <h3>Quick Column Input (Easiest Method)</h3>
+                <div class="quick-input-grid" id="quickInputGrid">
+                    <!-- Quick input fields will be generated here -->
+                </div>
+            </div>
+            
             <div class="edit-grid" id="editGrid">
                 <!-- Editable grid will be generated here -->
             </div>
-            <div class="number-input">
-                <input type="number" id="numberInput" min="1" max="75" placeholder="Enter number (1-75)">
-                <button id="setNumber">Set Number</button>
-            </div>
+            
+            <div id="validationMessage" class="validation-message" style="display: none;"></div>
+            
             <div class="modal-actions">
+                <button id="autoFillBtn">Auto-Fill Empty Cells</button>
                 <button id="saveCard" class="another-round-btn">Save Card</button>
                 <button id="cancelEdit" class="undo-btn">Cancel</button>
             </div>
@@ -1130,8 +1269,7 @@
                 currentRound: 1,
                 maxRounds: 30,
                 rounds: [],
-                editingCard: null,
-                editingCell: null
+                editingCard: null
             };
 
             // Initialize rounds array
@@ -1387,11 +1525,12 @@
             const editCardModal = document.getElementById('editCardModal');
             const modalTitle = document.getElementById('modalTitle');
             const editGrid = document.getElementById('editGrid');
-            const numberInput = document.getElementById('numberInput');
-            const setNumberBtn = document.getElementById('setNumber');
+            const quickInputGrid = document.getElementById('quickInputGrid');
+            const validationMessage = document.getElementById('validationMessage');
             const saveCardBtn = document.getElementById('saveCard');
             const cancelEditBtn = document.getElementById('cancelEdit');
             const closeModalBtn = document.getElementById('closeModal');
+            const autoFillBtn = document.getElementById('autoFillBtn');
 
             // Initialize the keyboard
             function initializeKeyboard() {
@@ -2092,13 +2231,76 @@
                 editCard(card);
             }
 
-            // Edit a card
+            // Edit a card - IMPROVED with easier input
             function editCard(card) {
                 gameState.editingCard = card;
                 modalTitle.textContent = card.isCustom ? `Edit Card #${card.id}` : 'Create Bingo Card';
                 
                 // Clear the edit grid
                 editGrid.innerHTML = '';
+                quickInputGrid.innerHTML = '';
+                
+                // Create column headers for quick input
+                const columnRanges = [
+                    { name: 'B', min: 1, max: 15 },
+                    { name: 'I', min: 16, max: 30 },
+                    { name: 'N', min: 31, max: 45 },
+                    { name: 'G', min: 46, max: 60 },
+                    { name: 'O', min: 61, max: 75 }
+                ];
+                
+                // Create quick input fields for each column - EASIER TO USE
+                columnRanges.forEach((range, colIndex) => {
+                    const quickInputCell = document.createElement('div');
+                    quickInputCell.className = 'quick-input-cell';
+                    
+                    const columnTitle = document.createElement('div');
+                    columnTitle.className = 'column-title';
+                    columnTitle.textContent = `${range.name} (${range.min}-${range.max})`;
+                    quickInputCell.appendChild(columnTitle);
+                    
+                    // Create 5 input fields for this column
+                    for (let rowIndex = 0; rowIndex < 5; rowIndex++) {
+                        const input = document.createElement('input');
+                        input.type = 'number';
+                        input.min = range.min;
+                        input.max = range.max;
+                        input.placeholder = `Row ${rowIndex+1}`;
+                        
+                        // Set current value if exists
+                        const currentValue = card.numbers[colIndex][rowIndex];
+                        if (currentValue && currentValue !== 'FREE') {
+                            input.value = currentValue;
+                        }
+                        
+                        input.addEventListener('input', (e) => {
+                            const value = e.target.value;
+                            if (value === '' || (value >= range.min && value <= range.max)) {
+                                card.numbers[colIndex][rowIndex] = value === '' ? '' : parseInt(value);
+                                updateEditGridDisplay();
+                            } else {
+                                e.target.value = card.numbers[colIndex][rowIndex] || '';
+                            }
+                        });
+                        
+                        quickInputCell.appendChild(input);
+                    }
+                    
+                    quickInputGrid.appendChild(quickInputCell);
+                });
+                
+                // Create the visual edit grid
+                updateEditGridDisplay();
+                
+                // Show the modal
+                editCardModal.style.display = 'flex';
+                validateCard();
+            }
+
+            // Update the visual edit grid display
+            function updateEditGridDisplay() {
+                editGrid.innerHTML = '';
+                const card = gameState.editingCard;
                 
                 // Create column headers
                 const headers = ['B', 'I', 'N', 'G', 'O'];
@@ -2111,101 +2313,125 @@
                     editGrid.appendChild(headerCell);
                 }
                 
-                // Create editable cells
+                // Create visual cells
                 for (let row = 0; row < 5; row++) {
                     for (let col = 0; col < 5; col++) {
                         const cell = document.createElement('div');
                         cell.className = 'edit-cell';
-                        cell.dataset.col = col;
-                        cell.dataset.row = row;
                         
                         const number = card.numbers[col][row];
-                        cell.textContent = number;
                         
-                        if (number === 'FREE') {
+                        // Create input field for each cell
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = number || '';
+                        input.placeholder = 'Click to edit';
+                        
+                        // Make center cell (FREE space) read-only
+                        if (col === 2 && row === 2) {
+                            input.value = 'FREE';
+                            input.disabled = true;
                             cell.classList.add('free');
                         }
                         
-                        cell.addEventListener('click', () => {
-                            // Remove editing class from all cells
-                            document.querySelectorAll('.edit-cell.editing').forEach(c => {
-                                c.classList.remove('editing');
-                            });
-                            
-                            // Add editing class to clicked cell
-                            cell.classList.add('editing');
-                            gameState.editingCell = { col, row };
-                            
-                            // Set input value
-                            numberInput.value = number === 'FREE' ? '' : number;
+                        input.addEventListener('focus', () => {
+                            cell.style.background = '#4a00e0';
+                            cell.style.color = 'white';
                         });
                         
+                        input.addEventListener('blur', () => {
+                            if (input.value === '' || input.value === 'FREE') {
+                                cell.style.background = '#f8f9fa';
+                                cell.style.color = '#333';
+                            }
+                        });
+                        
+                        input.addEventListener('input', (e) => {
+                            const value = e.target.value;
+                            card.numbers[col][row] = value;
+                            validateCard();
+                        });
+                        
+                        cell.appendChild(input);
                         editGrid.appendChild(cell);
                     }
                 }
                 
-                // Show the modal
-                editCardModal.style.display = 'flex';
-                numberInput.focus();
+                validateCard();
             }
 
-            // Set number for the currently selected cell
-            function setNumber() {
-                if (!gameState.editingCell) return;
-                
-                const { col, row } = gameState.editingCell;
-                let value = numberInput.value.trim();
-                
-                // Handle free space
-                if (col === 2 && row === 2) {
-                    value = 'FREE';
-                } else if (value === '') {
-                    value = '';
-                } else {
-                    const num = parseInt(value);
-                    if (isNaN(num) || num < 1 || num > 75) {
-                        alert('Please enter a valid number between 1 and 75');
-                        return;
-                    }
-                    value = num;
-                }
-                
-                // Update the card
-                gameState.editingCard.numbers[col][row] = value;
-                
-                // Update the cell display
-                const cell = document.querySelector(`.edit-cell[data-col="${col}"][data-row="${row}"]`);
-                cell.textContent = value;
-                
-                if (value === 'FREE') {
-                    cell.classList.add('free');
-                } else {
-                    cell.classList.remove('free');
-                }
-                
-                // Clear the input
-                numberInput.value = '';
-                numberInput.focus();
-            }
-
-            // Save the edited card
-            function saveCard() {
-                // Validate the card
+            // Auto-fill empty cells with random valid numbers
+            function autoFillEmptyCells() {
                 const card = gameState.editingCard;
-                const ranges = [
-                    { min: 1, max: 15 },   // B
-                    { min: 16, max: 30 },  // I
-                    { min: 31, max: 45 },  // N
-                    { min: 46, max: 60 },  // G
-                    { min: 61, max: 75 }   // O
+                const columnRanges = [
+                    { min: 1, max: 15 },
+                    { min: 16, max: 30 },
+                    { min: 31, max: 45 },
+                    { min: 46, max: 60 },
+                    { min: 61, max: 75 }
                 ];
                 
+                for (let col = 0; col < 5; col++) {
+                    const range = columnRanges[col];
+                    const existingNumbers = [];
+                    
+                    // Collect existing numbers in this column
+                    for (let row = 0; row < 5; row++) {
+                        const number = card.numbers[col][row];
+                        if (number && number !== 'FREE') {
+                            existingNumbers.push(number);
+                        }
+                    }
+                    
+                    // Fill empty cells
+                    for (let row = 0; row < 5; row++) {
+                        if (card.numbers[col][row] === '' && !(col === 2 && row === 2)) {
+                            let newNumber;
+                            do {
+                                newNumber = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+                            } while (existingNumbers.includes(newNumber));
+                            
+                            card.numbers[col][row] = newNumber;
+                            existingNumbers.push(newNumber);
+                        }
+                    }
+                }
+                
+                // Update the quick input fields and display
+                updateQuickInputFromCard();
+                updateEditGridDisplay();
+            }
+
+            // Update quick input fields from card data
+            function updateQuickInputFromCard() {
+                const card = gameState.editingCard;
+                const inputs = quickInputGrid.querySelectorAll('input');
+                
+                inputs.forEach((input, index) => {
+                    const col = Math.floor(index / 5);
+                    const row = index % 5;
+                    const value = card.numbers[col][row];
+                    input.value = value && value !== 'FREE' ? value : '';
+                });
+            }
+
+            // Validate the card
+            function validateCard() {
+                const card = gameState.editingCard;
                 let isValid = true;
-                let errorMessage = '';
+                let errors = [];
+                
+                const columnRanges = [
+                    { name: 'B', min: 1, max: 15 },
+                    { name: 'I', min: 16, max: 30 },
+                    { name: 'N', min: 31, max: 45 },
+                    { name: 'G', min: 46, max: 60 },
+                    { name: 'O', min: 61, max: 75 }
+                ];
                 
                 // Check each column
                 for (let col = 0; col < 5; col++) {
-                    const range = ranges[col];
+                    const range = columnRanges[col];
                     const columnNumbers = [];
                     
                     for (let row = 0; row < 5; row++) {
@@ -2217,37 +2443,49 @@
                         // Check if cell is empty
                         if (number === '') {
                             isValid = false;
-                            errorMessage = `Please fill all cells. Empty cell at column ${['B','I','N','G','O'][col]}, row ${row + 1}`;
-                            break;
+                            errors.push(`Empty cell at ${range.name}${row + 1}`);
+                            continue;
                         }
                         
                         // Check if number is in valid range
                         if (number < range.min || number > range.max) {
                             isValid = false;
-                            errorMessage = `Number ${number} is not in the valid range for column ${['B','I','N','G','O'][col]} (${range.min}-${range.max})`;
-                            break;
+                            errors.push(`Number ${number} not in ${range.name} range (${range.min}-${range.max})`);
                         }
                         
                         // Check for duplicates in column
                         if (columnNumbers.includes(number)) {
                             isValid = false;
-                            errorMessage = `Duplicate number ${number} in column ${['B','I','N','G','O'][col]}`;
-                            break;
+                            errors.push(`Duplicate ${number} in ${range.name} column`);
                         }
                         
                         columnNumbers.push(number);
                     }
-                    
-                    if (!isValid) break;
                 }
                 
-                if (!isValid) {
-                    alert(errorMessage);
+                // Update validation message
+                if (errors.length > 0) {
+                    validationMessage.textContent = errors.join(', ');
+                    validationMessage.className = 'validation-message error';
+                    validationMessage.style.display = 'block';
+                } else {
+                    validationMessage.textContent = 'Card is valid and ready to save!';
+                    validationMessage.className = 'validation-message success';
+                    validationMessage.style.display = 'block';
+                }
+                
+                return isValid;
+            }
+
+            // Save the edited card
+            function saveCard() {
+                if (!validateCard()) {
+                    alert('Please fix validation errors before saving.');
                     return;
                 }
                 
                 // Mark as custom card
-                card.isCustom = true;
+                gameState.editingCard.isCustom = true;
                 
                 // Close modal and update display
                 closeModal();
@@ -2266,7 +2504,7 @@
             function closeModal() {
                 editCardModal.style.display = 'none';
                 gameState.editingCard = null;
-                gameState.editingCell = null;
+                validationMessage.style.display = 'none';
             }
 
             // Reset the game
@@ -2397,22 +2635,15 @@
             patternAllBtn.addEventListener('click', () => setWinningPattern('all'));
 
             // Modal event listeners
-            setNumberBtn.addEventListener('click', setNumber);
             saveCardBtn.addEventListener('click', saveCard);
             cancelEditBtn.addEventListener('click', closeModal);
             closeModalBtn.addEventListener('click', closeModal);
+            autoFillBtn.addEventListener('click', autoFillEmptyCells);
 
             // Close modal when clicking outside
             editCardModal.addEventListener('click', (e) => {
                 if (e.target === editCardModal) {
                     closeModal();
-                }
-            });
-
-            // Handle Enter key in number input
-            numberInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    setNumber();
                 }
             });
 
