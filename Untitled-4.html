@@ -100,6 +100,20 @@
             font-weight: bold;
         }
         
+        .preserve-cards {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+        
+        .preserve-cards input {
+            width: 20px;
+            height: 20px;
+        }
+        
         .keyboard {
             display: grid;
             grid-template-columns: repeat(15, 1fr);
@@ -311,6 +325,11 @@
             background: #9c27b0;
             color: white;
             animation: empty-cross-pulse 2s infinite;
+        }
+        
+        .bingo-cell.round-highlight {
+            box-shadow: 0 0 0 3px #ff6b6b;
+            animation: round-highlight-pulse 2s infinite;
         }
         
         .stats {
@@ -538,6 +557,17 @@
             padding: 4px;
             border-radius: 3px;
             background: rgba(0, 0, 0, 0.03);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .card-history-item:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        
+        .card-history-item.active {
+            background: rgba(23, 162, 184, 0.2);
+            border-left: 3px solid #17a2b8;
         }
         
         .card-history-round {
@@ -577,6 +607,75 @@
         
         .card-history-number.last-four {
             background: #dc3545;
+        }
+        
+        /* Card Label System */
+        .card-label-section {
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 5px;
+            border: 1px dashed #ddd;
+        }
+        
+        .card-label-input {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .card-label-input input {
+            flex: 1;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+        
+        .card-label-input button {
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            background: #17a2b8;
+        }
+        
+        .card-label-input button:hover {
+            background: #138496;
+        }
+        
+        .card-labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        
+        .card-label {
+            background: #6f42c1;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .card-label-remove {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.6rem;
+            padding: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-label-remove:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
         
         /* Edit Card Modal - IMPROVED */
@@ -925,6 +1024,18 @@
             }
         }
         
+        @keyframes round-highlight-pulse {
+            0% {
+                box-shadow: 0 0 0 3px #ff6b6b;
+            }
+            50% {
+                box-shadow: 0 0 0 3px #ff8e8e;
+            }
+            100% {
+                box-shadow: 0 0 0 3px #ff6b6b;
+            }
+        }
+        
         @keyframes celebrate {
             0% {
                 transform: scale(1);
@@ -1077,15 +1188,15 @@
             .quick-input-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
         }
         
         @media (max-width: 480px) {
             .keyboard {
                 grid-template-columns: repeat(5, 1fr);
-            }
-            .controls {
-                flex-direction: column;
-                align-items: center;
             }
             .undo-section {
                 flex-direction: column;
@@ -1114,6 +1225,10 @@
             <div class="card-count">
                 <label for="cardCount">Cards to generate:</label>
                 <input type="number" id="cardCount" min="1" max="500" value="6">
+            </div>
+            <div class="preserve-cards">
+                <input type="checkbox" id="preserveCustomCards" checked>
+                <label for="preserveCustomCards">Keep DIY Cards</label>
             </div>
         </div>
 
@@ -1269,7 +1384,9 @@
                 currentRound: 1,
                 maxRounds: 30,
                 rounds: [],
-                editingCard: null
+                editingCard: null,
+                selectedRoundHistory: null, // Track which round history is selected for highlighting
+                preserveCustomCards: true // Default to preserving custom cards
             };
 
             // Initialize rounds array
@@ -1504,6 +1621,7 @@
             const anotherRoundBtn = document.getElementById('anotherRound');
             const undoBtn = document.getElementById('undoBtn');
             const cardCountInput = document.getElementById('cardCount');
+            const preserveCustomCardsCheckbox = document.getElementById('preserveCustomCards');
             const calledCountEl = document.getElementById('calledCount');
             const cardsInPlayEl = document.getElementById('cardsInPlay');
             const markedCellsEl = document.getElementById('markedCells');
@@ -1644,7 +1762,8 @@
                     winningPatterns: [], // Store ALL winning patterns
                     winningCells: [],
                     roundHistory: [], // Track when patterns were completed in each round
-                    isCustom: false // Track if this is a custom card
+                    isCustom: false, // Track if this is a custom card
+                    labels: [] // Array to store card labels
                 };
 
                 // Bingo columns: B(1-15), I(16-30), N(31-45), G(46-60), O(61-75)
@@ -1698,7 +1817,8 @@
                     winningPatterns: [],
                     winningCells: [],
                     roundHistory: [],
-                    isCustom: true // Mark as custom card
+                    isCustom: true, // Mark as custom card
+                    labels: [] // Array to store card labels
                 };
 
                 // Initialize empty grid
@@ -1822,6 +1942,11 @@
                             winningPatterns.emptyCross.getWinningCells(p).some(wc => wc.col === col && wc.row === row)
                         );
 
+                        // Check if this cell was marked in the selected round history
+                        const isRoundHighlight = gameState.selectedRoundHistory && 
+                            gameState.selectedRoundHistory.cardId === card.id &&
+                            gameState.selectedRoundHistory.calledNumbers.includes(number);
+
                         if (number === 'FREE') {
                             cell.classList.add('free');
                         } else if (isTWin) {
@@ -1838,11 +1963,75 @@
                             cell.classList.add('marked');
                         }
 
+                        // Add round highlight if applicable
+                        if (isRoundHighlight) {
+                            cell.classList.add('round-highlight');
+                        }
+
                         gridEl.appendChild(cell);
                     }
                 }
 
                 cardEl.appendChild(gridEl);
+                
+                // Add card label section
+                const labelSection = document.createElement('div');
+                labelSection.className = 'card-label-section';
+                
+                const labelInput = document.createElement('div');
+                labelInput.className = 'card-label-input';
+                
+                const labelInputField = document.createElement('input');
+                labelInputField.type = 'text';
+                labelInputField.placeholder = 'Add a label...';
+                labelInputField.maxLength = 20;
+                
+                const addLabelBtn = document.createElement('button');
+                addLabelBtn.textContent = 'Add';
+                addLabelBtn.addEventListener('click', () => {
+                    const labelText = labelInputField.value.trim();
+                    if (labelText && !card.labels.includes(labelText)) {
+                        card.labels.push(labelText);
+                        labelInputField.value = '';
+                        updateCards(); // Re-render to show new label
+                    }
+                });
+                
+                labelInput.appendChild(labelInputField);
+                labelInput.appendChild(addLabelBtn);
+                labelSection.appendChild(labelInput);
+                
+                // Display existing labels
+                if (card.labels.length > 0) {
+                    const labelsContainer = document.createElement('div');
+                    labelsContainer.className = 'card-labels';
+                    
+                    card.labels.forEach((label, index) => {
+                        const labelEl = document.createElement('div');
+                        labelEl.className = 'card-label';
+                        
+                        const labelText = document.createElement('span');
+                        labelText.textContent = label;
+                        
+                        const removeBtn = document.createElement('button');
+                        removeBtn.className = 'card-label-remove';
+                        removeBtn.textContent = '×';
+                        removeBtn.title = 'Remove label';
+                        removeBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            card.labels.splice(index, 1);
+                            updateCards(); // Re-render to remove label
+                        });
+                        
+                        labelEl.appendChild(labelText);
+                        labelEl.appendChild(removeBtn);
+                        labelsContainer.appendChild(labelEl);
+                    });
+                    
+                    labelSection.appendChild(labelsContainer);
+                }
+                
+                cardEl.appendChild(labelSection);
                 
                 // Add card actions (edit and delete buttons)
                 const cardActions = document.createElement('div');
@@ -1871,9 +2060,32 @@
                     historyTitle.textContent = 'Round History';
                     historyEl.appendChild(historyTitle);
                     
-                    card.roundHistory.forEach(historyItem => {
+                    card.roundHistory.forEach((historyItem, index) => {
                         const historyItemEl = document.createElement('div');
                         historyItemEl.className = 'card-history-item';
+                        if (gameState.selectedRoundHistory && 
+                            gameState.selectedRoundHistory.cardId === card.id &&
+                            gameState.selectedRoundHistory.round === historyItem.round) {
+                            historyItemEl.classList.add('active');
+                        }
+                        
+                        historyItemEl.addEventListener('click', () => {
+                            // Toggle round highlight
+                            if (gameState.selectedRoundHistory && 
+                                gameState.selectedRoundHistory.cardId === card.id &&
+                                gameState.selectedRoundHistory.round === historyItem.round) {
+                                // If already selected, deselect it
+                                gameState.selectedRoundHistory = null;
+                            } else {
+                                // Select this round history
+                                gameState.selectedRoundHistory = {
+                                    cardId: card.id,
+                                    round: historyItem.round,
+                                    calledNumbers: historyItem.calledNumbers
+                                };
+                            }
+                            updateCards(); // Re-render to show/hide highlights
+                        });
                         
                         const roundInfo = document.createElement('div');
                         roundInfo.innerHTML = `<span class="card-history-round">Round ${historyItem.round}</span> <span class="card-history-pattern">${historyItem.pattern}</span>`;
@@ -2186,17 +2398,29 @@
                 updateCards();
             }
 
-            // Generate cards
+            // Generate cards - UPDATED to preserve custom cards
             function generateCards() {
                 const cardCount = Math.min(parseInt(cardCountInput.value), gameState.maxCards);
+                const preserveCustomCards = preserveCustomCardsCheckbox.checked;
 
-                // Clear existing cards
-                gameState.cards = [];
-                gameState.nextCardId = 1;
+                // Separate custom cards from generated cards
+                const customCards = gameState.cards.filter(card => card.isCustom);
+                const generatedCards = gameState.cards.filter(card => !card.isCustom);
+
+                // Clear only generated cards if preserve custom cards is checked
+                if (preserveCustomCards) {
+                    gameState.cards = customCards;
+                } else {
+                    gameState.cards = [];
+                    gameState.nextCardId = 1;
+                }
+
+                // Reset game state (except cards if preserving custom cards)
                 gameState.currentRound = 1;
                 gameState.calledNumbers.clear();
                 gameState.calledHistory = [];
                 gameState.lastFourBalls = [];
+                gameState.selectedRoundHistory = null;
                 
                 // Reset rounds
                 gameState.rounds = [];
@@ -2204,11 +2428,21 @@
                     gameState.rounds.push({ numbers: [], lastFour: [] });
                 }
                 
+                // Clear display containers
                 cardsContainerEl.innerHTML = '';
                 winningCardsContainer.innerHTML = '';
                 multiWinningCardsContainer.innerHTML = '';
                 winningCardsSection.style.display = 'none';
                 multiWinningCardsSection.style.display = 'none';
+
+                // Find the highest card ID to continue from
+                let highestId = 0;
+                gameState.cards.forEach(card => {
+                    if (card.id > highestId) {
+                        highestId = card.id;
+                    }
+                });
+                gameState.nextCardId = highestId + 1;
 
                 // Generate new cards
                 for (let i = 0; i < cardCount; i++) {
@@ -2221,6 +2455,13 @@
                 updateCalledNumbers();
                 updateKeyboard();
                 updateRoundsChart();
+
+                // Show message about preserved cards
+                if (preserveCustomCards && customCards.length > 0) {
+                    setTimeout(() => {
+                        alert(`Generated ${cardCount} new cards and preserved ${customCards.length} custom card${customCards.length === 1 ? '' : 's'}.`);
+                    }, 100);
+                }
             }
 
             // Create a new custom card
@@ -2517,6 +2758,7 @@
                 gameState.nextCardId = 1;
                 gameState.currentRound = 1;
                 gameState.lastFourBalls = [];
+                gameState.selectedRoundHistory = null;
                 
                 // Reset rounds
                 gameState.rounds = [];
@@ -2654,6 +2896,11 @@
                 } else if (this.value < 1) {
                     this.value = 1;
                 }
+            });
+
+            // Update preserve custom cards setting
+            preserveCustomCardsCheckbox.addEventListener('change', function() {
+                gameState.preserveCustomCards = this.checked;
             });
 
             // Initialize the game
