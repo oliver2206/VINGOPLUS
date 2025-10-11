@@ -514,6 +514,220 @@
             background: #218838;
         }
         
+        /* Card History Styles */
+        .card-history {
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 5px;
+            font-size: 0.8rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .card-history h4 {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #4a00e0;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 3px;
+        }
+        
+        .card-history-item {
+            margin-bottom: 5px;
+            padding: 4px;
+            border-radius: 3px;
+            background: rgba(0, 0, 0, 0.03);
+        }
+        
+        .card-history-round {
+            font-weight: bold;
+            color: #6f42c1;
+        }
+        
+        .card-history-pattern {
+            color: #333;
+            margin-left: 5px;
+        }
+        
+        .card-history-balls {
+            color: #666;
+            font-size: 0.75rem;
+            margin-top: 2px;
+        }
+        
+        .card-history-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            margin-top: 3px;
+        }
+        
+        .card-history-number {
+            background: #4a00e0;
+            color: white;
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-size: 0.7rem;
+        }
+        
+        .card-history-number.called {
+            background: #ff8c00;
+        }
+        
+        .card-history-number.last-four {
+            background: #dc3545;
+        }
+        
+        /* Edit Card Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            color: #333;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #4a00e0;
+            padding-bottom: 10px;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4a00e0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .close-btn:hover {
+            color: #dc3545;
+        }
+        
+        .edit-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .edit-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .edit-cell:hover {
+            background: #e9ecef;
+        }
+        
+        .edit-cell.free {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .edit-cell.editing {
+            background: #4a00e0;
+            color: white;
+        }
+        
+        .number-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .number-input input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .number-input button {
+            padding: 10px 20px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .card-action-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+        
+        .card-action-btn:hover {
+            background: #5a6268;
+        }
+        
+        .card-action-btn.edit {
+            background: #17a2b8;
+        }
+        
+        .card-action-btn.edit:hover {
+            background: #138496;
+        }
+        
+        .card-action-btn.delete {
+            background: #dc3545;
+        }
+        
+        .card-action-btn.delete:hover {
+            background: #c82333;
+        }
+        
         @keyframes t-pattern-pulse {
             0% {
                 transform: scale(1);
@@ -711,6 +925,25 @@
             background: #8e2de2;
         }
         
+        /* Custom scrollbar for card history */
+        .card-history::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .card-history::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+        }
+        
+        .card-history::-webkit-scrollbar-thumb {
+            background: #4a00e0;
+            border-radius: 3px;
+        }
+        
+        .card-history::-webkit-scrollbar-thumb:hover {
+            background: #8e2de2;
+        }
+        
         @media (max-width: 768px) {
             .keyboard {
                 grid-template-columns: repeat(10, 1fr);
@@ -762,11 +995,12 @@
 
         <div class="controls">
             <button id="generateCards">Generate Cards</button>
+            <button id="createCard">Create Card</button>
             <button id="resetGame">Reset Game</button>
             <button id="anotherRound" class="another-round-btn">Another Round</button>
             <div class="card-count">
                 <label for="cardCount">Cards to generate:</label>
-                <input type="number" id="cardCount" min="1" max="100" value="6">
+                <input type="number" id="cardCount" min="1" max="500" value="6">
             </div>
         </div>
 
@@ -858,13 +1092,34 @@
         </div>
     </div>
 
+    <!-- Edit Card Modal -->
+    <div id="editCardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Create Bingo Card</div>
+                <button class="close-btn" id="closeModal">×</button>
+            </div>
+            <div class="edit-grid" id="editGrid">
+                <!-- Editable grid will be generated here -->
+            </div>
+            <div class="number-input">
+                <input type="number" id="numberInput" min="1" max="75" placeholder="Enter number (1-75)">
+                <button id="setNumber">Set Number</button>
+            </div>
+            <div class="modal-actions">
+                <button id="saveCard" class="another-round-btn">Save Card</button>
+                <button id="cancelEdit" class="undo-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Game state
             const gameState = {
                 calledNumbers: new Set(),
                 cards: [],
-                maxCards: 100,
+                maxCards: 500, // Increased from 100 to 500
                 singleBingos: 0,
                 multiBingos: 0,
                 calledHistory: [], // Track called numbers for undo functionality
@@ -874,7 +1129,9 @@
                 lastFourBalls: [], // Track the last 4 balls called
                 currentRound: 1,
                 maxRounds: 30,
-                rounds: []
+                rounds: [],
+                editingCard: null,
+                editingCell: null
             };
 
             // Initialize rounds array
@@ -1104,6 +1361,7 @@
             const multiWinningCardsContainer = document.getElementById('multiWinningCardsContainer');
             const roundsContainer = document.getElementById('roundsContainer');
             const generateCardsBtn = document.getElementById('generateCards');
+            const createCardBtn = document.getElementById('createCard');
             const resetGameBtn = document.getElementById('resetGame');
             const anotherRoundBtn = document.getElementById('anotherRound');
             const undoBtn = document.getElementById('undoBtn');
@@ -1124,6 +1382,16 @@
             const patternDiagonal2Btn = document.getElementById('patternDiagonal2');
             const patternEmptyCrossBtn = document.getElementById('patternEmptyCross');
             const patternAllBtn = document.getElementById('patternAll');
+
+            // Modal elements
+            const editCardModal = document.getElementById('editCardModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const editGrid = document.getElementById('editGrid');
+            const numberInput = document.getElementById('numberInput');
+            const setNumberBtn = document.getElementById('setNumber');
+            const saveCardBtn = document.getElementById('saveCard');
+            const cancelEditBtn = document.getElementById('cancelEdit');
+            const closeModalBtn = document.getElementById('closeModal');
 
             // Initialize the keyboard
             function initializeKeyboard() {
@@ -1235,7 +1503,9 @@
                     hasBingo: false,
                     isMultiPattern: false,
                     winningPatterns: [], // Store ALL winning patterns
-                    winningCells: []
+                    winningCells: [],
+                    roundHistory: [], // Track when patterns were completed in each round
+                    isCustom: false // Track if this is a custom card
                 };
 
                 // Bingo columns: B(1-15), I(16-30), N(31-45), G(46-60), O(61-75)
@@ -1278,6 +1548,35 @@
                 return card;
             }
 
+            // Create an empty Bingo card for manual editing
+            function createEmptyBingoCard(id) {
+                const card = {
+                    id: id,
+                    numbers: [],
+                    marked: new Set(),
+                    hasBingo: false,
+                    isMultiPattern: false,
+                    winningPatterns: [],
+                    winningCells: [],
+                    roundHistory: [],
+                    isCustom: true // Mark as custom card
+                };
+
+                // Initialize empty grid
+                for (let col = 0; col < 5; col++) {
+                    const columnNumbers = [];
+                    for (let row = 0; row < 5; row++) {
+                        columnNumbers.push('');
+                    }
+                    card.numbers.push(columnNumbers);
+                }
+
+                // Set free space
+                card.numbers[2][2] = 'FREE';
+
+                return card;
+            }
+
             // Render a Bingo card
             function renderBingoCard(card) {
                 const cardEl = document.createElement('div');
@@ -1293,7 +1592,7 @@
 
                 const headerEl = document.createElement('div');
                 headerEl.className = 'card-header';
-                headerEl.innerHTML = `<span>Card #${card.id}</span>`;
+                headerEl.innerHTML = `<span>Card #${card.id} ${card.isCustom ? '(Custom)' : ''}</span>`;
                 cardEl.appendChild(headerEl);
 
                 // Add winning badge if the card has bingo
@@ -1405,6 +1704,88 @@
                 }
 
                 cardEl.appendChild(gridEl);
+                
+                // Add card actions (edit and delete buttons)
+                const cardActions = document.createElement('div');
+                cardActions.className = 'card-actions';
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'card-action-btn edit';
+                editBtn.textContent = 'Edit';
+                editBtn.addEventListener('click', () => editCard(card));
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'card-action-btn delete';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.addEventListener('click', () => deleteCard(card.id));
+                
+                cardActions.appendChild(editBtn);
+                cardActions.appendChild(deleteBtn);
+                cardEl.appendChild(cardActions);
+                
+                // Add round history section
+                if (card.roundHistory.length > 0) {
+                    const historyEl = document.createElement('div');
+                    historyEl.className = 'card-history';
+                    
+                    const historyTitle = document.createElement('h4');
+                    historyTitle.textContent = 'Round History';
+                    historyEl.appendChild(historyTitle);
+                    
+                    card.roundHistory.forEach(historyItem => {
+                        const historyItemEl = document.createElement('div');
+                        historyItemEl.className = 'card-history-item';
+                        
+                        const roundInfo = document.createElement('div');
+                        roundInfo.innerHTML = `<span class="card-history-round">Round ${historyItem.round}</span> <span class="card-history-pattern">${historyItem.pattern}</span>`;
+                        
+                        const ballsInfo = document.createElement('div');
+                        ballsInfo.className = 'card-history-balls';
+                        ballsInfo.textContent = `Completed with ${historyItem.ballsCalled} balls called`;
+                        
+                        const numbersInfo = document.createElement('div');
+                        numbersInfo.className = 'card-history-numbers';
+                        
+                        // Add called numbers for this round
+                        historyItem.calledNumbers.forEach(number => {
+                            const numberEl = document.createElement('div');
+                            numberEl.className = 'card-history-number';
+                            numberEl.textContent = number;
+                            
+                            // Check if this number is in the card
+                            let isInCard = false;
+                            for (let col = 0; col < 5; col++) {
+                                for (let row = 0; row < 5; row++) {
+                                    if (card.numbers[col][row] == number) {
+                                        isInCard = true;
+                                        break;
+                                    }
+                                }
+                                if (isInCard) break;
+                            }
+                            
+                            if (isInCard) {
+                                numberEl.classList.add('called');
+                            }
+                            
+                            // Check if this is one of the last four balls
+                            if (historyItem.lastFour.includes(number)) {
+                                numberEl.classList.add('last-four');
+                            }
+                            
+                            numbersInfo.appendChild(numberEl);
+                        });
+                        
+                        historyItemEl.appendChild(roundInfo);
+                        historyItemEl.appendChild(ballsInfo);
+                        historyItemEl.appendChild(numbersInfo);
+                        
+                        historyEl.appendChild(historyItemEl);
+                    });
+                    
+                    cardEl.appendChild(historyEl);
+                }
+
                 return cardEl;
             }
 
@@ -1643,6 +2024,19 @@
                         } else {
                             gameState.singleBingos++;
                         }
+                        
+                        // Record round history if this is the first time this card has bingo in this round
+                        if (!card.roundHistory.some(h => h.round === gameState.currentRound)) {
+                            allWinningPatterns.forEach(pattern => {
+                                card.roundHistory.push({
+                                    round: gameState.currentRound,
+                                    pattern: pattern.name,
+                                    ballsCalled: gameState.calledNumbers.size,
+                                    calledNumbers: [...gameState.calledNumbers],
+                                    lastFour: [...gameState.lastFourBalls]
+                                });
+                            });
+                        }
                     }
                 });
 
@@ -1688,6 +2082,191 @@
                 updateCalledNumbers();
                 updateKeyboard();
                 updateRoundsChart();
+            }
+
+            // Create a new custom card
+            function createCustomCard() {
+                const card = createEmptyBingoCard(gameState.nextCardId++);
+                gameState.cards.push(card);
+                updateCards();
+                editCard(card);
+            }
+
+            // Edit a card
+            function editCard(card) {
+                gameState.editingCard = card;
+                modalTitle.textContent = card.isCustom ? `Edit Card #${card.id}` : 'Create Bingo Card';
+                
+                // Clear the edit grid
+                editGrid.innerHTML = '';
+                
+                // Create column headers
+                const headers = ['B', 'I', 'N', 'G', 'O'];
+                for (let i = 0; i < 5; i++) {
+                    const headerCell = document.createElement('div');
+                    headerCell.className = 'edit-cell';
+                    headerCell.textContent = headers[i];
+                    headerCell.style.background = '#4a00e0';
+                    headerCell.style.color = 'white';
+                    editGrid.appendChild(headerCell);
+                }
+                
+                // Create editable cells
+                for (let row = 0; row < 5; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'edit-cell';
+                        cell.dataset.col = col;
+                        cell.dataset.row = row;
+                        
+                        const number = card.numbers[col][row];
+                        cell.textContent = number;
+                        
+                        if (number === 'FREE') {
+                            cell.classList.add('free');
+                        }
+                        
+                        cell.addEventListener('click', () => {
+                            // Remove editing class from all cells
+                            document.querySelectorAll('.edit-cell.editing').forEach(c => {
+                                c.classList.remove('editing');
+                            });
+                            
+                            // Add editing class to clicked cell
+                            cell.classList.add('editing');
+                            gameState.editingCell = { col, row };
+                            
+                            // Set input value
+                            numberInput.value = number === 'FREE' ? '' : number;
+                        });
+                        
+                        editGrid.appendChild(cell);
+                    }
+                }
+                
+                // Show the modal
+                editCardModal.style.display = 'flex';
+                numberInput.focus();
+            }
+
+            // Set number for the currently selected cell
+            function setNumber() {
+                if (!gameState.editingCell) return;
+                
+                const { col, row } = gameState.editingCell;
+                let value = numberInput.value.trim();
+                
+                // Handle free space
+                if (col === 2 && row === 2) {
+                    value = 'FREE';
+                } else if (value === '') {
+                    value = '';
+                } else {
+                    const num = parseInt(value);
+                    if (isNaN(num) || num < 1 || num > 75) {
+                        alert('Please enter a valid number between 1 and 75');
+                        return;
+                    }
+                    value = num;
+                }
+                
+                // Update the card
+                gameState.editingCard.numbers[col][row] = value;
+                
+                // Update the cell display
+                const cell = document.querySelector(`.edit-cell[data-col="${col}"][data-row="${row}"]`);
+                cell.textContent = value;
+                
+                if (value === 'FREE') {
+                    cell.classList.add('free');
+                } else {
+                    cell.classList.remove('free');
+                }
+                
+                // Clear the input
+                numberInput.value = '';
+                numberInput.focus();
+            }
+
+            // Save the edited card
+            function saveCard() {
+                // Validate the card
+                const card = gameState.editingCard;
+                const ranges = [
+                    { min: 1, max: 15 },   // B
+                    { min: 16, max: 30 },  // I
+                    { min: 31, max: 45 },  // N
+                    { min: 46, max: 60 },  // G
+                    { min: 61, max: 75 }   // O
+                ];
+                
+                let isValid = true;
+                let errorMessage = '';
+                
+                // Check each column
+                for (let col = 0; col < 5; col++) {
+                    const range = ranges[col];
+                    const columnNumbers = [];
+                    
+                    for (let row = 0; row < 5; row++) {
+                        const number = card.numbers[col][row];
+                        
+                        // Skip free space
+                        if (col === 2 && row === 2) continue;
+                        
+                        // Check if cell is empty
+                        if (number === '') {
+                            isValid = false;
+                            errorMessage = `Please fill all cells. Empty cell at column ${['B','I','N','G','O'][col]}, row ${row + 1}`;
+                            break;
+                        }
+                        
+                        // Check if number is in valid range
+                        if (number < range.min || number > range.max) {
+                            isValid = false;
+                            errorMessage = `Number ${number} is not in the valid range for column ${['B','I','N','G','O'][col]} (${range.min}-${range.max})`;
+                            break;
+                        }
+                        
+                        // Check for duplicates in column
+                        if (columnNumbers.includes(number)) {
+                            isValid = false;
+                            errorMessage = `Duplicate number ${number} in column ${['B','I','N','G','O'][col]}`;
+                            break;
+                        }
+                        
+                        columnNumbers.push(number);
+                    }
+                    
+                    if (!isValid) break;
+                }
+                
+                if (!isValid) {
+                    alert(errorMessage);
+                    return;
+                }
+                
+                // Mark as custom card
+                card.isCustom = true;
+                
+                // Close modal and update display
+                closeModal();
+                updateCards();
+            }
+
+            // Delete a card
+            function deleteCard(cardId) {
+                if (confirm('Are you sure you want to delete this card?')) {
+                    gameState.cards = gameState.cards.filter(card => card.id !== cardId);
+                    updateCards();
+                }
+            }
+
+            // Close the modal
+            function closeModal() {
+                editCardModal.style.display = 'none';
+                gameState.editingCard = null;
+                gameState.editingCell = null;
             }
 
             // Reset the game
@@ -1804,6 +2383,7 @@
 
             // Event listeners for buttons
             generateCardsBtn.addEventListener('click', generateCards);
+            createCardBtn.addEventListener('click', createCustomCard);
             resetGameBtn.addEventListener('click', resetGame);
             anotherRoundBtn.addEventListener('click', anotherRound);
             undoBtn.addEventListener('click', undoLastCall);
@@ -1816,7 +2396,27 @@
             patternEmptyCrossBtn.addEventListener('click', () => setWinningPattern('emptyCross'));
             patternAllBtn.addEventListener('click', () => setWinningPattern('all'));
 
-            // Limit card count input to max 100
+            // Modal event listeners
+            setNumberBtn.addEventListener('click', setNumber);
+            saveCardBtn.addEventListener('click', saveCard);
+            cancelEditBtn.addEventListener('click', closeModal);
+            closeModalBtn.addEventListener('click', closeModal);
+
+            // Close modal when clicking outside
+            editCardModal.addEventListener('click', (e) => {
+                if (e.target === editCardModal) {
+                    closeModal();
+                }
+            });
+
+            // Handle Enter key in number input
+            numberInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    setNumber();
+                }
+            });
+
+            // Limit card count input to max 500
             cardCountInput.addEventListener('change', function() {
                 if (this.value > gameState.maxCards) {
                     this.value = gameState.maxCards;
