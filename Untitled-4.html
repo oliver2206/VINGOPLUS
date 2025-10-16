@@ -1,3 +1,4 @@
+\
 <!DOCTYPE html>
 <html lang="en">
 
@@ -533,7 +534,7 @@
         .another-round-btn:hover {
             background: #218838;
         }
-
+        
         @keyframes t-pattern-pulse {
             0% {
                 transform: scale(1);
@@ -821,17 +822,25 @@
                         });
 
                         if (topRowComplete && middleColComplete) {
-                            return { type: 't-pattern' };
+                            return {
+                                type: 't-pattern'
+                            };
                         }
                         return null;
                     },
                     getWinningCells: function() {
                         const cells = [];
                         for (let col = 0; col < 5; col++) {
-                            cells.push({ row: 0, col: col });
+                            cells.push({
+                                row: 0,
+                                col: col
+                            });
                         }
                         for (let row = 1; row < 5; row++) {
-                            cells.push({ row: row, col: 2 });
+                            cells.push({
+                                row: row,
+                                col: 2
+                            });
                         }
                         return cells;
                     }
@@ -845,15 +854,26 @@
                         const bottomRight = card.numbers[4][4] === 'FREE' || card.marked.has(card.numbers[4][4]);
 
                         if (topLeft && topRight && bottomLeft && bottomRight) {
-                            return { type: 'four-corners' };
+                            return {
+                                type: 'four-corners'
+                            };
                         }
                         return null;
                     },
                     getWinningCells: function() {
-                        return [
-                            { row: 0, col: 0 }, { row: 0, col: 4 },
-                            { row: 4, col: 0 }, { row: 4, col: 4 }
-                        ];
+                        return [{
+                            row: 0,
+                            col: 0
+                        }, {
+                            row: 0,
+                            col: 4
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
                     }
                 },
                 diagonal1: {
@@ -867,13 +887,18 @@
                                 break;
                             }
                         }
-                        if (diagonalComplete) return { type: 'diagonal1' };
+                        if (diagonalComplete) return {
+                            type: 'diagonal1'
+                        };
                         return null;
                     },
                     getWinningCells: function() {
                         const cells = [];
                         for (let i = 0; i < 5; i++) {
-                            cells.push({ row: i, col: i });
+                            cells.push({
+                                row: i,
+                                col: i
+                            });
                         }
                         return cells;
                     }
@@ -889,13 +914,18 @@
                                 break;
                             }
                         }
-                        if (diagonalComplete) return { type: 'diagonal2' };
+                        if (diagonalComplete) return {
+                            type: 'diagonal2'
+                        };
                         return null;
                     },
                     getWinningCells: function() {
                         const cells = [];
                         for (let i = 0; i < 5; i++) {
-                            cells.push({ row: i, col: 4 - i });
+                            cells.push({
+                                row: i,
+                                col: 4 - i
+                            });
                         }
                         return cells;
                     }
@@ -941,7 +971,9 @@
                             }
                         }
 
-                        if (patternComplete) return { type: 'empty-cross' };
+                        if (patternComplete) return {
+                            type: 'empty-cross'
+                        };
                         return null;
                     },
                     getWinningCells: function() {
@@ -949,7 +981,10 @@
                         for (let row = 0; row < 5; row++) {
                             for (let col = 0; col < 5; col++) {
                                 if (row !== 2 && col !== 2) {
-                                    cells.push({ row: row, col: col });
+                                    cells.push({
+                                        row: row,
+                                        col: col
+                                    });
                                 }
                             }
                         }
@@ -1071,7 +1106,13 @@
             function generateBingoCard(id, cardType = 'random') {
                 const card = {
                     id: id,
-                    numbers: [[], [], [], [], []],
+                    numbers: [
+                        [],
+                        [],
+                        [],
+                        [],
+                        []
+                    ],
                     marked: new Set(),
                     hasBingo: false,
                     isMultiPattern: false,
@@ -1083,10 +1124,22 @@
                     labels: []
                 };
 
-                const ranges = [
-                    { min: 1, max: 15 }, { min: 16, max: 30 }, { min: 31, max: 45 },
-                    { min: 46, max: 60 }, { min: 61, max: 75 }
-                ];
+                const ranges = [{
+                    min: 1,
+                    max: 15
+                }, {
+                    min: 16,
+                    max: 30
+                }, {
+                    min: 31,
+                    max: 45
+                }, {
+                    min: 46,
+                    max: 60
+                }, {
+                    min: 61,
+                    max: 75
+                }];
 
                 for (let col = 0; col < 5; col++) {
                     const range = ranges[col];
@@ -1109,36 +1162,36 @@
                     [
                         [3, 16, 33, 51, 68],
                         [12, 22, 44, 55, 62],
-                        [8, 29, 'CARDS', 49, 70], 
+                        [8, 29, 'CARDS', 49, 70],
                         [5, 19, 41, 59, 64],
                         [14, 25, 37, 53, 72]
                     ],
                     [
-                        [1, 18, 31, 46, 75], 
+                        [1, 18, 31, 46, 75],
                         [7, 24, 42, 57, 63],
-                        [10, 30, 'CARDS', 48, 69], 
+                        [10, 30, 'CARDS', 48, 69],
                         [4, 20, 39, 56, 65],
                         [13, 28, 35, 54, 71]
                     ],
                     [
-                        [6, 17, 34, 52, 61], 
+                        [6, 17, 34, 52, 61],
                         [9, 21, 43, 58, 74],
-                        [11, 27, 'CARDS', 47, 67], 
+                        [11, 27, 'CARDS', 47, 67],
                         [2, 23, 40, 60, 66],
                         [15, 26, 38, 50, 73]
                     ],
                     [
-                        [5, 19, 32, 49, 70], 
+                        [5, 19, 32, 49, 70],
                         [14, 25, 44, 55, 62],
-                        [8, 30, 'CARDS', 46, 68], 
-                        3, 16, 41, 59, 64],
+                        [8, 30, 'CARDS', 46, 68],
+                        [3, 16, 41, 59, 64],
                         [12, 22, 37, 53, 72]
                     ],
                     [
-                        [2, 18, 35, 51, 75], 
-                         [10, 24, 39, 57, 63],
+                        [2, 18, 35, 51, 75],
+                        [10, 24, 39, 57, 63],
                         [7, 29, 'CARDS', 48, 69],
-                         [4, 20, 42, 56, 65],
+                        [4, 20, 42, 56, 65],
                         [13, 28, 33, 54, 71]
                     ]
                 ];
@@ -1223,8 +1276,8 @@
                             cell.classList.add('free');
                         } else if (card.winningCells.some(wc => wc.row === row && wc.col === col)) {
                             // Apply winning pattern styling
-                            const winningPattern = card.winningPatterns.find(p => 
-                                winningPatterns[p.type.split('-')[0]].getWinningCells().some(wc => 
+                            const winningPattern = card.winningPatterns.find(p =>
+                                winningPatterns[p.type.split('-')[0]].getWinningCells().some(wc =>
                                     wc.row === row && wc.col === col
                                 )
                             );
@@ -1357,9 +1410,9 @@
                 gameState.cards.forEach(card => {
                     if (card.hasBingo) return;
 
-                    const patternsToCheck = gameState.currentPattern === 'all' 
-                        ? Object.values(winningPatterns) 
-                        : [winningPatterns[gameState.currentPattern]];
+                    const patternsToCheck = gameState.currentPattern === 'all' ?
+                        Object.values(winningPatterns) :
+                        [winningPatterns[gameState.currentPattern]];
 
                     const winningPatternsFound = [];
                     const winningCells = [];
@@ -1401,10 +1454,10 @@
             // Generate new cards - FIXED: Proper card management
             function generateCards() {
                 const count = parseInt(cardCountInput.value) || 6;
-                
+
                 if (!gameState.preserveCustomCards) {
                     // Remove only randomly generated cards, keep defaults and customs
-                    gameState.cards = gameState.cards.filter(card => 
+                    gameState.cards = gameState.cards.filter(card =>
                         card.cardType === 'default' || card.isCustom === true
                     );
                 }
@@ -1435,14 +1488,17 @@
                 gameState.lastFourBalls = [];
                 gameState.currentRound = 1;
                 gameState.nextCardId = 1;
-                
+
                 for (let i = 0; i < gameState.maxRounds; i++) {
-                    gameState.rounds[i] = { numbers: [], lastFour: [] };
+                    gameState.rounds[i] = {
+                        numbers: [],
+                        lastFour: []
+                    };
                 }
 
                 gameState.cards = [];
                 createDefaultCards();
-                
+
                 updateCalledNumbers();
                 updateKeyboard();
                 updateRoundsChart();
@@ -1520,14 +1576,14 @@
                 resetGameBtn.addEventListener('click', resetGame);
                 anotherRoundBtn.addEventListener('click', startAnotherRound);
                 undoBtn.addEventListener('click', undoLastCall);
-                
+
                 patternTBtn.addEventListener('click', () => setPattern('t'));
                 patternCornersBtn.addEventListener('click', () => setPattern('corners'));
                 patternDiagonal1Btn.addEventListener('click', () => setPattern('diagonal1'));
                 patternDiagonal2Btn.addEventListener('click', () => setPattern('diagonal2'));
                 patternEmptyCrossBtn.addEventListener('click', () => setPattern('emptyCross'));
                 patternAllBtn.addEventListener('click', () => setPattern('all'));
-                
+
                 preserveCustomCardsCheckbox.addEventListener('change', (e) => {
                     gameState.preserveCustomCards = e.target.checked;
                 });
@@ -1537,16 +1593,29 @@
             function setPattern(pattern) {
                 gameState.currentPattern = pattern;
                 const patternButtons = [patternTBtn, patternCornersBtn, patternDiagonal1Btn,
-                    patternDiagonal2Btn, patternEmptyCrossBtn, patternAllBtn];
+                    patternDiagonal2Btn, patternEmptyCrossBtn, patternAllBtn
+                ];
                 patternButtons.forEach(btn => btn.classList.remove('active'));
-                
-                switch(pattern) {
-                    case 't': patternTBtn.classList.add('active'); break;
-                    case 'corners': patternCornersBtn.classList.add('active'); break;
-                    case 'diagonal1': patternDiagonal1Btn.classList.add('active'); break;
-                    case 'diagonal2': patternDiagonal2Btn.classList.add('active'); break;
-                    case 'emptyCross': patternEmptyCrossBtn.classList.add('active'); break;
-                    case 'all': patternAllBtn.classList.add('active'); break;
+
+                switch (pattern) {
+                    case 't':
+                        patternTBtn.classList.add('active');
+                        break;
+                    case 'corners':
+                        patternCornersBtn.classList.add('active');
+                        break;
+                    case 'diagonal1':
+                        patternDiagonal1Btn.classList.add('active');
+                        break;
+                    case 'diagonal2':
+                        patternDiagonal2Btn.classList.add('active');
+                        break;
+                    case 'emptyCross':
+                        patternEmptyCrossBtn.classList.add('active');
+                        break;
+                    case 'all':
+                        patternAllBtn.classList.add('active');
+                        break;
                 }
                 checkBingos();
             }
@@ -1565,4 +1634,5 @@
         });
     </script>
 </body>
+
 </html>
