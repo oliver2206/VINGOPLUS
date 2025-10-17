@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bingo Card Simulator - Fixed Pattern Detection</title>
+    <title>Bingo Card Simulator - Auto Pattern Detection</title>
     <style>
         * {
             box-sizing: border-box;
@@ -165,6 +165,27 @@
             gap: 20px;
         }
         
+        .winning-cards-container {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .winning-cards-container h2 {
+            margin-bottom: 15px;
+            text-align: center;
+            color: #ffc107;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .winning-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
         .bingo-card {
             background: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
@@ -187,6 +208,10 @@
         .bingo-card.multi-winning {
             box-shadow: 0 0 0 4px #ff6b6b, 0 0 25px rgba(255, 107, 107, 0.7);
             animation: multi-celebrate 1.5s infinite;
+        }
+        
+        .bingo-card.pinned {
+            box-shadow: 0 0 0 4px #ffc107, 0 0 20px rgba(255, 193, 7, 0.5);
         }
         
         .winning-badge {
@@ -225,10 +250,29 @@
             z-index: 10;
         }
         
-        .pattern-indicator {
+        .pin-badge {
             position: absolute;
             top: -10px;
             left: -10px;
+            background: #ffc107;
+            color: #000;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            cursor: pointer;
+        }
+        
+        .pattern-indicator {
+            position: absolute;
+            top: -10px;
+            left: 25px;
             background: #6f42c1;
             color: white;
             border-radius: 4px;
@@ -246,6 +290,26 @@
             font-weight: bold;
             border-bottom: 2px solid #4a00e0;
             padding-bottom: 5px;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .card-action-btn {
+            background: none;
+            border: none;
+            color: #4a00e0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 2px 5px;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+        
+        .card-action-btn:hover {
+            background: rgba(74, 0, 224, 0.1);
         }
         
         .bingo-grid {
@@ -306,6 +370,30 @@
             background: #9c27b0;
             color: white;
             animation: empty-cross-pulse 2s infinite;
+        }
+        
+        .bingo-cell.horizontal2-win {
+            background: #e83e8c;
+            color: white;
+            animation: horizontal2-pulse 2s infinite;
+        }
+        
+        .bingo-cell.horizontal3-win {
+            background: #6f42c1;
+            color: white;
+            animation: horizontal3-pulse 2s infinite;
+        }
+        
+        .bingo-cell.horizontal4-win {
+            background: #20c997;
+            color: white;
+            animation: horizontal4-pulse 2s infinite;
+        }
+        
+        .bingo-cell.full-card-win {
+            background: #dc3545;
+            color: white;
+            animation: full-card-pulse 2s infinite;
         }
         
         .stats {
@@ -399,6 +487,159 @@
             background: #218838;
         }
         
+        .auto-detect-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .auto-detect-btn {
+            background: #17a2b8;
+        }
+        
+        .auto-detect-btn:hover {
+            background: #138496;
+        }
+        
+        .auto-detect-btn.active {
+            background: #fd7e14;
+            box-shadow: 0 0 0 2px white;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4a00e0;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .close-modal:hover {
+            color: #4a00e0;
+        }
+        
+        .edit-card-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .edit-card-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .edit-card-cell:hover {
+            background: #e9ecef;
+        }
+        
+        .edit-card-cell.free {
+            background: #ffc107;
+        }
+        
+        .number-input-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .number-input-content {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+        
+        .number-input-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .number-input-btn {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #4a00e0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .number-input-btn:hover {
+            background: #8e2de2;
+        }
+        
+        .number-input-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
         @keyframes t-pattern-pulse {
             0% {
                 transform: scale(1);
@@ -474,6 +715,66 @@
             }
         }
         
+        @keyframes horizontal2-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #e83e8c;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #ec6fa5;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #e83e8c;
+            }
+        }
+        
+        @keyframes horizontal3-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #6f42c1;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #8b5fdc;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #6f42c1;
+            }
+        }
+        
+        @keyframes horizontal4-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #20c997;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #3dd4a7;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #20c997;
+            }
+        }
+        
+        @keyframes full-card-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #dc3545;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #e74c3c;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #dc3545;
+            }
+        }
+        
         @keyframes last-four-pulse {
             0% {
                 transform: scale(1);
@@ -521,8 +822,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>Bingo Card Simulator - Fixed Pattern Detection</h1>
-            <p class="subtitle">All patterns now work correctly! Cards stay visible when they win.</p>
+            <h1>Bingo Card Simulator - Auto Pattern Detection</h1>
+            <p class="subtitle">Automatically detects all winning patterns! Cards stay visible when they win.</p>
         </header>
 
         <div class="controls">
@@ -535,13 +836,21 @@
             </div>
         </div>
 
+        <div class="auto-detect-section">
+            <button id="autoDetectBtn" class="auto-detect-btn active">Auto-Detect All Patterns</button>
+        </div>
+
         <div class="pattern-controls">
             <button id="patternT" class="pattern-btn">T-Pattern</button>
             <button id="patternCorners" class="pattern-btn">Four Corners</button>
             <button id="patternDiagonal1" class="pattern-btn">Forward Diagonal</button>
             <button id="patternDiagonal2" class="pattern-btn">Backward Diagonal</button>
             <button id="patternEmptyCross" class="pattern-btn">Empty Cross</button>
-            <button id="patternAll" class="pattern-btn active">All Patterns</button>
+            <button id="patternHorizontal2" class="pattern-btn">2 Rows</button>
+            <button id="patternHorizontal3" class="pattern-btn">3 Rows</button>
+            <button id="patternHorizontal4" class="pattern-btn">4 Rows</button>
+            <button id="patternFullCard" class="pattern-btn">Full Card</button>
+            <button id="patternAll" class="pattern-btn">All Patterns</button>
         </div>
 
         <div class="undo-section">
@@ -555,6 +864,14 @@
         <!-- Ball limit warning -->
         <div id="ballLimitWarning" class="ball-limit-warning" style="display: none;">
             <strong>⚠️ Ball Limit Reached!</strong> You have called the maximum of 48 balls. The last 4 balls are highlighted in red.
+        </div>
+
+        <!-- Winning cards section -->
+        <div class="winning-cards-container" id="winningCardsContainer" style="display: none;">
+            <h2>🎉 Winning Cards 🎉</h2>
+            <div class="winning-cards-grid" id="winningCardsGrid">
+                <!-- Winning cards will be displayed here -->
+            </div>
         </div>
 
         <!-- Cards container with auto-scroll -->
@@ -599,6 +916,37 @@
         </div>
     </div>
 
+    <!-- Edit Card Modal -->
+    <div class="modal" id="editCardModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Card #<span id="editCardId"></span></h3>
+                <button class="close-modal" id="closeEditModal">&times;</button>
+            </div>
+            <div class="edit-card-grid" id="editCardGrid">
+                <!-- Editable card cells will be generated here -->
+            </div>
+            <div class="modal-actions">
+                <button id="saveCardChanges">Save Changes</button>
+                <button id="cancelEditCard" style="background: #6c757d;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Number Input Modal -->
+    <div class="number-input-modal" id="numberInputModal">
+        <div class="number-input-content">
+            <h3>Select a Number</h3>
+            <div class="number-input-grid" id="numberInputGrid">
+                <!-- Number buttons will be generated here -->
+            </div>
+            <div class="number-input-actions">
+                <button id="setFreeSpace" style="background: #ffc107; color: #000;">Set as FREE</button>
+                <button id="cancelNumberInput" style="background: #6c757d;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Game state
@@ -610,12 +958,15 @@
                 multiBingos: 0,
                 calledHistory: [],
                 nextCardId: 1,
-                currentPattern: 'all',
+                currentPattern: 'auto',
                 maxBalls: 48,
                 lastFourBalls: [],
                 currentRound: 1,
                 maxRounds: 30,
-                rounds: []
+                rounds: [],
+                pinnedCards: new Set(),
+                editingCard: null,
+                editingCell: null
             };
 
             // Initialize rounds array
@@ -626,7 +977,7 @@
                 });
             }
 
-            // Winning patterns configuration - FIXED ALL PATTERNS
+            // Winning patterns configuration - AUTO-DETECT ALL PATTERNS
             const winningPatterns = {
                 t: {
                     name: 'T-Pattern',
@@ -763,16 +1114,199 @@
                         }
                         return cells;
                     }
+                },
+                horizontal2: {
+                    name: '2 Rows',
+                    check: function(card) {
+                        // Check all possible combinations of 2 complete rows
+                        const completeRows = [];
+                        
+                        for (let row = 0; row < 5; row++) {
+                            let rowComplete = true;
+                            for (let col = 0; col < 5; col++) {
+                                const number = card.numbers[row][col];
+                                if (number !== 'FREE' && !card.marked.has(number)) {
+                                    rowComplete = false;
+                                    break;
+                                }
+                            }
+                            if (rowComplete) {
+                                completeRows.push(row);
+                            }
+                        }
+                        
+                        return completeRows.length >= 2;
+                    },
+                    getWinningCells: function(card) {
+                        const cells = [];
+                        const completeRows = [];
+                        
+                        // Find which rows are complete
+                        for (let row = 0; row < 5; row++) {
+                            let rowComplete = true;
+                            for (let col = 0; col < 5; col++) {
+                                const number = card.numbers[row][col];
+                                if (number !== 'FREE' && !card.marked.has(number)) {
+                                    rowComplete = false;
+                                    break;
+                                }
+                            }
+                            if (rowComplete) {
+                                completeRows.push(row);
+                            }
+                        }
+                        
+                        // Add cells from the first two complete rows
+                        for (let i = 0; i < Math.min(2, completeRows.length); i++) {
+                            const row = completeRows[i];
+                            for (let col = 0; col < 5; col++) {
+                                cells.push({ row: row, col: col });
+                            }
+                        }
+                        
+                        return cells;
+                    }
+                },
+                horizontal3: {
+                    name: '3 Rows',
+                    check: function(card) {
+                        // Check all possible combinations of 3 complete rows
+                        const completeRows = [];
+                        
+                        for (let row = 0; row < 5; row++) {
+                            let rowComplete = true;
+                            for (let col = 0; col < 5; col++) {
+                                const number = card.numbers[row][col];
+                                if (number !== 'FREE' && !card.marked.has(number)) {
+                                    rowComplete = false;
+                                    break;
+                                }
+                            }
+                            if (rowComplete) {
+                                completeRows.push(row);
+                            }
+                        }
+                        
+                        return completeRows.length >= 3;
+                    },
+                    getWinningCells: function(card) {
+                        const cells = [];
+                        const completeRows = [];
+                        
+                        // Find which rows are complete
+                        for (let row = 0; row < 5; row++) {
+                            let rowComplete = true;
+                            for (let col = 0; col < 5; col++) {
+                                const number = card.numbers[row][col];
+                                if (number !== 'FREE' && !card.marked.has(number)) {
+                                    rowComplete = false;
+                                    break;
+                                }
+                            }
+                            if (rowComplete) {
+                                completeRows.push(row);
+                            }
+                        }
+                        
+                        // Add cells from the first three complete rows
+                        for (let i = 0; i < Math.min(3, completeRows.length); i++) {
+                            const row = completeRows[i];
+                            for (let col = 0; col < 5; col++) {
+                                cells.push({ row: row, col: col });
+                            }
+                        }
+                        
+                        return cells;
+                    }
+                },
+                horizontal4: {
+                    name: '4 Rows',
+                    check: function(card) {
+                        // Check all possible combinations of 4 complete rows
+                        const completeRows = [];
+                        
+                        for (let row = 0; row < 5; row++) {
+                            let rowComplete = true;
+                            for (let col = 0; col < 5; col++) {
+                                const number = card.numbers[row][col];
+                                if (number !== 'FREE' && !card.marked.has(number)) {
+                                    rowComplete = false;
+                                    break;
+                                }
+                            }
+                            if (rowComplete) {
+                                completeRows.push(row);
+                            }
+                        }
+                        
+                        return completeRows.length >= 4;
+                    },
+                    getWinningCells: function(card) {
+                        const cells = [];
+                        const completeRows = [];
+                        
+                        // Find which rows are complete
+                        for (let row = 0; row < 5; row++) {
+                            let rowComplete = true;
+                            for (let col = 0; col < 5; col++) {
+                                const number = card.numbers[row][col];
+                                if (number !== 'FREE' && !card.marked.has(number)) {
+                                    rowComplete = false;
+                                    break;
+                                }
+                            }
+                            if (rowComplete) {
+                                completeRows.push(row);
+                            }
+                        }
+                        
+                        // Add cells from the first four complete rows
+                        for (let i = 0; i < Math.min(4, completeRows.length); i++) {
+                            const row = completeRows[i];
+                            for (let col = 0; col < 5; col++) {
+                                cells.push({ row: row, col: col });
+                            }
+                        }
+                        
+                        return cells;
+                    }
+                },
+                fullCard: {
+                    name: 'Full Card',
+                    check: function(card) {
+                        // All cells must be marked
+                        for (let row = 0; row < 5; row++) {
+                            for (let col = 0; col < 5; col++) {
+                                const number = card.numbers[row][col];
+                                if (number !== 'FREE' && !card.marked.has(number)) {
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
+                    },
+                    getWinningCells: function() {
+                        const cells = [];
+                        for (let row = 0; row < 5; row++) {
+                            for (let col = 0; col < 5; col++) {
+                                cells.push({ row: row, col: col });
+                            }
+                        }
+                        return cells;
+                    }
                 }
             };
 
             // DOM elements
             const keyboardEl = document.getElementById('keyboard');
             const cardsContainerEl = document.getElementById('cardsContainer');
+            const winningCardsContainerEl = document.getElementById('winningCardsContainer');
+            const winningCardsGridEl = document.getElementById('winningCardsGrid');
             const generateCardsBtn = document.getElementById('generateCards');
             const resetGameBtn = document.getElementById('resetGame');
             const anotherRoundBtn = document.getElementById('anotherRound');
             const undoBtn = document.getElementById('undoBtn');
+            const autoDetectBtn = document.getElementById('autoDetectBtn');
             const cardCountInput = document.getElementById('cardCount');
             const calledCountEl = document.getElementById('calledCount');
             const cardsInPlayEl = document.getElementById('cardsInPlay');
@@ -789,7 +1323,24 @@
             const patternDiagonal1Btn = document.getElementById('patternDiagonal1');
             const patternDiagonal2Btn = document.getElementById('patternDiagonal2');
             const patternEmptyCrossBtn = document.getElementById('patternEmptyCross');
+            const patternHorizontal2Btn = document.getElementById('patternHorizontal2');
+            const patternHorizontal3Btn = document.getElementById('patternHorizontal3');
+            const patternHorizontal4Btn = document.getElementById('patternHorizontal4');
+            const patternFullCardBtn = document.getElementById('patternFullCard');
             const patternAllBtn = document.getElementById('patternAll');
+
+            // Modal elements
+            const editCardModal = document.getElementById('editCardModal');
+            const editCardIdEl = document.getElementById('editCardId');
+            const editCardGridEl = document.getElementById('editCardGrid');
+            const closeEditModal = document.getElementById('closeEditModal');
+            const saveCardChangesBtn = document.getElementById('saveCardChanges');
+            const cancelEditCardBtn = document.getElementById('cancelEditCard');
+            
+            const numberInputModal = document.getElementById('numberInputModal');
+            const numberInputGridEl = document.getElementById('numberInputGrid');
+            const setFreeSpaceBtn = document.getElementById('setFreeSpace');
+            const cancelNumberInputBtn = document.getElementById('cancelNumberInput');
 
             // Initialize the keyboard
             function initializeKeyboard() {
@@ -850,7 +1401,8 @@
                     isMultiPattern: false,
                     winningPatterns: [],
                     winningCells: [],
-                    roundHistory: []
+                    roundHistory: [],
+                    isPinned: false
                 };
 
                 const ranges = [{
@@ -1004,7 +1556,8 @@
                         isMultiPattern: false,
                         winningPatterns: [],
                         winningCells: [],
-                        roundHistory: []
+                        roundHistory: [],
+                        isPinned: false
                     };
                     gameState.cards.push(card);
                 });
@@ -1017,12 +1570,55 @@
                 if (card.hasBingo) {
                     cardEl.classList.add(card.isMultiPattern ? 'multi-winning' : 'winning');
                 }
+                if (card.isPinned) {
+                    cardEl.classList.add('pinned');
+                }
                 cardEl.dataset.cardId = card.id;
 
                 const headerEl = document.createElement('div');
                 headerEl.className = 'card-header';
                 headerEl.innerHTML = `<span>Card #${card.id}</span>`;
+                
+                // Add card actions
+                const actionsEl = document.createElement('div');
+                actionsEl.className = 'card-actions';
+                
+                const pinBtn = document.createElement('button');
+                pinBtn.className = 'card-action-btn';
+                pinBtn.innerHTML = card.isPinned ? '📌' : '📍';
+                pinBtn.title = card.isPinned ? 'Unpin Card' : 'Pin Card';
+                pinBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    togglePinCard(card.id);
+                });
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'card-action-btn';
+                editBtn.innerHTML = '✏️';
+                editBtn.title = 'Edit Card';
+                editBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openEditCardModal(card);
+                });
+                
+                actionsEl.appendChild(pinBtn);
+                actionsEl.appendChild(editBtn);
+                headerEl.appendChild(actionsEl);
+                
                 cardEl.appendChild(headerEl);
+
+                // Add pin badge
+                if (card.isPinned) {
+                    const pinBadge = document.createElement('div');
+                    pinBadge.className = 'pin-badge';
+                    pinBadge.innerHTML = '📌';
+                    pinBadge.title = 'Pinned Card';
+                    pinBadge.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        togglePinCard(card.id);
+                    });
+                    cardEl.appendChild(pinBadge);
+                }
 
                 // Add winning badges
                 if (card.hasBingo) {
@@ -1039,7 +1635,7 @@
                             patternIndicator.className = 'pattern-indicator';
                             patternIndicator.textContent = pattern.name.substring(0, 1);
                             patternIndicator.style.top = `${-10 + index * 15}px`;
-                            patternIndicator.style.left = '-10px';
+                            patternIndicator.style.left = card.isPinned ? '25px' : '-10px';
                             patternIndicator.title = pattern.name;
                             cardEl.appendChild(patternIndicator);
                         });
@@ -1084,7 +1680,7 @@
                         if (card.hasBingo && card.winningCells.some(wc => wc.row === row && wc.col === col)) {
                             // Find which pattern this cell belongs to
                             for (const pattern of card.winningPatterns) {
-                                const patternCells = winningPatterns[pattern.type.split('-')[0]].getWinningCells();
+                                const patternCells = winningPatterns[pattern.type.split('-')[0]].getWinningCells(card);
                                 if (patternCells.some(wc => wc.row === row && wc.col === col)) {
                                     cell.classList.add(pattern.type + '-win');
                                     break;
@@ -1103,20 +1699,186 @@
             // Update all cards display
             function updateCards() {
                 cardsContainerEl.innerHTML = '';
+                winningCardsGridEl.innerHTML = '';
 
                 cardsInPlayEl.textContent = gameState.cards.length;
                 let totalMarkedCells = 0;
                 gameState.cards.forEach(card => totalMarkedCells += card.marked.size);
                 markedCellsEl.textContent = totalMarkedCells;
 
-                // Render all cards in the main container
+                // Separate winning and non-winning cards
+                const winningCards = [];
+                const nonWinningCards = [];
+                
                 gameState.cards.forEach(card => {
+                    if (card.hasBingo) {
+                        winningCards.push(card);
+                    } else {
+                        nonWinningCards.push(card);
+                    }
+                });
+
+                // Show/hide winning cards container
+                if (winningCards.length > 0) {
+                    winningCardsContainerEl.style.display = 'block';
+                    
+                    // Sort winning cards: multi-pattern first, then single-pattern
+                    winningCards.sort((a, b) => {
+                        if (a.isMultiPattern && !b.isMultiPattern) return -1;
+                        if (!a.isMultiPattern && b.isMultiPattern) return 1;
+                        return 0;
+                    });
+                    
+                    // Render winning cards in the winning section
+                    winningCards.forEach(card => {
+                        winningCardsGridEl.appendChild(renderBingoCard(card));
+                    });
+                } else {
+                    winningCardsContainerEl.style.display = 'none';
+                }
+
+                // Render non-winning cards in the main container
+                nonWinningCards.forEach(card => {
                     cardsContainerEl.appendChild(renderBingoCard(card));
                 });
 
                 // Update bingo counts
                 singleBingoCountEl.textContent = gameState.singleBingos;
                 multiBingoCountEl.textContent = gameState.multiBingos;
+            }
+
+            // Toggle pin status of a card
+            function togglePinCard(cardId) {
+                const card = gameState.cards.find(c => c.id === cardId);
+                if (card) {
+                    card.isPinned = !card.isPinned;
+                    if (card.isPinned) {
+                        gameState.pinnedCards.add(cardId);
+                    } else {
+                        gameState.pinnedCards.delete(cardId);
+                    }
+                    updateCards();
+                }
+            }
+
+            // Open edit card modal
+            function openEditCardModal(card) {
+                gameState.editingCard = card;
+                editCardIdEl.textContent = card.id;
+                editCardGridEl.innerHTML = '';
+                
+                // Create editable grid
+                for (let row = 0; row < 5; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'edit-card-cell';
+                        const number = card.numbers[row][col];
+                        cell.textContent = number;
+                        
+                        if (number === 'FREE') {
+                            cell.classList.add('free');
+                        }
+                        
+                        cell.dataset.row = row;
+                        cell.dataset.col = col;
+                        
+                        cell.addEventListener('click', () => {
+                            openNumberInputModal(row, col);
+                        });
+                        
+                        editCardGridEl.appendChild(cell);
+                    }
+                }
+                
+                editCardModal.style.display = 'flex';
+            }
+
+            // Open number input modal
+            function openNumberInputModal(row, col) {
+                gameState.editingCell = { row, col };
+                numberInputGridEl.innerHTML = '';
+                
+                // Determine the column range
+                const ranges = [
+                    { min: 1, max: 15 },
+                    { min: 16, max: 30 },
+                    { min: 31, max: 45 },
+                    { min: 46, max: 60 },
+                    { min: 61, max: 75 }
+                ];
+                
+                const range = ranges[col];
+                
+                // Create number buttons for the column
+                for (let i = range.min; i <= range.max; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'number-input-btn';
+                    btn.textContent = i;
+                    btn.dataset.number = i;
+                    
+                    btn.addEventListener('click', () => {
+                        setCardNumber(gameState.editingCard, row, col, i);
+                        closeNumberInputModal();
+                    });
+                    
+                    numberInputGridEl.appendChild(btn);
+                }
+                
+                numberInputModal.style.display = 'flex';
+            }
+
+            // Set a card number
+            function setCardNumber(card, row, col, number) {
+                card.numbers[row][col] = number;
+                
+                // If we're setting the center cell to FREE, update the marked set
+                if (row === 2 && col === 2 && number === 'FREE') {
+                    // The FREE space is always considered marked
+                    if (!card.marked.has('FREE')) {
+                        card.marked.add('FREE');
+                    }
+                } else if (card.marked.has('FREE') && row === 2 && col === 2 && number !== 'FREE') {
+                    // If we're changing the center from FREE to a number, remove it from marked
+                    card.marked.delete('FREE');
+                }
+                
+                // Update the edit modal display
+                const cell = editCardGridEl.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                if (cell) {
+                    cell.textContent = number;
+                    if (number === 'FREE') {
+                        cell.classList.add('free');
+                    } else {
+                        cell.classList.remove('free');
+                    }
+                }
+            }
+
+            // Close number input modal
+            function closeNumberInputModal() {
+                numberInputModal.style.display = 'none';
+                gameState.editingCell = null;
+            }
+
+            // Close edit card modal
+            function closeEditCardModal() {
+                editCardModal.style.display = 'none';
+                gameState.editingCard = null;
+                updateCards();
+            }
+
+            // Save card changes
+            function saveCardChanges() {
+                if (gameState.editingCard) {
+                    // Re-check if the card has bingo with the new numbers
+                    gameState.editingCard.hasBingo = false;
+                    gameState.editingCard.isMultiPattern = false;
+                    gameState.editingCard.winningPatterns = [];
+                    gameState.editingCard.winningCells = [];
+                    
+                    checkBingos();
+                    closeEditCardModal();
+                }
             }
 
             // Call a number
@@ -1164,14 +1926,15 @@
                 calledCountEl.textContent = gameState.calledNumbers.size;
             }
 
-            // Check for bingos - FIXED PATTERN DETECTION
+            // Check for bingos - AUTO-DETECT ALL PATTERNS
             function checkBingos() {
                 let bingoFound = false;
                 
                 gameState.cards.forEach(card => {
                     if (card.hasBingo) return; // Skip cards that already have bingo
 
-                    const patternsToCheck = gameState.currentPattern === 'all' ?
+                    // In auto-detect mode, check all patterns
+                    const patternsToCheck = gameState.currentPattern === 'auto' || gameState.currentPattern === 'all' ?
                         Object.keys(winningPatterns) : [gameState.currentPattern];
 
                     const winningPatternsFound = [];
@@ -1189,7 +1952,7 @@
                             });
                             
                             // Add winning cells for this pattern
-                            const patternCells = pattern.getWinningCells();
+                            const patternCells = pattern.getWinningCells(card);
                             patternCells.forEach(cell => {
                                 winningCells.add(`${cell.row},${cell.col}`);
                             });
@@ -1248,6 +2011,7 @@
                 gameState.lastFourBalls = [];
                 gameState.currentRound = 1;
                 gameState.nextCardId = 1;
+                gameState.pinnedCards.clear();
 
                 for (let i = 0; i < gameState.maxRounds; i++) {
                     gameState.rounds[i] = {
@@ -1332,24 +2096,62 @@
                 resetGameBtn.addEventListener('click', resetGame);
                 anotherRoundBtn.addEventListener('click', startAnotherRound);
                 undoBtn.addEventListener('click', undoLastCall);
+                autoDetectBtn.addEventListener('click', () => setPattern('auto'));
 
                 patternTBtn.addEventListener('click', () => setPattern('t'));
                 patternCornersBtn.addEventListener('click', () => setPattern('corners'));
                 patternDiagonal1Btn.addEventListener('click', () => setPattern('diagonal1'));
                 patternDiagonal2Btn.addEventListener('click', () => setPattern('diagonal2'));
                 patternEmptyCrossBtn.addEventListener('click', () => setPattern('emptyCross'));
+                patternHorizontal2Btn.addEventListener('click', () => setPattern('horizontal2'));
+                patternHorizontal3Btn.addEventListener('click', () => setPattern('horizontal3'));
+                patternHorizontal4Btn.addEventListener('click', () => setPattern('horizontal4'));
+                patternFullCardBtn.addEventListener('click', () => setPattern('fullCard'));
                 patternAllBtn.addEventListener('click', () => setPattern('all'));
+
+                // Modal event listeners
+                closeEditModal.addEventListener('click', closeEditCardModal);
+                cancelEditCardBtn.addEventListener('click', closeEditCardModal);
+                saveCardChangesBtn.addEventListener('click', saveCardChanges);
+                
+                setFreeSpaceBtn.addEventListener('click', () => {
+                    if (gameState.editingCard && gameState.editingCell) {
+                        setCardNumber(
+                            gameState.editingCard, 
+                            gameState.editingCell.row, 
+                            gameState.editingCell.col, 
+                            'FREE'
+                        );
+                        closeNumberInputModal();
+                    }
+                });
+                
+                cancelNumberInputBtn.addEventListener('click', closeNumberInputModal);
+                
+                // Close modals when clicking outside
+                window.addEventListener('click', (e) => {
+                    if (e.target === editCardModal) {
+                        closeEditCardModal();
+                    }
+                    if (e.target === numberInputModal) {
+                        closeNumberInputModal();
+                    }
+                });
             }
 
             // Set the current pattern
             function setPattern(pattern) {
                 gameState.currentPattern = pattern;
-                const patternButtons = [patternTBtn, patternCornersBtn, patternDiagonal1Btn,
-                    patternDiagonal2Btn, patternEmptyCrossBtn, patternAllBtn
+                const patternButtons = [autoDetectBtn, patternTBtn, patternCornersBtn, patternDiagonal1Btn,
+                    patternDiagonal2Btn, patternEmptyCrossBtn, patternHorizontal2Btn,
+                    patternHorizontal3Btn, patternHorizontal4Btn, patternFullCardBtn, patternAllBtn
                 ];
                 patternButtons.forEach(btn => btn.classList.remove('active'));
 
                 switch (pattern) {
+                    case 'auto':
+                        autoDetectBtn.classList.add('active');
+                        break;
                     case 't':
                         patternTBtn.classList.add('active');
                         break;
@@ -1364,6 +2166,18 @@
                         break;
                     case 'emptyCross':
                         patternEmptyCrossBtn.classList.add('active');
+                        break;
+                    case 'horizontal2':
+                        patternHorizontal2Btn.classList.add('active');
+                        break;
+                    case 'horizontal3':
+                        patternHorizontal3Btn.classList.add('active');
+                        break;
+                    case 'horizontal4':
+                        patternHorizontal4Btn.classList.add('active');
+                        break;
+                    case 'fullCard':
+                        patternFullCardBtn.classList.add('active');
                         break;
                     case 'all':
                         patternAllBtn.classList.add('active');
@@ -1400,8 +2214,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
