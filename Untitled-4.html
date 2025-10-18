@@ -366,6 +366,12 @@
             animation: diagonal2-pulse 2s infinite;
         }
         
+        .bingo-cell.x-pattern-win {
+            background: #9c27b0;
+            color: white;
+            animation: x-pattern-pulse 2s infinite;
+        }
+        
         .bingo-cell.empty-cross-win {
             background: #9c27b0;
             color: white;
@@ -700,6 +706,21 @@
             }
         }
         
+        @keyframes x-pattern-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #9c27b0;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #ba68c8;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #9c27b0;
+            }
+        }
+        
         @keyframes empty-cross-pulse {
             0% {
                 transform: scale(1);
@@ -845,6 +866,7 @@
             <button id="patternCorners" class="pattern-btn">Four Corners</button>
             <button id="patternDiagonal1" class="pattern-btn">Forward Diagonal</button>
             <button id="patternDiagonal2" class="pattern-btn">Backward Diagonal</button>
+            <button id="patternX" class="pattern-btn">X-Pattern</button>
             <button id="patternEmptyCross" class="pattern-btn">Empty Cross</button>
             <button id="patternHorizontal2" class="pattern-btn">2 Rows</button>
             <button id="patternHorizontal3" class="pattern-btn">3 Rows</button>
@@ -1060,6 +1082,36 @@
                     getWinningCells: function() {
                         const cells = [];
                         for (let i = 0; i < 5; i++) {
+                            cells.push({ row: i, col: 4 - i });
+                        }
+                        return cells;
+                    }
+                },
+                x: {
+                    name: 'X-Pattern',
+                    check: function(card) {
+                        // Both diagonals must be complete
+                        for (let i = 0; i < 5; i++) {
+                            const number1 = card.numbers[i][i];
+                            if (number1 !== 'FREE' && !card.marked.has(number1)) {
+                                return false;
+                            }
+                        }
+                        
+                        for (let i = 0; i < 5; i++) {
+                            const number2 = card.numbers[i][4 - i];
+                            if (number2 !== 'FREE' && !card.marked.has(number2)) {
+                                return false;
+                            }
+                        }
+                        
+                        return true;
+                    },
+                    getWinningCells: function() {
+                        const cells = [];
+                        // Add both diagonals
+                        for (let i = 0; i < 5; i++) {
+                            cells.push({ row: i, col: i });
                             cells.push({ row: i, col: 4 - i });
                         }
                         return cells;
@@ -1322,6 +1374,7 @@
             const patternCornersBtn = document.getElementById('patternCorners');
             const patternDiagonal1Btn = document.getElementById('patternDiagonal1');
             const patternDiagonal2Btn = document.getElementById('patternDiagonal2');
+            const patternXBtn = document.getElementById('patternX');
             const patternEmptyCrossBtn = document.getElementById('patternEmptyCross');
             const patternHorizontal2Btn = document.getElementById('patternHorizontal2');
             const patternHorizontal3Btn = document.getElementById('patternHorizontal3');
@@ -1975,7 +2028,8 @@
                                 type: patternKey + (patternKey === 't' ? '-pattern' : 
                                       patternKey === 'corners' ? '-corners' :
                                       patternKey === 'diagonal1' ? '-win' :
-                                      patternKey === 'diagonal2' ? '-win' : '-win'),
+                                      patternKey === 'diagonal2' ? '-win' : 
+                                      patternKey === 'x' ? '-pattern-win' : '-win'),
                                 name: pattern.name
                             });
                             
@@ -2130,6 +2184,7 @@
                 patternCornersBtn.addEventListener('click', () => setPattern('corners'));
                 patternDiagonal1Btn.addEventListener('click', () => setPattern('diagonal1'));
                 patternDiagonal2Btn.addEventListener('click', () => setPattern('diagonal2'));
+                patternXBtn.addEventListener('click', () => setPattern('x'));
                 patternEmptyCrossBtn.addEventListener('click', () => setPattern('emptyCross'));
                 patternHorizontal2Btn.addEventListener('click', () => setPattern('horizontal2'));
                 patternHorizontal3Btn.addEventListener('click', () => setPattern('horizontal3'));
@@ -2171,7 +2226,7 @@
             function setPattern(pattern) {
                 gameState.currentPattern = pattern;
                 const patternButtons = [autoDetectBtn, patternTBtn, patternCornersBtn, patternDiagonal1Btn,
-                    patternDiagonal2Btn, patternEmptyCrossBtn, patternHorizontal2Btn,
+                    patternDiagonal2Btn, patternXBtn, patternEmptyCrossBtn, patternHorizontal2Btn,
                     patternHorizontal3Btn, patternHorizontal4Btn, patternFullCardBtn, patternAllBtn
                 ];
                 patternButtons.forEach(btn => btn.classList.remove('active'));
@@ -2191,6 +2246,9 @@
                         break;
                     case 'diagonal2':
                         patternDiagonal2Btn.classList.add('active');
+                        break;
+                    case 'x':
+                        patternXBtn.classList.add('active');
                         break;
                     case 'emptyCross':
                         patternEmptyCrossBtn.classList.add('active');
@@ -2242,5 +2300,3 @@
     </script>
 </body>
 </html>
-
-
