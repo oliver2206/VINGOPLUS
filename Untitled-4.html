@@ -512,6 +512,115 @@
             box-shadow: 0 0 0 2px white;
         }
         
+        /* Ball Recording Section */
+        .ball-recording-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .ball-recording-section h2 {
+            margin-bottom: 15px;
+            text-align: center;
+            color: #ffc107;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .round-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .round-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+        
+        .round-selector select {
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            background: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .balls-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .ball-item {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .ball-item.b {
+            background: #007bff; /* Blue */
+        }
+        
+        .ball-item.i {
+            background: #dc3545; /* Red */
+        }
+        
+        .ball-item.n {
+            background: #6c757d; /* Gray */
+        }
+        
+        .ball-item.g {
+            background: #28a745; /* Green */
+        }
+        
+        .ball-item.o {
+            background: #fd7e14; /* Orange */
+        }
+        
+        .ball-item.empty {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+        }
+        
+        .ball-counts {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .ball-count-item {
+            text-align: center;
+        }
+        
+        .ball-count-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .ball-count-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
         /* Modal Styles */
         .modal {
             display: none;
@@ -879,6 +988,45 @@
             <button id="undoBtn" class="undo-btn" disabled>Undo Last Call</button>
         </div>
 
+        <!-- Ball Recording Section -->
+        <div class="ball-recording-section">
+            <h2>🎯 Ball Recording - Round <span id="currentRoundDisplay">1</span></h2>
+            <div class="round-controls">
+                <div class="round-selector">
+                    <label for="roundSelect">View Round:</label>
+                    <select id="roundSelect">
+                        <!-- Round options will be generated here -->
+                    </select>
+                </div>
+                <button id="clearRound">Clear Current Round</button>
+            </div>
+            <div class="balls-grid" id="ballsGrid">
+                <!-- Ball items will be generated here -->
+            </div>
+            <div class="ball-counts">
+                <div class="ball-count-item">
+                    <div class="ball-count-label">B (1-15)</div>
+                    <div class="ball-count-value" id="bCount">0</div>
+                </div>
+                <div class="ball-count-item">
+                    <div class="ball-count-label">I (16-30)</div>
+                    <div class="ball-count-value" id="iCount">0</div>
+                </div>
+                <div class="ball-count-item">
+                    <div class="ball-count-label">N (31-45)</div>
+                    <div class="ball-count-value" id="nCount">0</div>
+                </div>
+                <div class="ball-count-item">
+                    <div class="ball-count-label">G (46-60)</div>
+                    <div class="ball-count-value" id="gCount">0</div>
+                </div>
+                <div class="ball-count-item">
+                    <div class="ball-count-label">O (61-75)</div>
+                    <div class="ball-count-value" id="oCount">0</div>
+                </div>
+            </div>
+        </div>
+
         <div class="keyboard" id="keyboard">
             <!-- Keyboard numbers 1-75 will be generated here -->
         </div>
@@ -997,6 +1145,121 @@
                     numbers: [],
                     lastFour: []
                 });
+            }
+
+            // DOM elements for ball recording
+            const currentRoundDisplay = document.getElementById('currentRoundDisplay');
+            const roundSelect = document.getElementById('roundSelect');
+            const clearRoundBtn = document.getElementById('clearRound');
+            const ballsGrid = document.getElementById('ballsGrid');
+            const bCountEl = document.getElementById('bCount');
+            const iCountEl = document.getElementById('iCount');
+            const nCountEl = document.getElementById('nCount');
+            const gCountEl = document.getElementById('gCount');
+            const oCountEl = document.getElementById('oCount');
+
+            // Initialize ball recording section
+            function initializeBallRecording() {
+                updateRoundSelector();
+                updateBallDisplay();
+                updateBallCounts();
+            }
+
+            // Update round selector dropdown
+            function updateRoundSelector() {
+                roundSelect.innerHTML = '';
+                for (let i = 1; i <= gameState.maxRounds; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `Round ${i}`;
+                    if (i === gameState.currentRound) {
+                        option.selected = true;
+                    }
+                    roundSelect.appendChild(option);
+                }
+            }
+
+            // Update ball display grid
+            function updateBallDisplay() {
+                ballsGrid.innerHTML = '';
+                const currentRoundData = gameState.rounds[gameState.currentRound - 1];
+                
+                // Create 48 ball slots (4 rows of 12)
+                for (let i = 0; i < 48; i++) {
+                    const ballItem = document.createElement('div');
+                    ballItem.className = 'ball-item empty';
+                    
+                    if (i < currentRoundData.numbers.length) {
+                        const number = currentRoundData.numbers[i];
+                        ballItem.textContent = number;
+                        ballItem.classList.remove('empty');
+                        
+                        // Add color class based on BINGO letter
+                        if (number >= 1 && number <= 15) {
+                            ballItem.classList.add('b');
+                        } else if (number >= 16 && number <= 30) {
+                            ballItem.classList.add('i');
+                        } else if (number >= 31 && number <= 45) {
+                            ballItem.classList.add('n');
+                        } else if (number >= 46 && number <= 60) {
+                            ballItem.classList.add('g');
+                        } else if (number >= 61 && number <= 75) {
+                            ballItem.classList.add('o');
+                        }
+                    }
+                    
+                    ballsGrid.appendChild(ballItem);
+                }
+                
+                currentRoundDisplay.textContent = gameState.currentRound;
+            }
+
+            // Update ball counts by letter
+            function updateBallCounts() {
+                const currentRoundData = gameState.rounds[gameState.currentRound - 1];
+                const counts = {
+                    b: 0, // 1-15
+                    i: 0, // 16-30
+                    n: 0, // 31-45
+                    g: 0, // 46-60
+                    o: 0  // 61-75
+                };
+                
+                currentRoundData.numbers.forEach(number => {
+                    if (number >= 1 && number <= 15) counts.b++;
+                    else if (number >= 16 && number <= 30) counts.i++;
+                    else if (number >= 31 && number <= 45) counts.n++;
+                    else if (number >= 46 && number <= 60) counts.g++;
+                    else if (number >= 61 && number <= 75) counts.o++;
+                });
+                
+                bCountEl.textContent = counts.b;
+                iCountEl.textContent = counts.i;
+                nCountEl.textContent = counts.n;
+                gCountEl.textContent = counts.g;
+                oCountEl.textContent = counts.o;
+            }
+
+            // Clear current round
+            function clearCurrentRound() {
+                const currentRoundData = gameState.rounds[gameState.currentRound - 1];
+                
+                // Remove numbers from called numbers set
+                currentRoundData.numbers.forEach(number => {
+                    gameState.calledNumbers.delete(number);
+                });
+                
+                // Clear round data
+                currentRoundData.numbers = [];
+                currentRoundData.lastFour = [];
+                
+                // Update game state
+                updateCalledNumbers();
+                updateKeyboard();
+                updateBallDisplay();
+                updateBallCounts();
+                checkBingos();
+                updateCards();
             }
 
             // Winning patterns configuration - AUTO-DETECT ALL PATTERNS
@@ -1777,7 +2040,7 @@
                 return cardEl;
             }
 
-            // Update all cards display
+            // Update all cards display with pinned cards at the top
             function updateCards() {
                 cardsContainerEl.innerHTML = '';
                 winningCardsGridEl.innerHTML = '';
@@ -1803,8 +2066,10 @@
                 if (winningCards.length > 0) {
                     winningCardsContainerEl.style.display = 'block';
                     
-                    // Sort winning cards: multi-pattern first, then single-pattern
+                    // Sort winning cards: pinned first, then multi-pattern, then single-pattern
                     winningCards.sort((a, b) => {
+                        if (a.isPinned && !b.isPinned) return -1;
+                        if (!a.isPinned && b.isPinned) return 1;
                         if (a.isMultiPattern && !b.isMultiPattern) return -1;
                         if (!a.isMultiPattern && b.isMultiPattern) return 1;
                         return 0;
@@ -1818,6 +2083,13 @@
                     winningCardsContainerEl.style.display = 'none';
                 }
 
+                // Sort non-winning cards: pinned cards first
+                nonWinningCards.sort((a, b) => {
+                    if (a.isPinned && !b.isPinned) return -1;
+                    if (!a.isPinned && b.isPinned) return 1;
+                    return 0;
+                });
+
                 // Render non-winning cards in the main container
                 nonWinningCards.forEach(card => {
                     cardsContainerEl.appendChild(renderBingoCard(card));
@@ -1828,7 +2100,7 @@
                 multiBingoCountEl.textContent = gameState.multiBingos;
             }
 
-            // Toggle pin status of a card
+            // Toggle pin status of a card and move it to the top of its section
             function togglePinCard(cardId) {
                 const card = gameState.cards.find(c => c.id === cardId);
                 if (card) {
@@ -2000,6 +2272,10 @@
                 undoBtn.disabled = false;
                 checkBingos();
                 updateCards();
+                
+                // Update ball recording display
+                updateBallDisplay();
+                updateBallCounts();
             }
 
             // Update called numbers display
@@ -2109,6 +2385,11 @@
                 updateKeyboard();
                 updateCards();
                 undoBtn.disabled = true;
+                
+                // Update ball recording
+                updateRoundSelector();
+                updateBallDisplay();
+                updateBallCounts();
             }
 
             // Undo last call
@@ -2149,6 +2430,10 @@
                 updateKeyboard();
                 updateCards();
                 undoBtn.disabled = gameState.calledHistory.length === 0;
+                
+                // Update ball recording
+                updateBallDisplay();
+                updateBallCounts();
             }
 
             // Start another round
@@ -2169,6 +2454,11 @@
                     updateKeyboard();
                     updateCards();
                     undoBtn.disabled = true;
+                    
+                    // Update ball recording
+                    updateRoundSelector();
+                    updateBallDisplay();
+                    updateBallCounts();
                 }
             }
 
@@ -2191,6 +2481,15 @@
                 patternHorizontal4Btn.addEventListener('click', () => setPattern('horizontal4'));
                 patternFullCardBtn.addEventListener('click', () => setPattern('fullCard'));
                 patternAllBtn.addEventListener('click', () => setPattern('all'));
+
+                // Ball recording event listeners
+                roundSelect.addEventListener('change', (e) => {
+                    gameState.currentRound = parseInt(e.target.value);
+                    updateBallDisplay();
+                    updateBallCounts();
+                });
+                
+                clearRoundBtn.addEventListener('click', clearCurrentRound);
 
                 // Modal event listeners
                 closeEditModal.addEventListener('click', closeEditCardModal);
@@ -2289,6 +2588,7 @@
             // Initialize the game
             function initGame() {
                 initializeKeyboard();
+                initializeBallRecording();
                 createDefaultCards();
                 updateCards();
                 setupEventListeners();
