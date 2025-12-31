@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -116,7 +117,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #007bff; /* Blue for available balls */
+            background: #007bff;
+            /* Blue for available balls */
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
@@ -133,22 +135,41 @@
         }
         
         .key.called {
-            background: #dc3545 !important; /* Red for called balls */
+            background: #dc3545 !important;
+            /* Red for called balls */
             animation: called-pulse 0.5s ease;
         }
         
+        .key.orange-range {
+            background: #fd7e14 !important;
+            /* Orange for numbers 48-75 */
+        }
+        
+        .key.orange-range.available {
+            background: #fd7e14 !important;
+            /* Orange for numbers 48-75 */
+        }
+        
+        .key.orange-range.called {
+            background: #dc3545 !important;
+            /* Red when clicked */
+        }
+        
         .key.available {
-            background: #007bff; /* Blue for available balls */
+            background: #007bff;
+            /* Blue for available balls (1-47) */
         }
         
         .key.last-four {
-            background: #fd7e14 !important; /* Orange for last 4 balls */
+            background: #fd7e14 !important;
+            /* Orange for last 4 balls */
             animation: last-four-pulse 1.5s infinite;
             border: 2px solid #ffc107;
         }
         
         .key.disabled {
-            background: #6c757d; /* Gray for disabled balls */
+            background: #6c757d;
+            /* Gray for disabled balls */
             cursor: not-allowed;
             opacity: 0.7;
         }
@@ -186,6 +207,7 @@
             text-align: center;
             color: #ffc107;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            font-size: 1.3rem;
         }
         
         .winning-cards-grid {
@@ -294,10 +316,23 @@
         .card-header {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin-bottom: 10px;
             font-weight: bold;
             border-bottom: 2px solid #4a00e0;
             padding-bottom: 5px;
+        }
+        
+        .card-title {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .card-number {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #4a00e0;
         }
         
         .serial-number {
@@ -308,6 +343,7 @@
             padding: 2px 8px;
             border-radius: 4px;
             border: 1px solid #dee2e6;
+            letter-spacing: 1px;
         }
         
         .card-actions {
@@ -419,8 +455,8 @@
             color: white;
             animation: full-card-pulse 2s infinite;
         }
-        
         /* New letter pattern styles */
+        
         .bingo-cell.m-letter-win {
             background: #9C27B0;
             color: white;
@@ -572,8 +608,8 @@
             background: #fd7e14;
             box-shadow: 0 0 0 2px white;
         }
-        
         /* Ball Recording Section */
+        
         .ball-recording-section {
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
@@ -617,7 +653,7 @@
         
         .balls-grid {
             display: grid;
-            grid-template-columns: repeat(12, 1fr);
+            grid-template-columns: repeat(15, 1fr);
             gap: 8px;
             margin-bottom: 15px;
         }
@@ -635,23 +671,28 @@
         }
         
         .ball-item.b {
-            background: #007bff; /* Blue */
+            background: #007bff;
+            /* Blue */
         }
         
         .ball-item.i {
-            background: #dc3545; /* Red */
+            background: #dc3545;
+            /* Red */
         }
         
         .ball-item.n {
-            background: #6c757d; /* Gray */
+            background: #6c757d;
+            /* Gray */
         }
         
         .ball-item.g {
-            background: #28a745; /* Green */
+            background: #28a745;
+            /* Green */
         }
         
         .ball-item.o {
-            background: #fd7e14; /* Orange */
+            background: #fd7e14;
+            /* Orange */
         }
         
         .ball-item.empty {
@@ -681,8 +722,55 @@
             font-size: 0.9rem;
             opacity: 0.8;
         }
+        /* Number Counter Section */
         
+        .number-counter-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .number-counter-section h2 {
+            margin-bottom: 10px;
+            text-align: center;
+            color: #ffc107;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            font-size: 1.3rem;
+        }
+        
+        .number-counter-grid {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            gap: 5px;
+        }
+        
+        .counter-item {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 5px;
+        }
+        
+        .counter-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .counter-value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ffc107;
+            min-height: 1.2rem;
+        }
         /* Modal Styles */
+        
         .modal {
             display: none;
             position: fixed;
@@ -815,12 +903,18 @@
             justify-content: space-between;
             gap: 10px;
         }
-        
         /* Animations */
+        
         @keyframes called-pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
         
         @keyframes t-pattern-pulse {
@@ -987,8 +1081,8 @@
                 background-color: #fd7e14;
             }
         }
-        
         /* New letter pattern animations */
+        
         @keyframes m-letter-pulse {
             0% {
                 transform: scale(1);
@@ -1170,6 +1264,14 @@
             <button id="undoBtn" class="undo-btn" disabled>Undo Last Call</button>
         </div>
 
+        <!-- Number Counter Section -->
+        <div class="number-counter-section">
+            <h2>🔢 Number Counter</h2>
+            <div class="number-counter-grid" id="numberCounterGrid">
+                <!-- Number counters 1-75 will be generated here -->
+            </div>
+        </div>
+
         <!-- Ball Recording Section -->
         <div class="ball-recording-section">
             <h2>🎯 Ball Recording - Round <span id="currentRoundDisplay">1</span></h2>
@@ -1215,7 +1317,7 @@
 
         <!-- Ball limit warning -->
         <div id="ballLimitWarning" class="ball-limit-warning" style="display: none;">
-            <strong>⚠️ Ball Limit Reached!</strong> You have called the maximum of 48 balls. The last 4 balls are highlighted in orange.
+            <strong>⚠️ All Balls Called!</strong> You have called all 75 balls. The last 4 balls are highlighted in orange.
         </div>
 
         <!-- Winning cards section -->
@@ -1258,11 +1360,15 @@
                 </div>
                 <div class="stat-item">
                     <div>Balls Remaining</div>
-                    <div class="stat-value" id="ballsRemaining">48</div>
+                    <div class="stat-value" id="ballsRemaining">75</div>
                 </div>
                 <div class="stat-item">
                     <div>Current Round</div>
                     <div class="stat-value" id="currentRound">1</div>
+                </div>
+                <div class="stat-item">
+                    <div>Total Calls</div>
+                    <div class="stat-value" id="totalCalls">0</div>
                 </div>
             </div>
         </div>
@@ -1312,14 +1418,15 @@
                 nextCardId: 1,
                 nextSerialNumber: 1,
                 currentPattern: 'auto',
-                maxBalls: 48,
+                maxBalls: 75,
                 lastFourBalls: [],
                 currentRound: 1,
                 maxRounds: 30,
                 rounds: [],
                 pinnedCards: new Set(),
                 editingCard: null,
-                editingCell: null
+                editingCell: null,
+                numberCounts: new Array(76).fill(0) // Index 1-75, 0 is unused
             };
 
             // Initialize rounds array
@@ -1362,21 +1469,21 @@
                 }
             }
 
-            // Update ball display grid
+            // Update ball display grid - now shows 75 balls (5 rows of 15)
             function updateBallDisplay() {
                 ballsGrid.innerHTML = '';
                 const currentRoundData = gameState.rounds[gameState.currentRound - 1];
-                
-                // Create 48 ball slots (4 rows of 12)
-                for (let i = 0; i < 48; i++) {
+
+                // Create 75 ball slots (5 rows of 15)
+                for (let i = 0; i < 75; i++) {
                     const ballItem = document.createElement('div');
                     ballItem.className = 'ball-item empty';
-                    
+
                     if (i < currentRoundData.numbers.length) {
                         const number = currentRoundData.numbers[i];
                         ballItem.textContent = number;
                         ballItem.classList.remove('empty');
-                        
+
                         // Add color class based on BINGO letter
                         if (number >= 1 && number <= 15) {
                             ballItem.classList.add('b');
@@ -1390,10 +1497,10 @@
                             ballItem.classList.add('o');
                         }
                     }
-                    
+
                     ballsGrid.appendChild(ballItem);
                 }
-                
+
                 currentRoundDisplay.textContent = gameState.currentRound;
             }
 
@@ -1405,9 +1512,9 @@
                     i: 0, // 16-30
                     n: 0, // 31-45
                     g: 0, // 46-60
-                    o: 0  // 61-75
+                    o: 0 // 61-75
                 };
-                
+
                 currentRoundData.numbers.forEach(number => {
                     if (number >= 1 && number <= 15) counts.b++;
                     else if (number >= 16 && number <= 30) counts.i++;
@@ -1415,7 +1522,7 @@
                     else if (number >= 46 && number <= 60) counts.g++;
                     else if (number >= 61 && number <= 75) counts.o++;
                 });
-                
+
                 bCountEl.textContent = counts.b;
                 iCountEl.textContent = counts.i;
                 nCountEl.textContent = counts.n;
@@ -1426,30 +1533,80 @@
             // Clear current round
             function clearCurrentRound() {
                 const currentRoundData = gameState.rounds[gameState.currentRound - 1];
-                
+
                 // Remove numbers from called numbers set
                 currentRoundData.numbers.forEach(number => {
                     gameState.calledNumbers.delete(number);
+                    gameState.numberCounts[number] = Math.max(0, gameState.numberCounts[number] - 1);
                 });
-                
+
                 // Clear round data
                 currentRoundData.numbers = [];
                 currentRoundData.lastFour = [];
-                
+
                 // Update game state
                 updateCalledNumbers();
                 updateKeyboard();
                 updateBallDisplay();
                 updateBallCounts();
+                updateNumberCounter();
                 checkBingos();
                 updateCards();
             }
 
-            // Generate serial number with leading zeros
+            // Generate serial number with leading zeros (5 digits like 00059)
             function generateSerialNumber() {
                 const serial = gameState.nextSerialNumber.toString().padStart(5, '0');
                 gameState.nextSerialNumber++;
                 return serial;
+            }
+
+            // Initialize number counter
+            function initializeNumberCounter() {
+                const numberCounterGrid = document.getElementById('numberCounterGrid');
+                numberCounterGrid.innerHTML = '';
+
+                for (let i = 1; i <= 75; i++) {
+                    const counterItem = document.createElement('div');
+                    counterItem.className = 'counter-item';
+                    counterItem.dataset.number = i;
+
+                    const counterNumber = document.createElement('div');
+                    counterNumber.className = 'counter-number';
+                    counterNumber.textContent = i;
+
+                    const counterValue = document.createElement('div');
+                    counterValue.className = 'counter-value';
+                    counterValue.id = `counter-${i}`;
+                    counterValue.textContent = '0';
+
+                    counterItem.appendChild(counterNumber);
+                    counterItem.appendChild(counterValue);
+                    numberCounterGrid.appendChild(counterItem);
+                }
+            }
+
+            // Update number counter display
+            function updateNumberCounter() {
+                for (let i = 1; i <= 75; i++) {
+                    const counterEl = document.getElementById(`counter-${i}`);
+                    if (counterEl) {
+                        counterEl.textContent = gameState.numberCounts[i];
+
+                        // Add visual feedback for numbers with counts
+                        if (gameState.numberCounts[i] > 0) {
+                            counterEl.style.color = '#28a745'; // Green for numbers with counts
+                            counterEl.style.fontWeight = 'bold';
+                        } else {
+                            counterEl.style.color = '#ffc107'; // Yellow for zero counts
+                            counterEl.style.fontWeight = 'normal';
+                        }
+                    }
+                }
+
+                // Update total calls
+                const totalCalls = gameState.numberCounts.reduce((sum, count) => sum + count, 0);
+                document.getElementById('totalCalls').textContent = totalCalls;
             }
 
             // Winning patterns configuration - AUTO-DETECT ALL PATTERNS (including new letters)
@@ -1474,11 +1631,17 @@
                         const cells = [];
                         // Top row
                         for (let col = 0; col < 5; col++) {
-                            cells.push({ row: 0, col: col });
+                            cells.push({
+                                row: 0,
+                                col: col
+                            });
                         }
                         // Middle column (excluding the top cell which is already included)
                         for (let row = 1; row < 5; row++) {
-                            cells.push({ row: row, col: 2 });
+                            cells.push({
+                                row: row,
+                                col: 2
+                            });
                         }
                         return cells;
                     }
@@ -1494,12 +1657,19 @@
                         return topLeft && topRight && bottomLeft && bottomRight;
                     },
                     getWinningCells: function() {
-                        return [
-                            { row: 0, col: 0 },
-                            { row: 0, col: 4 },
-                            { row: 4, col: 0 },
-                            { row: 4, col: 4 }
-                        ];
+                        return [{
+                            row: 0,
+                            col: 0
+                        }, {
+                            row: 0,
+                            col: 4
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
                     }
                 },
                 diagonal1: {
@@ -1516,7 +1686,10 @@
                     getWinningCells: function() {
                         const cells = [];
                         for (let i = 0; i < 5; i++) {
-                            cells.push({ row: i, col: i });
+                            cells.push({
+                                row: i,
+                                col: i
+                            });
                         }
                         return cells;
                     }
@@ -1535,7 +1708,10 @@
                     getWinningCells: function() {
                         const cells = [];
                         for (let i = 0; i < 5; i++) {
-                            cells.push({ row: i, col: 4 - i });
+                            cells.push({
+                                row: i,
+                                col: 4 - i
+                            });
                         }
                         return cells;
                     }
@@ -1550,22 +1726,28 @@
                                 return false;
                             }
                         }
-                        
+
                         for (let i = 0; i < 5; i++) {
                             const number2 = card.numbers[i][4 - i];
                             if (number2 !== 'FREE' && !card.marked.has(number2)) {
                                 return false;
                             }
                         }
-                        
+
                         return true;
                     },
                     getWinningCells: function() {
                         const cells = [];
                         // Add both diagonals
                         for (let i = 0; i < 5; i++) {
-                            cells.push({ row: i, col: i });
-                            cells.push({ row: i, col: 4 - i });
+                            cells.push({
+                                row: i,
+                                col: i
+                            });
+                            cells.push({
+                                row: i,
+                                col: 4 - i
+                            });
                         }
                         return cells;
                     }
@@ -1585,7 +1767,7 @@
                                 }
                             }
                         }
-                        
+
                         // Middle row and middle column should NOT be marked (except FREE space)
                         for (let col = 0; col < 5; col++) {
                             if (col !== 2) { // Skip the center
@@ -1595,7 +1777,7 @@
                                 }
                             }
                         }
-                        
+
                         for (let row = 0; row < 5; row++) {
                             if (row !== 2) { // Skip the center
                                 const number = card.numbers[row][2];
@@ -1604,7 +1786,7 @@
                                 }
                             }
                         }
-                        
+
                         return true;
                     },
                     getWinningCells: function() {
@@ -1613,7 +1795,10 @@
                             for (let col = 0; col < 5; col++) {
                                 // Include all cells except middle row and middle column
                                 if (row !== 2 && col !== 2) {
-                                    cells.push({ row: row, col: col });
+                                    cells.push({
+                                        row: row,
+                                        col: col
+                                    });
                                 }
                             }
                         }
@@ -1625,7 +1810,7 @@
                     check: function(card) {
                         // Check all possible combinations of 2 complete rows
                         const completeRows = [];
-                        
+
                         for (let row = 0; row < 5; row++) {
                             let rowComplete = true;
                             for (let col = 0; col < 5; col++) {
@@ -1639,13 +1824,13 @@
                                 completeRows.push(row);
                             }
                         }
-                        
+
                         return completeRows.length >= 2;
                     },
                     getWinningCells: function(card) {
                         const cells = [];
                         const completeRows = [];
-                        
+
                         // Find which rows are complete
                         for (let row = 0; row < 5; row++) {
                             let rowComplete = true;
@@ -1660,15 +1845,18 @@
                                 completeRows.push(row);
                             }
                         }
-                        
+
                         // Add cells from the first two complete rows
                         for (let i = 0; i < Math.min(2, completeRows.length); i++) {
                             const row = completeRows[i];
                             for (let col = 0; col < 5; col++) {
-                                cells.push({ row: row, col: col });
+                                cells.push({
+                                    row: row,
+                                    col: col
+                                });
                             }
                         }
-                        
+
                         return cells;
                     }
                 },
@@ -1677,7 +1865,7 @@
                     check: function(card) {
                         // Check all possible combinations of 3 complete rows
                         const completeRows = [];
-                        
+
                         for (let row = 0; row < 5; row++) {
                             let rowComplete = true;
                             for (let col = 0; col < 5; col++) {
@@ -1691,13 +1879,13 @@
                                 completeRows.push(row);
                             }
                         }
-                        
+
                         return completeRows.length >= 3;
                     },
                     getWinningCells: function(card) {
                         const cells = [];
                         const completeRows = [];
-                        
+
                         // Find which rows are complete
                         for (let row = 0; row < 5; row++) {
                             let rowComplete = true;
@@ -1712,15 +1900,18 @@
                                 completeRows.push(row);
                             }
                         }
-                        
+
                         // Add cells from the first three complete rows
                         for (let i = 0; i < Math.min(3, completeRows.length); i++) {
                             const row = completeRows[i];
                             for (let col = 0; col < 5; col++) {
-                                cells.push({ row: row, col: col });
+                                cells.push({
+                                    row: row,
+                                    col: col
+                                });
                             }
                         }
-                        
+
                         return cells;
                     }
                 },
@@ -1729,7 +1920,7 @@
                     check: function(card) {
                         // Check all possible combinations of 4 complete rows
                         const completeRows = [];
-                        
+
                         for (let row = 0; row < 5; row++) {
                             let rowComplete = true;
                             for (let col = 0; col < 5; col++) {
@@ -1743,13 +1934,13 @@
                                 completeRows.push(row);
                             }
                         }
-                        
+
                         return completeRows.length >= 4;
                     },
                     getWinningCells: function(card) {
                         const cells = [];
                         const completeRows = [];
-                        
+
                         // Find which rows are complete
                         for (let row = 0; row < 5; row++) {
                             let rowComplete = true;
@@ -1764,15 +1955,18 @@
                                 completeRows.push(row);
                             }
                         }
-                        
+
                         // Add cells from the first four complete rows
                         for (let i = 0; i < Math.min(4, completeRows.length); i++) {
                             const row = completeRows[i];
                             for (let col = 0; col < 5; col++) {
-                                cells.push({ row: row, col: col });
+                                cells.push({
+                                    row: row,
+                                    col: col
+                                });
                             }
                         }
-                        
+
                         return cells;
                     }
                 },
@@ -1794,7 +1988,10 @@
                         const cells = [];
                         for (let row = 0; row < 5; row++) {
                             for (let col = 0; col < 5; col++) {
-                                cells.push({ row: row, col: col });
+                                cells.push({
+                                    row: row,
+                                    col: col
+                                });
                             }
                         }
                         return cells;
@@ -1805,189 +2002,639 @@
                     name: 'M Letter',
                     check: function(card) {
                         // M pattern: First column, middle cell of row 2, middle cell of row 3, last column
-                        const cells = [
-                            { row: 0, col: 0 }, { row: 0, col: 4 },
-                            { row: 1, col: 0 }, { row: 1, col: 4 },
-                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 3 },
-                            { row: 4, col: 0 }, { row: 4, col: 4 }
-                        ];
-                        
+                        const cells = [{
+                            row: 0,
+                            col: 0
+                        }, {
+                            row: 0,
+                            col: 4
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 1,
+                            col: 4
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 0
+                        }, {
+                            row: 3,
+                            col: 3
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
+
                         return cells.every(cell => {
                             const number = card.numbers[cell.row][cell.col];
                             return number === 'FREE' || card.marked.has(number);
                         });
                     },
                     getWinningCells: function() {
-                        return [
-                            { row: 0, col: 0 }, { row: 0, col: 4 },
-                            { row: 1, col: 0 }, { row: 1, col: 4 },
-                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 3 },
-                            { row: 4, col: 0 }, { row: 4, col: 4 }
-                        ];
+                        return [{
+                            row: 0,
+                            col: 0
+                        }, {
+                            row: 0,
+                            col: 4
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 1,
+                            col: 4
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 0
+                        }, {
+                            row: 3,
+                            col: 3
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
                     }
                 },
                 aLetter: {
                     name: 'A Letter',
                     check: function(card) {
                         // A pattern: Top row, middle column, bottom row
-                        const cells = [
-                            { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 },
-                            { row: 1, col: 0 }, { row: 1, col: 2 }, { row: 1, col: 4 },
-                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 4 },
-                            { row: 4, col: 0 }, { row: 4, col: 4 }
-                        ];
-                        
+                        const cells = [{
+                            row: 0,
+                            col: 1
+                        }, {
+                            row: 0,
+                            col: 2
+                        }, {
+                            row: 0,
+                            col: 3
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 1,
+                            col: 2
+                        }, {
+                            row: 1,
+                            col: 4
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 1
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 3
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 0
+                        }, {
+                            row: 3,
+                            col: 4
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
+
                         return cells.every(cell => {
                             const number = card.numbers[cell.row][cell.col];
                             return number === 'FREE' || card.marked.has(number);
                         });
                     },
                     getWinningCells: function() {
-                        return [
-                            { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 },
-                            { row: 1, col: 0 }, { row: 1, col: 2 }, { row: 1, col: 4 },
-                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 4 },
-                            { row: 4, col: 0 }, { row: 4, col: 4 }
-                        ];
+                        return [{
+                            row: 0,
+                            col: 1
+                        }, {
+                            row: 0,
+                            col: 2
+                        }, {
+                            row: 0,
+                            col: 3
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 1,
+                            col: 2
+                        }, {
+                            row: 1,
+                            col: 4
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 1
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 3
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 0
+                        }, {
+                            row: 3,
+                            col: 4
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
                     }
                 },
                 gLetter: {
                     name: 'G Letter',
                     check: function(card) {
                         // G pattern: First column, top row, bottom row, middle row, last column (partially)
-                        const cells = [
-                            { row: 0, col: 0 }, { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 },
-                            { row: 1, col: 0 },
-                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 4 },
-                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }, { row: 4, col: 4 }
-                        ];
-                        
+                        const cells = [{
+                            row: 0,
+                            col: 0
+                        }, {
+                            row: 0,
+                            col: 1
+                        }, {
+                            row: 0,
+                            col: 2
+                        }, {
+                            row: 0,
+                            col: 3
+                        }, {
+                            row: 0,
+                            col: 4
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 3
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 0
+                        }, {
+                            row: 3,
+                            col: 4
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 1
+                        }, {
+                            row: 4,
+                            col: 2
+                        }, {
+                            row: 4,
+                            col: 3
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
+
                         return cells.every(cell => {
                             const number = card.numbers[cell.row][cell.col];
                             return number === 'FREE' || card.marked.has(number);
                         });
                     },
                     getWinningCells: function() {
-                        return [
-                            { row: 0, col: 0 }, { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 },
-                            { row: 1, col: 0 },
-                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 4 },
-                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }, { row: 4, col: 4 }
-                        ];
+                        return [{
+                            row: 0,
+                            col: 0
+                        }, {
+                            row: 0,
+                            col: 1
+                        }, {
+                            row: 0,
+                            col: 2
+                        }, {
+                            row: 0,
+                            col: 3
+                        }, {
+                            row: 0,
+                            col: 4
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 3
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 0
+                        }, {
+                            row: 3,
+                            col: 4
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 1
+                        }, {
+                            row: 4,
+                            col: 2
+                        }, {
+                            row: 4,
+                            col: 3
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
                     }
                 },
                 sLetter: {
                     name: 'S Letter',
                     check: function(card) {
                         // S pattern: Top row, middle row, bottom row, with specific columns
-                        const cells = [
-                            { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 },
-                            { row: 1, col: 0 },
-                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
-                            { row: 3, col: 4 },
-                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }
-                        ];
-                        
+                        const cells = [{
+                            row: 0,
+                            col: 1
+                        }, {
+                            row: 0,
+                            col: 2
+                        }, {
+                            row: 0,
+                            col: 3
+                        }, {
+                            row: 0,
+                            col: 4
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 1
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 3
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 4
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 1
+                        }, {
+                            row: 4,
+                            col: 2
+                        }, {
+                            row: 4,
+                            col: 3
+                        }];
+
                         return cells.every(cell => {
                             const number = card.numbers[cell.row][cell.col];
                             return number === 'FREE' || card.marked.has(number);
                         });
                     },
                     getWinningCells: function() {
-                        return [
-                            { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 },
-                            { row: 1, col: 0 },
-                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
-                            { row: 3, col: 4 },
-                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }
-                        ];
+                        return [{
+                            row: 0,
+                            col: 1
+                        }, {
+                            row: 0,
+                            col: 2
+                        }, {
+                            row: 0,
+                            col: 3
+                        }, {
+                            row: 0,
+                            col: 4
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 1
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 3
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 4
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 1
+                        }, {
+                            row: 4,
+                            col: 2
+                        }, {
+                            row: 4,
+                            col: 3
+                        }];
                     }
                 },
                 iLetter: {
                     name: 'I Letter',
                     check: function(card) {
                         // I pattern: First column, middle column, last column
-                        const cells = [
-                            { row: 0, col: 2 },
-                            { row: 1, col: 2 },
-                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
-                            { row: 3, col: 2 },
-                            { row: 4, col: 2 }
-                        ];
-                        
+                        const cells = [{
+                            row: 0,
+                            col: 2
+                        }, {
+                            row: 1,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 1
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 3
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 2
+                        }, {
+                            row: 4,
+                            col: 2
+                        }];
+
                         return cells.every(cell => {
                             const number = card.numbers[cell.row][cell.col];
                             return number === 'FREE' || card.marked.has(number);
                         });
                     },
                     getWinningCells: function() {
-                        return [
-                            { row: 0, col: 2 },
-                            { row: 1, col: 2 },
-                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
-                            { row: 3, col: 2 },
-                            { row: 4, col: 2 }
-                        ];
+                        return [{
+                            row: 0,
+                            col: 2
+                        }, {
+                            row: 1,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 1
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 3
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 2
+                        }, {
+                            row: 4,
+                            col: 2
+                        }];
                     }
                 },
                 nLetter: {
                     name: 'N Letter',
                     check: function(card) {
                         // N pattern: First column, diagonal, last column
-                        const cells = [
-                            { row: 0, col: 0 }, { row: 0, col: 4 },
-                            { row: 1, col: 0 }, { row: 1, col: 1 }, { row: 1, col: 4 },
-                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 3 }, { row: 3, col: 4 },
-                            { row: 4, col: 0 }, { row: 4, col: 4 }
-                        ];
-                        
+                        const cells = [{
+                            row: 0,
+                            col: 0
+                        }, {
+                            row: 0,
+                            col: 4
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 1,
+                            col: 1
+                        }, {
+                            row: 1,
+                            col: 4
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 0
+                        }, {
+                            row: 3,
+                            col: 3
+                        }, {
+                            row: 3,
+                            col: 4
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
+
                         return cells.every(cell => {
                             const number = card.numbers[cell.row][cell.col];
                             return number === 'FREE' || card.marked.has(number);
                         });
                     },
                     getWinningCells: function() {
-                        return [
-                            { row: 0, col: 0 }, { row: 0, col: 4 },
-                            { row: 1, col: 0 }, { row: 1, col: 1 }, { row: 1, col: 4 },
-                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 3 }, { row: 3, col: 4 },
-                            { row: 4, col: 0 }, { row: 4, col: 4 }
-                        ];
+                        return [{
+                            row: 0,
+                            col: 0
+                        }, {
+                            row: 0,
+                            col: 4
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 1,
+                            col: 1
+                        }, {
+                            row: 1,
+                            col: 4
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 2
+                        }, {
+                            row: 2,
+                            col: 4
+                        }, {
+                            row: 3,
+                            col: 0
+                        }, {
+                            row: 3,
+                            col: 3
+                        }, {
+                            row: 3,
+                            col: 4
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
                     }
                 },
                 lLetter: {
                     name: 'L Letter',
                     check: function(card) {
                         // L pattern: First column, bottom row
-                        const cells = [
-                            { row: 0, col: 0 },
-                            { row: 1, col: 0 },
-                            { row: 2, col: 0 },
-                            { row: 3, col: 0 },
-                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }, { row: 4, col: 4 }
-                        ];
-                        
+                        const cells = [{
+                            row: 0,
+                            col: 0
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 3,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 1
+                        }, {
+                            row: 4,
+                            col: 2
+                        }, {
+                            row: 4,
+                            col: 3
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
+
                         return cells.every(cell => {
                             const number = card.numbers[cell.row][cell.col];
                             return number === 'FREE' || card.marked.has(number);
                         });
                     },
                     getWinningCells: function() {
-                        return [
-                            { row: 0, col: 0 },
-                            { row: 1, col: 0 },
-                            { row: 2, col: 0 },
-                            { row: 3, col: 0 },
-                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }, { row: 4, col: 4 }
-                        ];
+                        return [{
+                            row: 0,
+                            col: 0
+                        }, {
+                            row: 1,
+                            col: 0
+                        }, {
+                            row: 2,
+                            col: 0
+                        }, {
+                            row: 3,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 0
+                        }, {
+                            row: 4,
+                            col: 1
+                        }, {
+                            row: 4,
+                            col: 2
+                        }, {
+                            row: 4,
+                            col: 3
+                        }, {
+                            row: 4,
+                            col: 4
+                        }];
                     }
                 }
             };
@@ -2040,13 +2687,13 @@
             const closeEditModal = document.getElementById('closeEditModal');
             const saveCardChangesBtn = document.getElementById('saveCardChanges');
             const cancelEditCardBtn = document.getElementById('cancelEditCard');
-            
+
             const numberInputModal = document.getElementById('numberInputModal');
             const numberInputGridEl = document.getElementById('numberInputGrid');
             const setFreeSpaceBtn = document.getElementById('setFreeSpace');
             const cancelNumberInputBtn = document.getElementById('cancelNumberInput');
 
-            // Initialize the keyboard
+            // Initialize the keyboard with color coding
             function initializeKeyboard() {
                 keyboardEl.innerHTML = '';
                 for (let i = 1; i <= 75; i++) {
@@ -2055,20 +2702,15 @@
                     key.textContent = i;
                     key.dataset.number = i;
                     key.addEventListener('click', () => callNumber(i));
-                    
-                    // Apply color based on BINGO letter
-                    if (i >= 1 && i <= 15) {
-                        key.style.background = '#007bff'; // Blue for B
-                    } else if (i >= 16 && i <= 30) {
-                        key.style.background = '#007bff'; // Blue for I
-                    } else if (i >= 31 && i <= 45) {
-                        key.style.background = '#007bff'; // Blue for N
-                    } else if (i >= 46 && i <= 60) {
-                        key.style.background = '#007bff'; // Blue for G
-                    } else if (i >= 61 && i <= 75) {
-                        key.style.background = '#007bff'; // Blue for O
+
+                    // Apply color based on number range
+                    if (i >= 48 && i <= 75) {
+                        key.style.background = '#fd7e14'; // Orange for numbers 48-75
+                        key.classList.add('orange-range');
+                    } else {
+                        key.style.background = '#007bff'; // Blue for numbers 1-47
                     }
-                    
+
                     keyboardEl.appendChild(key);
                 }
                 updateKeyboard();
@@ -2158,149 +2800,60 @@
                 return card;
             }
 
-            // Create default cards with serial numbers
+            // Create default cards with specific serial numbers
             function createDefaultCards() {
-                const defaultCards = [
-                    [
+                const defaultCards = [{
+                    numbers: [
                         [5, 20, 42, 51, 72],
                         [12, 16, 41, 53, 73],
-                        [6, 29, 'WH', 57, 74],
+                        [6, 29, 'FREE', 57, 74],
                         [11, 27, 45, 50, 63],
                         [8, 30, 43, 60, 64]
                     ],
-                    [
+                    serial: '00003213'
+                }, {
+                    numbers: [
                         [1, 30, 43, 57, 75],
                         [14, 16, 42, 58, 74],
                         [6, 22, 'FREE', 47, 73],
                         [13, 23, 39, 59, 66],
                         [7, 27, 31, 55, 71]
                     ],
-                    [
+                    serial: '00000124'
+                }, {
+                    numbers: [
                         [6, 17, 34, 52, 61],
                         [9, 21, 43, 58, 74],
                         [11, 27, 'FREE', 47, 67],
                         [2, 23, 40, 60, 66],
                         [15, 26, 38, 50, 73]
                     ],
-                    [
-  [1, 16, 31, 58, 62],
-  [2, 18, 36, 49, 64],
-  [6, 30, 'FREE', 52, 67],
-  [10, 19, 42, 50, 68],
-  [15, 25, 43, 51, 72]
-],
-[
-  [12, 20, 44, 53, 65],
-  [5, 23, 35, 57, 62],
-  [6, 22, 'FREE', 56, 64],
-  [13, 18, 34, 58, 67],
-  [11, 17, 33, 59, 74]
-],
-[
-  [10, 23, 33, 49, 63],
-  [3, 18, 37, 47, 66],
-  [7, 26, 'FREE', 57, 72],
-  [11, 22, 32, 58, 73],
-  [12, 30, 42, 55, 62]
-],
-[
-  [12, 28, 41, 57, 62],
-  [13, 29, 32, 54, 67],
-  [14, 16, 'FREE', 46, 64],
-  [11, 25, 43, 49, 69],
-  [9, 24, 35, 51, 74]
-],
-[
-  [11, 27, 42, 59, 62],
-  [2, 29, 45, 55, 67],
-  [15, 16, 'FREE', 47, 66],
-  [8, 30, 31, 56, 74],
-  [12, 21, 40, 52, 61]
-],
-[
-  [9, 18, 34, 46, 61],
-  [12, 22, 40, 50, 65],
-  [7, 25, 'FREE', 53, 68],
-  [14, 28, 33, 55, 70],
-  [13, 29, 45, 57, 73]
-],
-   [
-  [11, 27, 42, 59, 62],
-  [2, 29, 45, 55, 67],
-  [15, 16, 'FREE', 47, 66],
-  [8, 30, 31, 56, 74],
-  [12, 21, 40, 52, 61]
-],
-[
-  [9, 18, 34, 46, 61],
-  [12, 22, 40, 50, 65],
-  [7, 25, 'FREE', 53, 68],
-  [14, 28, 33, 55, 70],
-  [13, 29, 45, 57, 73]
-],
-[
-  [13, 27, 32, 47, 62],
-  [9, 16, 33, 50, 63],
-  [11, 17, 'FREE', 60, 71],
-  [2, 29, 36, 51, 75],
-  [15, 30, 35, 53, 72]
-],
-[
-  [11, 28, 37, 58, 68],
-  [9, 30, 45, 59, 69],
-  [10, 20, 'FREE', 49, 74],
-  [5, 22, 44, 47, 66],
-  [8, 29, 41, 51, 75]
-],
-[
-  [11, 16, 31, 49, 71],
-  [8, 20, 37, 55, 69],
-  [12, 24, 'FREE', 58, 75],
-  [9, 21, 43, 46, 67],
-  [15, 30, 44, 51, 61]
-],
-[
-  [8, 17, 44, 52, 67],
-  [15, 28, 43, 57, 72],
-  [13, 20, 'FREE', 46, 69],
-  [9, 25, 34, 51, 62],
-  [11, 24, 32, 55, 75]
-],     
-  [
-  [11, 20, 35, 55, 67],
-  [6, 26, 34, 59, 66],
-  [2, 16, 'FREE', 46, 61],
-  [10, 17, 43, 51, 72],
-  [12, 25, 45, 50, 62]
-], 
-[
-        [11, 20, 35, 55, 67],
-        [6, 26, 34, 59, 66],
-        [2, 16, 'FREE', 46, 61],
-        [10, 17, 43, 51, 72],
-        [12, 25, 45, 50, 62]
-      ],
-      [
-        [12, 27, 45, 58, 66],
-        [9, 16, 40, 50, 62],
-        [15, 21, 'FREE', 47, 71],
-        [1, 20, 31, 53, 69],
-        [5, 25, 35, 52, 74]
-      ],
-      [
-        [14, 21, 36, 52, 66],
-        [1, 26, 31, 49, 70],
-        [3, 17, 'FREE', 56, 72],
-        [6, 27, 45, 47, 69],
-        [12, 25, 41, 50, 71]
-      ],
-];
+                    serial: '00000009'
+                }, {
+                    numbers: [
+                        [8, 23, 34, 47, 64],
+                        [2, 30, 32, 58, 73],
+                        [12, 24, 'FREE', 53, 63],
+                        [10, 28, 42, 56, 75],
+                        [1, 16, 33, 50, 66]
+                    ],
+                    serial: generateSerialNumber()
+                }, {
+                    numbers: [
+                        [12, 20, 44, 53, 65],
+                        [5, 23, 35, 57, 62],
+                        [6, 22, 'FREE', 56, 64],
+                        [13, 18, 34, 58, 67],
+                        [11, 17, 33, 59, 74]
+                    ],
+                    serial: generateSerialNumber()
+                }];
 
-                defaultCards.forEach((cardNumbers) => {
+                defaultCards.forEach((cardData, index) => {
                     const card = {
                         id: gameState.nextCardId++,
-                        serialNumber: generateSerialNumber(),
-                        numbers: cardNumbers,
+                        serialNumber: cardData.serial,
+                        numbers: cardData.numbers,
                         marked: new Set(),
                         hasBingo: false,
                         isMultiPattern: false,
@@ -2313,7 +2866,7 @@
                 });
             }
 
-            // Render a Bingo card with serial number
+            // Render a Bingo card with serial number in the requested format
             function renderBingoCard(card) {
                 const cardEl = document.createElement('div');
                 cardEl.className = 'bingo-card';
@@ -2328,16 +2881,15 @@
                 const headerEl = document.createElement('div');
                 headerEl.className = 'card-header';
                 headerEl.innerHTML = `
-                    <div>
-                        <div>Card #${card.id}</div>
-                        <div class="serial-number">Serial: ${card.serialNumber}</div>
+                    <div class="card-title">
+                        <div class="card-number">CARD ${card.id}, SERIAL: ${card.serialNumber}</div>
                     </div>
                 `;
-                
+
                 // Add card actions
                 const actionsEl = document.createElement('div');
                 actionsEl.className = 'card-actions';
-                
+
                 const pinBtn = document.createElement('button');
                 pinBtn.className = 'card-action-btn';
                 pinBtn.innerHTML = card.isPinned ? '📌' : '📍';
@@ -2346,7 +2898,7 @@
                     e.stopPropagation();
                     togglePinCard(card.id);
                 });
-                
+
                 const editBtn = document.createElement('button');
                 editBtn.className = 'card-action-btn';
                 editBtn.innerHTML = '✏️';
@@ -2355,11 +2907,11 @@
                     e.stopPropagation();
                     openEditCardModal(card);
                 });
-                
+
                 actionsEl.appendChild(pinBtn);
                 actionsEl.appendChild(editBtn);
                 headerEl.appendChild(actionsEl);
-                
+
                 cardEl.appendChild(headerEl);
 
                 // Add pin badge
@@ -2383,7 +2935,7 @@
                         multiWinningBadge.textContent = card.winningPatterns.length;
                         multiWinningBadge.title = `${card.winningPatterns.length} patterns completed!`;
                         cardEl.appendChild(multiWinningBadge);
-                        
+
                         // Add pattern indicators for multi-pattern wins
                         card.winningPatterns.forEach((pattern, index) => {
                             const patternIndicator = document.createElement('div');
@@ -2398,7 +2950,7 @@
                         const winningBadge = document.createElement('div');
                         winningBadge.className = 'winning-badge';
                         winningBadge.textContent = 'BINGO!';
-                        winningBadge.title = card.winningPatterns[0]?.name || 'BINGO!';
+                        winningBadge.title = card.winningPatterns[0] ? .name || 'BINGO!';
                         cardEl.appendChild(winningBadge);
                     }
                 }
@@ -2474,7 +3026,7 @@
                 // Separate winning and non-winning cards
                 const winningCards = [];
                 const nonWinningCards = [];
-                
+
                 gameState.cards.forEach(card => {
                     if (card.hasBingo) {
                         winningCards.push(card);
@@ -2486,7 +3038,7 @@
                 // Show/hide winning cards container
                 if (winningCards.length > 0) {
                     winningCardsContainerEl.style.display = 'block';
-                    
+
                     // Sort winning cards: pinned first, then multi-pattern, then single-pattern
                     winningCards.sort((a, b) => {
                         if (a.isPinned && !b.isPinned) return -1;
@@ -2495,7 +3047,7 @@
                         if (!a.isMultiPattern && b.isMultiPattern) return 1;
                         return 0;
                     });
-                    
+
                     // Render winning cards in the winning section
                     winningCards.forEach(card => {
                         winningCardsGridEl.appendChild(renderBingoCard(card));
@@ -2540,7 +3092,7 @@
                 gameState.editingCard = card;
                 editCardIdEl.textContent = card.id;
                 editCardGridEl.innerHTML = '';
-                
+
                 // Create editable grid
                 for (let row = 0; row < 5; row++) {
                     for (let col = 0; col < 5; col++) {
@@ -2548,63 +3100,75 @@
                         cell.className = 'edit-card-cell';
                         const number = card.numbers[row][col];
                         cell.textContent = number;
-                        
+
                         if (number === 'FREE') {
                             cell.classList.add('free');
                         }
-                        
+
                         cell.dataset.row = row;
                         cell.dataset.col = col;
-                        
+
                         cell.addEventListener('click', () => {
                             openNumberInputModal(row, col);
                         });
-                        
+
                         editCardGridEl.appendChild(cell);
                     }
                 }
-                
+
                 editCardModal.style.display = 'flex';
             }
 
             // Open number input modal
             function openNumberInputModal(row, col) {
-                gameState.editingCell = { row, col };
+                gameState.editingCell = {
+                    row,
+                    col
+                };
                 numberInputGridEl.innerHTML = '';
-                
+
                 // Determine the column range
-                const ranges = [
-                    { min: 1, max: 15 },
-                    { min: 16, max: 30 },
-                    { min: 31, max: 45 },
-                    { min: 46, max: 60 },
-                    { min: 61, max: 75 }
-                ];
-                
+                const ranges = [{
+                    min: 1,
+                    max: 15
+                }, {
+                    min: 16,
+                    max: 30
+                }, {
+                    min: 31,
+                    max: 45
+                }, {
+                    min: 46,
+                    max: 60
+                }, {
+                    min: 61,
+                    max: 75
+                }];
+
                 const range = ranges[col];
-                
+
                 // Create number buttons for the column
                 for (let i = range.min; i <= range.max; i++) {
                     const btn = document.createElement('button');
                     btn.className = 'number-input-btn';
                     btn.textContent = i;
                     btn.dataset.number = i;
-                    
+
                     btn.addEventListener('click', () => {
                         setCardNumber(gameState.editingCard, row, col, i);
                         closeNumberInputModal();
                     });
-                    
+
                     numberInputGridEl.appendChild(btn);
                 }
-                
+
                 numberInputModal.style.display = 'flex';
             }
 
             // Set a card number
             function setCardNumber(card, row, col, number) {
                 card.numbers[row][col] = number;
-                
+
                 // If we're setting the center cell to FREE, update the marked set
                 if (row === 2 && col === 2 && number === 'FREE') {
                     // The FREE space is always considered marked
@@ -2615,7 +3179,7 @@
                     // If we're changing the center from FREE to a number, remove it from marked
                     card.marked.delete('FREE');
                 }
-                
+
                 // Update the edit modal display
                 const cell = editCardGridEl.querySelector(`[data-row="${row}"][data-col="${col}"]`);
                 if (cell) {
@@ -2649,7 +3213,7 @@
                     gameState.editingCard.isMultiPattern = false;
                     gameState.editingCard.winningPatterns = [];
                     gameState.editingCard.winningCells = [];
-                    
+
                     checkBingos();
                     closeEditCardModal();
                 }
@@ -2666,6 +3230,7 @@
 
                 gameState.calledNumbers.add(number);
                 gameState.calledHistory.push(number);
+                gameState.numberCounts[number]++;
 
                 // Mark number on all cards
                 gameState.cards.forEach(card => {
@@ -2690,10 +3255,11 @@
 
                 updateCalledNumbers();
                 updateKeyboard();
+                updateNumberCounter();
                 undoBtn.disabled = false;
                 checkBingos();
                 updateCards();
-                
+
                 // Update ball recording display
                 updateBallDisplay();
                 updateBallCounts();
@@ -2707,7 +3273,7 @@
             // Check for bingos - AUTO-DETECT ALL PATTERNS (including new letters)
             function checkBingos() {
                 let bingoFound = false;
-                
+
                 gameState.cards.forEach(card => {
                     if (card.hasBingo) return; // Skip cards that already have bingo
 
@@ -2722,14 +3288,14 @@
                         const pattern = winningPatterns[patternKey];
                         if (pattern.check(card)) {
                             winningPatternsFound.push({
-                                type: patternKey + (patternKey === 't' ? '-pattern' : 
-                                      patternKey === 'corners' ? '-corners' :
-                                      patternKey === 'diagonal1' ? '-win' :
-                                      patternKey === 'diagonal2' ? '-win' : 
-                                      patternKey === 'x' ? '-pattern-win' : '-win'),
+                                type: patternKey + (patternKey === 't' ? '-pattern' :
+                                    patternKey === 'corners' ? '-corners' :
+                                    patternKey === 'diagonal1' ? '-win' :
+                                    patternKey === 'diagonal2' ? '-win' :
+                                    patternKey === 'x' ? '-pattern-win' : '-win'),
                                 name: pattern.name
                             });
-                            
+
                             // Add winning cells for this pattern
                             const patternCells = pattern.getWinningCells(card);
                             patternCells.forEach(cell => {
@@ -2743,7 +3309,10 @@
                         card.winningPatterns = winningPatternsFound;
                         card.winningCells = Array.from(winningCells).map(str => {
                             const [row, col] = str.split(',').map(Number);
-                            return { row, col };
+                            return {
+                                row,
+                                col
+                            };
                         });
 
                         if (winningPatternsFound.length > 1) {
@@ -2753,8 +3322,6 @@
                             gameState.singleBingos++;
                         }
                         bingoFound = true;
-                        
-                        console.log(`Card ${card.id} (Serial: ${card.serialNumber}) won with:`, winningPatternsFound.map(p => p.name));
                     }
                 });
 
@@ -2769,7 +3336,7 @@
                 if (gameState.cards.length > 0) {
                     gameState.nextCardId = Math.max(...gameState.cards.map(c => c.id)) + 1;
                 } else {
-                    gameState.nextCardId = 1;
+                    gameState.nextCardId = 4; // Start from 4 since we have 3 default cards
                 }
 
                 // Generate new cards
@@ -2792,6 +3359,7 @@
                 gameState.nextCardId = 1;
                 gameState.nextSerialNumber = 1;
                 gameState.pinnedCards.clear();
+                gameState.numberCounts = new Array(76).fill(0);
 
                 for (let i = 0; i < gameState.maxRounds; i++) {
                     gameState.rounds[i] = {
@@ -2805,9 +3373,10 @@
 
                 updateCalledNumbers();
                 updateKeyboard();
+                updateNumberCounter();
                 updateCards();
                 undoBtn.disabled = true;
-                
+
                 // Update ball recording
                 updateRoundSelector();
                 updateBallDisplay();
@@ -2820,6 +3389,7 @@
 
                 const lastNumber = gameState.calledHistory.pop();
                 gameState.calledNumbers.delete(lastNumber);
+                gameState.numberCounts[lastNumber] = Math.max(0, gameState.numberCounts[lastNumber] - 1);
 
                 // Remove number from all cards
                 gameState.cards.forEach(card => {
@@ -2850,9 +3420,10 @@
 
                 updateCalledNumbers();
                 updateKeyboard();
+                updateNumberCounter();
                 updateCards();
                 undoBtn.disabled = gameState.calledHistory.length === 0;
-                
+
                 // Update ball recording
                 updateBallDisplay();
                 updateBallCounts();
@@ -2865,6 +3436,7 @@
                     gameState.calledNumbers.clear();
                     gameState.calledHistory = [];
                     gameState.lastFourBalls = [];
+                    gameState.numberCounts = new Array(76).fill(0);
                     gameState.cards.forEach(card => {
                         card.marked.clear();
                         card.hasBingo = false;
@@ -2874,9 +3446,10 @@
                     });
                     updateCalledNumbers();
                     updateKeyboard();
+                    updateNumberCounter();
                     updateCards();
                     undoBtn.disabled = true;
-                    
+
                     // Update ball recording
                     updateRoundSelector();
                     updateBallDisplay();
@@ -2918,28 +3491,28 @@
                     updateBallDisplay();
                     updateBallCounts();
                 });
-                
+
                 clearRoundBtn.addEventListener('click', clearCurrentRound);
 
                 // Modal event listeners
                 closeEditModal.addEventListener('click', closeEditCardModal);
                 cancelEditCardBtn.addEventListener('click', closeEditCardModal);
                 saveCardChangesBtn.addEventListener('click', saveCardChanges);
-                
+
                 setFreeSpaceBtn.addEventListener('click', () => {
                     if (gameState.editingCard && gameState.editingCell) {
                         setCardNumber(
-                            gameState.editingCard, 
-                            gameState.editingCell.row, 
-                            gameState.editingCell.col, 
+                            gameState.editingCard,
+                            gameState.editingCell.row,
+                            gameState.editingCell.col,
                             'FREE'
                         );
                         closeNumberInputModal();
                     }
                 });
-                
+
                 cancelNumberInputBtn.addEventListener('click', closeNumberInputModal);
-                
+
                 // Close modals when clicking outside
                 window.addEventListener('click', (e) => {
                     if (e.target === editCardModal) {
@@ -2958,7 +3531,7 @@
                     autoDetectBtn, patternTBtn, patternCornersBtn, patternDiagonal1Btn,
                     patternDiagonal2Btn, patternXBtn, patternEmptyCrossBtn, patternHorizontal2Btn,
                     patternHorizontal3Btn, patternHorizontal4Btn, patternFullCardBtn,
-                    patternMBtn, patternABtn, patternGBtn, patternSBtn, 
+                    patternMBtn, patternABtn, patternGBtn, patternSBtn,
                     patternIBtn, patternNBtn, patternLBtn, patternAllBtn
                 ];
                 patternButtons.forEach(btn => btn.classList.remove('active'));
@@ -3022,7 +3595,7 @@
                         patternAllBtn.classList.add('active');
                         break;
                 }
-                
+
                 // Re-check bingos with new pattern
                 gameState.cards.forEach(card => {
                     if (card.hasBingo) {
@@ -3034,7 +3607,7 @@
                 });
                 gameState.singleBingos = 0;
                 gameState.multiBingos = 0;
-                
+
                 checkBingos();
                 updateCards();
             }
@@ -3042,10 +3615,12 @@
             // Initialize the game
             function initGame() {
                 initializeKeyboard();
-                initializeBallRecording();
+                initializeNumberCounter();
                 createDefaultCards();
-                updateCards();
+                initializeBallRecording();
                 setupEventListeners();
+                updateCards();
+                updateCalledNumbers();
             }
 
             // Start the game
@@ -3053,4 +3628,5 @@
         });
     </script>
 </body>
+
 </html>
