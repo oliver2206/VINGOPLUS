@@ -402,6 +402,49 @@
             animation: full-card-pulse 2s infinite;
         }
         
+        /* New letter pattern styles */
+        .bingo-cell.m-letter-win {
+            background: #9C27B0;
+            color: white;
+            animation: m-letter-pulse 2s infinite;
+        }
+        
+        .bingo-cell.a-letter-win {
+            background: #3F51B5;
+            color: white;
+            animation: a-letter-pulse 2s infinite;
+        }
+        
+        .bingo-cell.g-letter-win {
+            background: #009688;
+            color: white;
+            animation: g-letter-pulse 2s infinite;
+        }
+        
+        .bingo-cell.s-letter-win {
+            background: #FF9800;
+            color: white;
+            animation: s-letter-pulse 2s infinite;
+        }
+        
+        .bingo-cell.i-letter-win {
+            background: #E91E63;
+            color: white;
+            animation: i-letter-pulse 2s infinite;
+        }
+        
+        .bingo-cell.n-letter-win {
+            background: #8BC34A;
+            color: white;
+            animation: n-letter-pulse 2s infinite;
+        }
+        
+        .bingo-cell.l-letter-win {
+            background: #795548;
+            color: white;
+            animation: l-letter-pulse 2s infinite;
+        }
+        
         .stats {
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
@@ -920,6 +963,112 @@
             }
         }
         
+        /* New letter pattern animations */
+        @keyframes m-letter-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #9C27B0;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #BA68C8;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #9C27B0;
+            }
+        }
+        
+        @keyframes a-letter-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #3F51B5;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #7986CB;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #3F51B5;
+            }
+        }
+        
+        @keyframes g-letter-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #009688;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #4DB6AC;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #009688;
+            }
+        }
+        
+        @keyframes s-letter-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #FF9800;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #FFB74D;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #FF9800;
+            }
+        }
+        
+        @keyframes i-letter-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #E91E63;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #F48FB1;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #E91E63;
+            }
+        }
+        
+        @keyframes n-letter-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #8BC34A;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #AED581;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #8BC34A;
+            }
+        }
+        
+        @keyframes l-letter-pulse {
+            0% {
+                transform: scale(1);
+                background-color: #795548;
+            }
+            50% {
+                transform: scale(1.05);
+                background-color: #A1887F;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #795548;
+            }
+        }
+        
         @keyframes celebrate {
             0% {
                 transform: scale(1);
@@ -953,7 +1102,7 @@
     <div class="container">
         <header>
             <h1>Bingo Card Simulator - Auto Pattern Detection</h1>
-            <p class="subtitle">Automatically detects all winning patterns! Cards stay visible when they win.</p>
+            <p class="subtitle">Automatically detects all winning patterns including CAPITAL LETTERS! Cards stay visible when they win.</p>
         </header>
 
         <div class="controls">
@@ -981,6 +1130,14 @@
             <button id="patternHorizontal3" class="pattern-btn">3 Rows</button>
             <button id="patternHorizontal4" class="pattern-btn">4 Rows</button>
             <button id="patternFullCard" class="pattern-btn">Full Card</button>
+            <!-- New Letter Pattern Buttons -->
+            <button id="patternM" class="pattern-btn">M Letter</button>
+            <button id="patternA" class="pattern-btn">A Letter</button>
+            <button id="patternG" class="pattern-btn">G Letter</button>
+            <button id="patternS" class="pattern-btn">S Letter</button>
+            <button id="patternI" class="pattern-btn">I Letter</button>
+            <button id="patternN" class="pattern-btn">N Letter</button>
+            <button id="patternL" class="pattern-btn">L Letter</button>
             <button id="patternAll" class="pattern-btn">All Patterns</button>
         </div>
 
@@ -1262,7 +1419,7 @@
                 updateCards();
             }
 
-            // Winning patterns configuration - AUTO-DETECT ALL PATTERNS
+            // Winning patterns configuration - AUTO-DETECT ALL PATTERNS (including new letters)
             const winningPatterns = {
                 t: {
                     name: 'T-Pattern',
@@ -1609,6 +1766,196 @@
                         }
                         return cells;
                     }
+                },
+                // NEW LETTER PATTERNS
+                mLetter: {
+                    name: 'M Letter',
+                    check: function(card) {
+                        // M pattern: First column, middle cell of row 2, middle cell of row 3, last column
+                        const cells = [
+                            { row: 0, col: 0 }, { row: 0, col: 4 },
+                            { row: 1, col: 0 }, { row: 1, col: 4 },
+                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 3 },
+                            { row: 4, col: 0 }, { row: 4, col: 4 }
+                        ];
+                        
+                        return cells.every(cell => {
+                            const number = card.numbers[cell.row][cell.col];
+                            return number === 'FREE' || card.marked.has(number);
+                        });
+                    },
+                    getWinningCells: function() {
+                        return [
+                            { row: 0, col: 0 }, { row: 0, col: 4 },
+                            { row: 1, col: 0 }, { row: 1, col: 4 },
+                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 3 },
+                            { row: 4, col: 0 }, { row: 4, col: 4 }
+                        ];
+                    }
+                },
+                aLetter: {
+                    name: 'A Letter',
+                    check: function(card) {
+                        // A pattern: Top row, middle column, bottom row
+                        const cells = [
+                            { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 },
+                            { row: 1, col: 0 }, { row: 1, col: 2 }, { row: 1, col: 4 },
+                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 4 },
+                            { row: 4, col: 0 }, { row: 4, col: 4 }
+                        ];
+                        
+                        return cells.every(cell => {
+                            const number = card.numbers[cell.row][cell.col];
+                            return number === 'FREE' || card.marked.has(number);
+                        });
+                    },
+                    getWinningCells: function() {
+                        return [
+                            { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 },
+                            { row: 1, col: 0 }, { row: 1, col: 2 }, { row: 1, col: 4 },
+                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 4 },
+                            { row: 4, col: 0 }, { row: 4, col: 4 }
+                        ];
+                    }
+                },
+                gLetter: {
+                    name: 'G Letter',
+                    check: function(card) {
+                        // G pattern: First column, top row, bottom row, middle row, last column (partially)
+                        const cells = [
+                            { row: 0, col: 0 }, { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 },
+                            { row: 1, col: 0 },
+                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 4 },
+                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }, { row: 4, col: 4 }
+                        ];
+                        
+                        return cells.every(cell => {
+                            const number = card.numbers[cell.row][cell.col];
+                            return number === 'FREE' || card.marked.has(number);
+                        });
+                    },
+                    getWinningCells: function() {
+                        return [
+                            { row: 0, col: 0 }, { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 },
+                            { row: 1, col: 0 },
+                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 4 },
+                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }, { row: 4, col: 4 }
+                        ];
+                    }
+                },
+                sLetter: {
+                    name: 'S Letter',
+                    check: function(card) {
+                        // S pattern: Top row, middle row, bottom row, with specific columns
+                        const cells = [
+                            { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 },
+                            { row: 1, col: 0 },
+                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
+                            { row: 3, col: 4 },
+                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }
+                        ];
+                        
+                        return cells.every(cell => {
+                            const number = card.numbers[cell.row][cell.col];
+                            return number === 'FREE' || card.marked.has(number);
+                        });
+                    },
+                    getWinningCells: function() {
+                        return [
+                            { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 },
+                            { row: 1, col: 0 },
+                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
+                            { row: 3, col: 4 },
+                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }
+                        ];
+                    }
+                },
+                iLetter: {
+                    name: 'I Letter',
+                    check: function(card) {
+                        // I pattern: First column, middle column, last column
+                        const cells = [
+                            { row: 0, col: 2 },
+                            { row: 1, col: 2 },
+                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
+                            { row: 3, col: 2 },
+                            { row: 4, col: 2 }
+                        ];
+                        
+                        return cells.every(cell => {
+                            const number = card.numbers[cell.row][cell.col];
+                            return number === 'FREE' || card.marked.has(number);
+                        });
+                    },
+                    getWinningCells: function() {
+                        return [
+                            { row: 0, col: 2 },
+                            { row: 1, col: 2 },
+                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
+                            { row: 3, col: 2 },
+                            { row: 4, col: 2 }
+                        ];
+                    }
+                },
+                nLetter: {
+                    name: 'N Letter',
+                    check: function(card) {
+                        // N pattern: First column, diagonal, last column
+                        const cells = [
+                            { row: 0, col: 0 }, { row: 0, col: 4 },
+                            { row: 1, col: 0 }, { row: 1, col: 1 }, { row: 1, col: 4 },
+                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 3 }, { row: 3, col: 4 },
+                            { row: 4, col: 0 }, { row: 4, col: 4 }
+                        ];
+                        
+                        return cells.every(cell => {
+                            const number = card.numbers[cell.row][cell.col];
+                            return number === 'FREE' || card.marked.has(number);
+                        });
+                    },
+                    getWinningCells: function() {
+                        return [
+                            { row: 0, col: 0 }, { row: 0, col: 4 },
+                            { row: 1, col: 0 }, { row: 1, col: 1 }, { row: 1, col: 4 },
+                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 3 }, { row: 3, col: 4 },
+                            { row: 4, col: 0 }, { row: 4, col: 4 }
+                        ];
+                    }
+                },
+                lLetter: {
+                    name: 'L Letter',
+                    check: function(card) {
+                        // L pattern: First column, bottom row
+                        const cells = [
+                            { row: 0, col: 0 },
+                            { row: 1, col: 0 },
+                            { row: 2, col: 0 },
+                            { row: 3, col: 0 },
+                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }, { row: 4, col: 4 }
+                        ];
+                        
+                        return cells.every(cell => {
+                            const number = card.numbers[cell.row][cell.col];
+                            return number === 'FREE' || card.marked.has(number);
+                        });
+                    },
+                    getWinningCells: function() {
+                        return [
+                            { row: 0, col: 0 },
+                            { row: 1, col: 0 },
+                            { row: 2, col: 0 },
+                            { row: 3, col: 0 },
+                            { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 3 }, { row: 4, col: 4 }
+                        ];
+                    }
                 }
             };
 
@@ -1632,7 +1979,7 @@
             const currentRoundEl = document.getElementById('currentRound');
             const ballLimitWarning = document.getElementById('ballLimitWarning');
 
-            // Pattern buttons
+            // Pattern buttons (including new letter patterns)
             const patternTBtn = document.getElementById('patternT');
             const patternCornersBtn = document.getElementById('patternCorners');
             const patternDiagonal1Btn = document.getElementById('patternDiagonal1');
@@ -1643,6 +1990,14 @@
             const patternHorizontal3Btn = document.getElementById('patternHorizontal3');
             const patternHorizontal4Btn = document.getElementById('patternHorizontal4');
             const patternFullCardBtn = document.getElementById('patternFullCard');
+            // New letter pattern buttons
+            const patternMBtn = document.getElementById('patternM');
+            const patternABtn = document.getElementById('patternA');
+            const patternGBtn = document.getElementById('patternG');
+            const patternSBtn = document.getElementById('patternS');
+            const patternIBtn = document.getElementById('patternI');
+            const patternNBtn = document.getElementById('patternN');
+            const patternLBtn = document.getElementById('patternL');
             const patternAllBtn = document.getElementById('patternAll');
 
             // Modal elements
@@ -2024,10 +2379,20 @@
                         if (card.hasBingo && card.winningCells.some(wc => wc.row === row && wc.col === col)) {
                             // Find which pattern this cell belongs to
                             for (const pattern of card.winningPatterns) {
-                                const patternCells = winningPatterns[pattern.type.split('-')[0]].getWinningCells(card);
-                                if (patternCells.some(wc => wc.row === row && wc.col === col)) {
-                                    cell.classList.add(pattern.type + '-win');
-                                    break;
+                                const patternKey = pattern.type.split('-')[0];
+                                const patternObj = winningPatterns[patternKey];
+                                if (patternObj) {
+                                    const patternCells = patternObj.getWinningCells(card);
+                                    if (patternCells.some(wc => wc.row === row && wc.col === col)) {
+                                        // Apply letter-specific classes for new patterns
+                                        if (patternKey.includes('Letter')) {
+                                            const letter = patternKey.charAt(0).toLowerCase();
+                                            cell.classList.add(letter + '-letter-win');
+                                        } else {
+                                            cell.classList.add(pattern.type + '-win');
+                                        }
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -2283,7 +2648,7 @@
                 calledCountEl.textContent = gameState.calledNumbers.size;
             }
 
-            // Check for bingos - AUTO-DETECT ALL PATTERNS
+            // Check for bingos - AUTO-DETECT ALL PATTERNS (including new letters)
             function checkBingos() {
                 let bingoFound = false;
                 
@@ -2480,6 +2845,14 @@
                 patternHorizontal3Btn.addEventListener('click', () => setPattern('horizontal3'));
                 patternHorizontal4Btn.addEventListener('click', () => setPattern('horizontal4'));
                 patternFullCardBtn.addEventListener('click', () => setPattern('fullCard'));
+                // New letter pattern event listeners
+                patternMBtn.addEventListener('click', () => setPattern('mLetter'));
+                patternABtn.addEventListener('click', () => setPattern('aLetter'));
+                patternGBtn.addEventListener('click', () => setPattern('gLetter'));
+                patternSBtn.addEventListener('click', () => setPattern('sLetter'));
+                patternIBtn.addEventListener('click', () => setPattern('iLetter'));
+                patternNBtn.addEventListener('click', () => setPattern('nLetter'));
+                patternLBtn.addEventListener('click', () => setPattern('lLetter'));
                 patternAllBtn.addEventListener('click', () => setPattern('all'));
 
                 // Ball recording event listeners
@@ -2524,9 +2897,12 @@
             // Set the current pattern
             function setPattern(pattern) {
                 gameState.currentPattern = pattern;
-                const patternButtons = [autoDetectBtn, patternTBtn, patternCornersBtn, patternDiagonal1Btn,
+                const patternButtons = [
+                    autoDetectBtn, patternTBtn, patternCornersBtn, patternDiagonal1Btn,
                     patternDiagonal2Btn, patternXBtn, patternEmptyCrossBtn, patternHorizontal2Btn,
-                    patternHorizontal3Btn, patternHorizontal4Btn, patternFullCardBtn, patternAllBtn
+                    patternHorizontal3Btn, patternHorizontal4Btn, patternFullCardBtn,
+                    patternMBtn, patternABtn, patternGBtn, patternSBtn, 
+                    patternIBtn, patternNBtn, patternLBtn, patternAllBtn
                 ];
                 patternButtons.forEach(btn => btn.classList.remove('active'));
 
@@ -2563,6 +2939,27 @@
                         break;
                     case 'fullCard':
                         patternFullCardBtn.classList.add('active');
+                        break;
+                    case 'mLetter':
+                        patternMBtn.classList.add('active');
+                        break;
+                    case 'aLetter':
+                        patternABtn.classList.add('active');
+                        break;
+                    case 'gLetter':
+                        patternGBtn.classList.add('active');
+                        break;
+                    case 'sLetter':
+                        patternSBtn.classList.add('active');
+                        break;
+                    case 'iLetter':
+                        patternIBtn.classList.add('active');
+                        break;
+                    case 'nLetter':
+                        patternNBtn.classList.add('active');
+                        break;
+                    case 'lLetter':
+                        patternLBtn.classList.add('active');
                         break;
                     case 'all':
                         patternAllBtn.classList.add('active');
