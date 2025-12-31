@@ -116,45 +116,41 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #4a00e0;
+            background: #007bff; /* Blue for available balls */
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.2s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             position: relative;
+            color: white;
+            border: 2px solid transparent;
         }
         
         .key:hover {
-            background: #8e2de2;
             transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
         
         .key.called {
-            background: #ff8c00;
+            background: #dc3545 !important; /* Red for called balls */
+            animation: called-pulse 0.5s ease;
         }
         
-        .key.extended-range {
-            background: #ff9800; /* Orange for balls 48-75 */
-        }
-        
-        .key.extended-range:hover {
-            background: #ffb74d;
-        }
-        
-        .key.extended-range.called {
-            background: #ff5722; /* Darker orange when called */
+        .key.available {
+            background: #007bff; /* Blue for available balls */
         }
         
         .key.last-four {
-            background: #dc3545;
+            background: #fd7e14 !important; /* Orange for last 4 balls */
             animation: last-four-pulse 1.5s infinite;
+            border: 2px solid #ffc107;
         }
         
         .key.disabled {
-            background: #6c757d;
+            background: #6c757d; /* Gray for disabled balls */
             cursor: not-allowed;
-            opacity: 0.6;
+            opacity: 0.7;
         }
         
         .key.disabled:hover {
@@ -302,6 +298,16 @@
             font-weight: bold;
             border-bottom: 2px solid #4a00e0;
             padding-bottom: 5px;
+        }
+        
+        .serial-number {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
         }
         
         .card-actions {
@@ -611,7 +617,7 @@
         
         .balls-grid {
             display: grid;
-            grid-template-columns: repeat(15, 1fr); /* Changed from 12 to 15 for 75 balls (5 rows of 15) */
+            grid-template-columns: repeat(12, 1fr);
             gap: 8px;
             margin-bottom: 15px;
         }
@@ -810,6 +816,13 @@
             gap: 10px;
         }
         
+        /* Animations */
+        @keyframes called-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
         @keyframes t-pattern-pulse {
             0% {
                 transform: scale(1);
@@ -963,15 +976,15 @@
         @keyframes last-four-pulse {
             0% {
                 transform: scale(1);
-                background-color: #dc3545;
+                background-color: #fd7e14;
             }
             50% {
                 transform: scale(1.05);
-                background-color: #e74c3c;
+                background-color: #fd9843;
             }
             100% {
                 transform: scale(1);
-                background-color: #dc3545;
+                background-color: #fd7e14;
             }
         }
         
@@ -1104,7 +1117,7 @@
             }
             100% {
                 transform: scale(1);
-                box-shadow: 0 0 0 4px #ff6b6b, 0 0 25px rgba(255, 107,107, 0.7);
+                box-shadow: 0 0 0 4px #ff6b6b, 0 0 25px rgba(255, 107, 107, 0.7);
             }
         }
     </style>
@@ -1202,7 +1215,7 @@
 
         <!-- Ball limit warning -->
         <div id="ballLimitWarning" class="ball-limit-warning" style="display: none;">
-            <strong>⚠️ All Balls Called!</strong> You have called all 75 balls. Extended range balls (48-75) are highlighted in orange.
+            <strong>⚠️ Ball Limit Reached!</strong> You have called the maximum of 48 balls. The last 4 balls are highlighted in orange.
         </div>
 
         <!-- Winning cards section -->
@@ -1245,7 +1258,7 @@
                 </div>
                 <div class="stat-item">
                     <div>Balls Remaining</div>
-                    <div class="stat-value" id="ballsRemaining">75</div>
+                    <div class="stat-value" id="ballsRemaining">48</div>
                 </div>
                 <div class="stat-item">
                     <div>Current Round</div>
@@ -1297,8 +1310,9 @@
                 multiBingos: 0,
                 calledHistory: [],
                 nextCardId: 1,
+                nextSerialNumber: 1,
                 currentPattern: 'auto',
-                maxBalls: 75, // Changed from 48 to 75
+                maxBalls: 48,
                 lastFourBalls: [],
                 currentRound: 1,
                 maxRounds: 30,
@@ -1348,13 +1362,13 @@
                 }
             }
 
-            // Update ball display grid - Now showing all 75 balls
+            // Update ball display grid
             function updateBallDisplay() {
                 ballsGrid.innerHTML = '';
                 const currentRoundData = gameState.rounds[gameState.currentRound - 1];
                 
-                // Create 75 ball slots (5 rows of 15)
-                for (let i = 0; i < 75; i++) {
+                // Create 48 ball slots (4 rows of 12)
+                for (let i = 0; i < 48; i++) {
                     const ballItem = document.createElement('div');
                     ballItem.className = 'ball-item empty';
                     
@@ -1429,6 +1443,13 @@
                 updateBallCounts();
                 checkBingos();
                 updateCards();
+            }
+
+            // Generate serial number with leading zeros
+            function generateSerialNumber() {
+                const serial = gameState.nextSerialNumber.toString().padStart(5, '0');
+                gameState.nextSerialNumber++;
+                return serial;
             }
 
             // Winning patterns configuration - AUTO-DETECT ALL PATTERNS (including new letters)
@@ -1779,17 +1800,16 @@
                         return cells;
                     }
                 },
-                // NEW LETTER PATTERNS - UPDATED M LETTER PATTERN
+                // NEW LETTER PATTERNS
                 mLetter: {
                     name: 'M Letter',
                     check: function(card) {
-                        // M pattern: Forms the shape of letter M
-                        // First and last columns, plus a diagonal from row 2-3
+                        // M pattern: First column, middle cell of row 2, middle cell of row 3, last column
                         const cells = [
                             { row: 0, col: 0 }, { row: 0, col: 4 },
                             { row: 1, col: 0 }, { row: 1, col: 4 },
-                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 3 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 2 }, { row: 3, col: 4 },
+                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 3 },
                             { row: 4, col: 0 }, { row: 4, col: 4 }
                         ];
                         
@@ -1802,8 +1822,8 @@
                         return [
                             { row: 0, col: 0 }, { row: 0, col: 4 },
                             { row: 1, col: 0 }, { row: 1, col: 4 },
-                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 3 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 2 }, { row: 3, col: 4 },
+                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 3 },
                             { row: 4, col: 0 }, { row: 4, col: 4 }
                         ];
                     }
@@ -2026,38 +2046,48 @@
             const setFreeSpaceBtn = document.getElementById('setFreeSpace');
             const cancelNumberInputBtn = document.getElementById('cancelNumberInput');
 
-            // Initialize the keyboard with 75 balls
+            // Initialize the keyboard
             function initializeKeyboard() {
                 keyboardEl.innerHTML = '';
                 for (let i = 1; i <= 75; i++) {
                     const key = document.createElement('div');
-                    key.className = 'key';
+                    key.className = 'key available';
                     key.textContent = i;
                     key.dataset.number = i;
+                    key.addEventListener('click', () => callNumber(i));
                     
-                    // Add extended range class for balls 48-75
-                    if (i >= 48 && i <= 75) {
-                        key.classList.add('extended-range');
+                    // Apply color based on BINGO letter
+                    if (i >= 1 && i <= 15) {
+                        key.style.background = '#007bff'; // Blue for B
+                    } else if (i >= 16 && i <= 30) {
+                        key.style.background = '#007bff'; // Blue for I
+                    } else if (i >= 31 && i <= 45) {
+                        key.style.background = '#007bff'; // Blue for N
+                    } else if (i >= 46 && i <= 60) {
+                        key.style.background = '#007bff'; // Blue for G
+                    } else if (i >= 61 && i <= 75) {
+                        key.style.background = '#007bff'; // Blue for O
                     }
                     
-                    key.addEventListener('click', () => callNumber(i));
                     keyboardEl.appendChild(key);
                 }
                 updateKeyboard();
             }
 
-            // Update keyboard appearance
+            // Update keyboard appearance with new color scheme
             function updateKeyboard() {
                 const keys = document.querySelectorAll('.key');
                 keys.forEach(key => {
                     const number = parseInt(key.dataset.number);
-                    key.classList.remove('called', 'disabled', 'last-four');
+                    key.classList.remove('called', 'disabled', 'last-four', 'available');
 
                     if (gameState.calledNumbers.has(number)) {
                         key.classList.add('called');
                         if (gameState.lastFourBalls.includes(number)) {
                             key.classList.add('last-four');
                         }
+                    } else {
+                        key.classList.add('available');
                     }
 
                     if (gameState.calledNumbers.size >= gameState.maxBalls && !gameState.calledNumbers.has(number)) {
@@ -2070,16 +2100,16 @@
 
                 if (gameState.calledNumbers.size >= gameState.maxBalls) {
                     ballLimitWarning.style.display = 'block';
-                    ballLimitWarning.innerHTML = `<strong>🎉 All Balls Called!</strong> You have called all 75 balls. Extended range balls (48-75) are highlighted in orange.`;
                 } else {
                     ballLimitWarning.style.display = 'none';
                 }
             }
 
-            // Generate a random Bingo card
+            // Generate a random Bingo card with serial number
             function generateBingoCard(id) {
                 const card = {
                     id: id,
+                    serialNumber: generateSerialNumber(),
                     numbers: [
                         [],
                         [],
@@ -2128,22 +2158,22 @@
                 return card;
             }
 
-            // Create default cards
+            // Create default cards with serial numbers
             function createDefaultCards() {
                 const defaultCards = [
                     [
-                        [3, 16, 33, 51, 68],
-                        [12, 22, 44, 55, 62],
-                        [8, 29, 'FREE', 49, 70],
-                        [5, 19, 41, 59, 64],
-                        [14, 25, 37, 53, 72]
+                        [5, 20, 42, 51, 72],
+                        [12, 16, 41, 53, 73],
+                        [6, 29, 'WH', 57, 74],
+                        [11, 27, 45, 50, 63],
+                        [8, 30, 43, 60, 64]
                     ],
                     [
-                        [1, 18, 31, 46, 75],
-                        [7, 24, 42, 57, 63],
-                        [10, 30, 'FREE', 48, 69],
-                        [4, 20, 39, 56, 65],
-                        [13, 28, 35, 54, 71]
+                        [1, 30, 43, 57, 75],
+                        [14, 16, 42, 58, 74],
+                        [6, 22, 'FREE', 47, 73],
+                        [13, 23, 39, 59, 66],
+                        [7, 27, 31, 55, 71]
                     ],
                     [
                         [6, 17, 34, 52, 61],
@@ -2269,6 +2299,7 @@
                 defaultCards.forEach((cardNumbers) => {
                     const card = {
                         id: gameState.nextCardId++,
+                        serialNumber: generateSerialNumber(),
                         numbers: cardNumbers,
                         marked: new Set(),
                         hasBingo: false,
@@ -2282,7 +2313,7 @@
                 });
             }
 
-            // Render a Bingo card
+            // Render a Bingo card with serial number
             function renderBingoCard(card) {
                 const cardEl = document.createElement('div');
                 cardEl.className = 'bingo-card';
@@ -2296,7 +2327,12 @@
 
                 const headerEl = document.createElement('div');
                 headerEl.className = 'card-header';
-                headerEl.innerHTML = `<span>Card #${card.id}</span>`;
+                headerEl.innerHTML = `
+                    <div>
+                        <div>Card #${card.id}</div>
+                        <div class="serial-number">Serial: ${card.serialNumber}</div>
+                    </div>
+                `;
                 
                 // Add card actions
                 const actionsEl = document.createElement('div');
@@ -2623,7 +2659,7 @@
             function callNumber(number) {
                 if (gameState.calledNumbers.has(number)) return;
 
-                // Check ball limit (now 75)
+                // Check ball limit
                 if (gameState.calledNumbers.size >= gameState.maxBalls) {
                     return;
                 }
@@ -2718,7 +2754,7 @@
                         }
                         bingoFound = true;
                         
-                        console.log(`Card ${card.id} won with:`, winningPatternsFound.map(p => p.name));
+                        console.log(`Card ${card.id} (Serial: ${card.serialNumber}) won with:`, winningPatternsFound.map(p => p.name));
                     }
                 });
 
@@ -2754,6 +2790,7 @@
                 gameState.lastFourBalls = [];
                 gameState.currentRound = 1;
                 gameState.nextCardId = 1;
+                gameState.nextSerialNumber = 1;
                 gameState.pinnedCards.clear();
 
                 for (let i = 0; i < gameState.maxRounds; i++) {
