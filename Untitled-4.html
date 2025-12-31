@@ -134,6 +134,18 @@
             background: #ff8c00;
         }
         
+        .key.extended-range {
+            background: #ff9800; /* Orange for balls 48-75 */
+        }
+        
+        .key.extended-range:hover {
+            background: #ffb74d;
+        }
+        
+        .key.extended-range.called {
+            background: #ff5722; /* Darker orange when called */
+        }
+        
         .key.last-four {
             background: #dc3545;
             animation: last-four-pulse 1.5s infinite;
@@ -599,7 +611,7 @@
         
         .balls-grid {
             display: grid;
-            grid-template-columns: repeat(12, 1fr);
+            grid-template-columns: repeat(15, 1fr); /* Changed from 12 to 15 for 75 balls (5 rows of 15) */
             gap: 8px;
             margin-bottom: 15px;
         }
@@ -1092,7 +1104,7 @@
             }
             100% {
                 transform: scale(1);
-                box-shadow: 0 0 0 4px #ff6b6b, 0 0 25px rgba(255, 107, 107, 0.7);
+                box-shadow: 0 0 0 4px #ff6b6b, 0 0 25px rgba(255, 107,107, 0.7);
             }
         }
     </style>
@@ -1190,7 +1202,7 @@
 
         <!-- Ball limit warning -->
         <div id="ballLimitWarning" class="ball-limit-warning" style="display: none;">
-            <strong>⚠️ Ball Limit Reached!</strong> You have called the maximum of 48 balls. The last 4 balls are highlighted in red.
+            <strong>⚠️ All Balls Called!</strong> You have called all 75 balls. Extended range balls (48-75) are highlighted in orange.
         </div>
 
         <!-- Winning cards section -->
@@ -1233,7 +1245,7 @@
                 </div>
                 <div class="stat-item">
                     <div>Balls Remaining</div>
-                    <div class="stat-value" id="ballsRemaining">48</div>
+                    <div class="stat-value" id="ballsRemaining">75</div>
                 </div>
                 <div class="stat-item">
                     <div>Current Round</div>
@@ -1286,7 +1298,7 @@
                 calledHistory: [],
                 nextCardId: 1,
                 currentPattern: 'auto',
-                maxBalls: 48,
+                maxBalls: 75, // Changed from 48 to 75
                 lastFourBalls: [],
                 currentRound: 1,
                 maxRounds: 30,
@@ -1336,13 +1348,13 @@
                 }
             }
 
-            // Update ball display grid
+            // Update ball display grid - Now showing all 75 balls
             function updateBallDisplay() {
                 ballsGrid.innerHTML = '';
                 const currentRoundData = gameState.rounds[gameState.currentRound - 1];
                 
-                // Create 48 ball slots (4 rows of 12)
-                for (let i = 0; i < 48; i++) {
+                // Create 75 ball slots (5 rows of 15)
+                for (let i = 0; i < 75; i++) {
                     const ballItem = document.createElement('div');
                     ballItem.className = 'ball-item empty';
                     
@@ -1767,16 +1779,17 @@
                         return cells;
                     }
                 },
-                // NEW LETTER PATTERNS
+                // NEW LETTER PATTERNS - UPDATED M LETTER PATTERN
                 mLetter: {
                     name: 'M Letter',
                     check: function(card) {
-                        // M pattern: First column, middle cell of row 2, middle cell of row 3, last column
+                        // M pattern: Forms the shape of letter M
+                        // First and last columns, plus a diagonal from row 2-3
                         const cells = [
                             { row: 0, col: 0 }, { row: 0, col: 4 },
                             { row: 1, col: 0 }, { row: 1, col: 4 },
-                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 3 },
+                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 3 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 2 }, { row: 3, col: 4 },
                             { row: 4, col: 0 }, { row: 4, col: 4 }
                         ];
                         
@@ -1789,8 +1802,8 @@
                         return [
                             { row: 0, col: 0 }, { row: 0, col: 4 },
                             { row: 1, col: 0 }, { row: 1, col: 4 },
-                            { row: 2, col: 0 }, { row: 2, col: 2 }, { row: 2, col: 4 },
-                            { row: 3, col: 0 }, { row: 3, col: 3 },
+                            { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 3 }, { row: 2, col: 4 },
+                            { row: 3, col: 0 }, { row: 3, col: 2 }, { row: 3, col: 4 },
                             { row: 4, col: 0 }, { row: 4, col: 4 }
                         ];
                     }
@@ -2013,7 +2026,7 @@
             const setFreeSpaceBtn = document.getElementById('setFreeSpace');
             const cancelNumberInputBtn = document.getElementById('cancelNumberInput');
 
-            // Initialize the keyboard
+            // Initialize the keyboard with 75 balls
             function initializeKeyboard() {
                 keyboardEl.innerHTML = '';
                 for (let i = 1; i <= 75; i++) {
@@ -2021,6 +2034,12 @@
                     key.className = 'key';
                     key.textContent = i;
                     key.dataset.number = i;
+                    
+                    // Add extended range class for balls 48-75
+                    if (i >= 48 && i <= 75) {
+                        key.classList.add('extended-range');
+                    }
+                    
                     key.addEventListener('click', () => callNumber(i));
                     keyboardEl.appendChild(key);
                 }
@@ -2051,6 +2070,7 @@
 
                 if (gameState.calledNumbers.size >= gameState.maxBalls) {
                     ballLimitWarning.style.display = 'block';
+                    ballLimitWarning.innerHTML = `<strong>🎉 All Balls Called!</strong> You have called all 75 balls. Extended range balls (48-75) are highlighted in orange.`;
                 } else {
                     ballLimitWarning.style.display = 'none';
                 }
@@ -2603,7 +2623,7 @@
             function callNumber(number) {
                 if (gameState.calledNumbers.has(number)) return;
 
-                // Check ball limit
+                // Check ball limit (now 75)
                 if (gameState.calledNumbers.size >= gameState.maxBalls) {
                     return;
                 }
