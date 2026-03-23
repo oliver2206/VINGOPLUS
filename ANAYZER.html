@@ -1,448 +1,675 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Bingo Multi-Card Generator</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bingo Called Numbers</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet"/>
 <style>
-  :root{
-    --bg:#6b2b6e;
-    --panel:#f6f0f4;
-    --purple:#4a1bd6;
-    --white:#fff;
-    --muted:#e9e6ea;
-    --yellow:#ffd93d;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  }
-  body{
-    margin:0;
-    min-height:100vh;
-    background: linear-gradient(180deg,#5b254f, #8f3a4f);
-    color:#222;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    padding:28px;
-    box-sizing:border-box;
-  }
-  .app{
-    width:100%;
-    max-width:920px;
-    background:rgba(255,255,255,0.06);
-    border-radius:16px;
-    padding:20px;
-    box-shadow:0 8px 30px rgba(0,0,0,0.4);
-    color:var(--white);
-  }
-  .controls{
-    display:flex;
-    gap:12px;
-    align-items:center;
-    margin-bottom:12px;
-  }
-  label{font-size:14px; color:#fff;}
-  input[type="number"], input[type="text"]{
-    padding:8px 10px;
-    border-radius:8px;
-    border:none;
-    outline:none;
-    width:84px;
-  }
-  button{
-    background:var(--purple);
-    color:var(--white);
-    border:none;
-    padding:10px 14px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:600;
-    transition: background 0.2s;
-  }
-  button:hover{
-    background:#3a15b0;
-  }
-  .cards{
-    margin-top:12px;
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-  }
-  .card{
-    background:var(--panel);
-    color:#222;
-    width:220px;
-    border-radius:12px;
-    padding:14px;
-    box-sizing:border-box;
-    box-shadow:0 6px 18px rgba(0,0,0,0.25);
-  }
-  .card h3{
-    margin:0 0 8px 0;
-    font-size:16px;
-    color: #222;
-    text-align:center;
-  }
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:8px;
-    background:transparent;
-  }
-  .cell{
-    height:46px;
-    border-radius:8px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:700;
-    font-size:16px;
-    background:var(--white);
-  }
-  .header-cell{
-    background:transparent;
-    color:#8a8a8a;
-    font-weight:700;
-    height:auto;
-    padding:4px 0;
-  }
-  .input-cell{
-    background:var(--purple);
-    color:var(--white);
-  }
-  .auto-cell{
-    background:var(--white);
-    color:#222;
-    font-weight:700;
-  }
-  .free{
-    background:var(--yellow);
-    color:#000;
-  }
-  .legend{
-    margin-top:10px;
-    display:flex;
-    gap:12px;
-    align-items:center;
-    color:#fff;
-    font-size:13px;
-  }
-  .swatch{ width:16px;height:16px;border-radius:4px; display:inline-block; margin-right:6px;}
-  .footer-note{ margin-top:12px;color:#eee;font-size:13px;}
-  /* make inputs inside card look like purple boxes for the master input area */
-  .master-grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:8px;
-    width:360px;
-    margin-bottom:14px;
-  }
-  .master-cell{
-    height:54px;
-    border-radius:10px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:var(--panel);
-  }
-  .master-input{
-    width:86%;
-    height:78%;
-    border-radius:8px;
-    border:none;
-    background:var(--purple);
-    color:#fff;
-    text-align:center;
-    font-weight:700;
-    font-size:16px;
-    outline:none;
-  }
-  .header-row{
-    display:flex;
-    gap:8px;
-    justify-content:center;
-    margin-bottom:8px;
-  }
-  .colheader{
-    width:66px;
-    text-align:center;
-    font-weight:800;
-    color:#fff;
-    opacity:0.9;
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple-900: #26215C;
+    --purple-800: #3C3489;
+    --purple-600: #534AB7;
+    --purple-400: #7F77DD;
+    --purple-200: #AFA9EC;
+    --purple-50:  #EEEDFE;
+    --teal-600:   #0F6E56;
+    --teal-400:   #1D9E75;
+    --amber-600:  #854F0B;
+    --red-600:    #A32D2D;
+    --red-400:    #E24B4A;
+    --red-50:     #FCEBEB;
+    --gray-50:    #f9fafb;
+    --gray-100:   #f3f4f6;
+    --gray-200:   #e5e7eb;
+    --gray-300:   #d1d5db;
+    --gray-500:   #6b7280;
+    --gray-700:   #374151;
+    --gray-900:   #111;
+    --col-b: #1D9E75; --col-b-bg: #E1F5EE;
+    --col-i: #378ADD; --col-i-bg: #E6F1FB;
+    --col-n: #7F77DD; --col-n-bg: #EEEDFE;
+    --col-g: #BA7517; --col-g-bg: #FAEEDA;
+    --col-o: #D85A30; --col-o-bg: #FAECE7;
   }
 
-  @media(max-width:760px){
-    .app{ padding:12px;}
-    .master-grid{ width:100%; grid-template-columns:repeat(5,1fr);}
-    .card{ width:48%;}
+  body {
+    font-family: 'DM Mono', monospace;
+    background: #f5f4f0;
+    min-height: 100vh;
+    padding: 1.5rem 1rem 3rem;
+    color: var(--gray-900);
   }
-  @media(max-width:420px){
-    .card{ width:100%;}
-    .colheader{font-size:12px;}
+
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ── top bar ── */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--gray-900);
+    letter-spacing: -0.02em;
+  }
+  .round-pill {
+    background: var(--gray-100);
+    border: 0.5px solid var(--gray-300);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+
+  /* ── label box ── */
+  .label-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--purple-50);
+    border: 0.5px solid var(--purple-200);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 1.25rem;
+    min-height: 52px;
+    transition: border-color 0.15s;
+  }
+  .label-box:focus-within {
+    border-color: var(--purple-400);
+  }
+  .label-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .label-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+  .label-text {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--purple-800);
+    word-break: break-word;
+  }
+  .label-placeholder {
+    flex: 1;
+    font-size: 13px;
+    color: var(--purple-400);
+    font-style: italic;
+  }
+  .label-edit-btn {
+    padding: 5px 14px;
+    border-radius: 8px;
+    border: 0.5px solid var(--purple-400);
+    background: white;
+    color: var(--purple-600);
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.12s;
+  }
+  .label-edit-btn:hover { background: var(--purple-50); }
+  .label-form {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+  }
+  .label-input {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 0.5px solid var(--purple-200);
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    outline: none;
+    color: var(--purple-900);
+    background: white;
+    transition: border-color 0.15s;
+  }
+  .label-input:focus { border-color: var(--purple-400); }
+  .label-save-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 0.5px solid var(--purple-600);
+    background: var(--purple-600);
+    color: var(--purple-50);
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .label-cancel-btn {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 0.5px solid var(--gray-300);
+    background: white;
+    color: var(--gray-500);
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .hidden { display: none !important; }
+
+  /* ── max balls bar ── */
+  .max-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    background: var(--gray-50);
+    border: 0.5px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 1.25rem;
+  }
+  .max-label { font-size: 12px; color: var(--gray-500); white-space: nowrap; }
+  .max-opts { display: flex; gap: 6px; flex-wrap: wrap; }
+  .max-btn {
+    padding: 5px 16px;
+    border-radius: 20px;
+    border: 0.5px solid var(--gray-300);
+    background: white;
+    color: var(--gray-700);
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .max-btn.active {
+    border-color: var(--purple-600);
+    background: var(--purple-600);
+    color: var(--purple-50);
+    font-weight: 500;
+  }
+
+  /* ── progress ── */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+  .track {
+    flex: 1;
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .fill {
+    height: 100%;
+    background: var(--purple-600);
+    border-radius: 3px;
+    transition: width 0.2s;
+    width: 0%;
+  }
+  .prog-txt { font-size: 12px; color: var(--gray-500); white-space: nowrap; min-width: 64px; text-align: right; }
+
+  /* ── legend ── */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--gray-500); }
+  .leg-dot {
+    width: 14px; height: 14px; border-radius: 3px;
+    border: 0.5px solid transparent;
+  }
+
+  /* ── manual input ── */
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+  }
+  .num-input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 0.5px solid var(--gray-300);
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    outline: none;
+    color: var(--gray-900);
+    background: white;
+    transition: border-color 0.15s;
+  }
+  .num-input:focus { border-color: var(--purple-400); }
+  .highlight-btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 0.5px solid var(--purple-600);
+    background: var(--purple-600);
+    color: var(--purple-50);
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  /* ── col headers ── */
+  .col-hdrs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 6px;
+  }
+  .col-hdr {
+    flex: 0 0 calc(20% - 2px);
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 0;
+    border-radius: 4px;
+    line-height: 1.4;
+  }
+
+  /* ── ball grid ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    gap: 4px;
+    margin-bottom: 1.25rem;
+  }
+  .ball {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.12s;
+    border: 0.5px solid var(--gray-200);
+    background: white;
+  }
+  .ball:hover { transform: scale(1.08); }
+  .ball.active {
+    border-color: var(--purple-800);
+    background: var(--purple-600);
+  }
+  .ball.prev {
+    border-color: var(--purple-200);
+    background: var(--purple-50);
+  }
+  .ball-num {
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
+    color: #9ca3af;
+  }
+  .ball.active .ball-num { color: var(--purple-50); }
+  .ball.prev  .ball-num  { color: var(--purple-800); }
+  .ball-badge {
+    font-size: 9px;
+    padding: 1px 4px;
+    border-radius: 8px;
+    margin-top: 1px;
+    font-weight: 500;
+    line-height: 1.2;
+    background: var(--purple-200);
+    color: var(--purple-900);
+  }
+  .ball.active .ball-badge { background: var(--purple-800); color: var(--purple-50); }
+  .ball-badge.multi { background: var(--red-400); color: var(--red-50); }
+
+  /* ── actions ── */
+  .actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 1.25rem;
+  }
+  .act-btn {
+    padding: 9px 8px;
+    border-radius: 8px;
+    background: white;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .act-btn:hover { opacity: 0.8; }
+
+  /* ── stats ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 1.25rem;
+  }
+  .stat-box {
+    background: var(--gray-50);
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+  .stat-val { font-size: 20px; font-weight: 500; color: var(--gray-900); font-family: 'Fraunces', serif; }
+  .stat-lbl { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+
+  /* ── summary ── */
+  .summary {
+    background: var(--gray-50);
+    border: 0.5px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--gray-500);
+    display: none;
+  }
+  .summary.visible { display: block; }
+  .sum-row { margin-top: 6px; }
+  .sum-bold { color: var(--gray-900); font-weight: 500; }
+
+  @media (max-width: 500px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .ball-num { font-size: 9px; }
   }
 </style>
 </head>
 <body>
-  <div class="app" role="main" aria-label="Bingo generator">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-      <h2 style="margin:0;color:#fff">Bingo — Multi-card generator</h2>
-      <div style="color:#fff;font-size:13px">Free is center (N3)</div>
-    </div>
+<div class="wrap">
 
-    <div style="margin-top:12px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
-      <div>
-        <div style="margin-bottom:6px;color:#fff">Cards to generate</div>
-        <input id="cardsCount" type="number" min="1" max="100" value="3" />
-      </div>
-
-      <div>
-        <div style="margin-bottom:6px;color:#fff">Seed (optional)</div>
-        <input id="seed" type="text" placeholder="leave blank for random" />
-      </div>
-
-      <div style="display:flex;align-items:flex-end;">
-        <button id="generateBtn">Generate</button>
-      </div>
-    </div>
-
-    <div style="margin-top:18px;">
-      <div class="colheader" style="display:flex;gap:6px;justify-content:center;">
-        <div style="width:66px;text-align:center">B</div>
-        <div style="width:66px;text-align:center">I</div>
-        <div style="width:66px;text-align:center">N</div>
-        <div style="width:66px;text-align:center">G</div>
-        <div style="width:66px;text-align:center">O</div>
-      </div>
-
-      <div style="margin:6px 0 10px 0;">
-        <div class="master-grid" id="masterGrid" aria-label="Master Bingo inputs (optional)">
-          <!-- 25 master inputs -->
-          <!-- Row 1 -->
-          <div class="master-cell"><input class="master-input" data-pos="r0c0" placeholder="B1" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r0c1" placeholder="I1" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r0c2" placeholder="N1" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r0c3" placeholder="G1" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r0c4" placeholder="O1" /></div>
-          <!-- Row 2 -->
-          <div class="master-cell"><input class="master-input" data-pos="r1c0" placeholder="B2" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r1c1" placeholder="I2" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r1c2" placeholder="N2" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r1c3" placeholder="G2" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r1c4" placeholder="O2" /></div>
-          <!-- Row 3 -->
-          <div class="master-cell"><input class="master-input" data-pos="r2c0" placeholder="B3" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r2c1" placeholder="I3" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r2c2" placeholder="FREE" value="FREE" disabled /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r2c3" placeholder="G3" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r2c4" placeholder="O3" /></div>
-          <!-- Row 4 -->
-          <div class="master-cell"><input class="master-input" data-pos="r3c0" placeholder="B4" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r3c1" placeholder="I4" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r3c2" placeholder="N4" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r3c3" placeholder="G4" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r3c4" placeholder="O4" /></div>
-          <!-- Row 5 -->
-          <div class="master-cell"><input class="master-input" data-pos="r4c0" placeholder="B5" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r4c1" placeholder="I5" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r4c2" placeholder="N5" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r4c3" placeholder="G5" /></div>
-          <div class="master-cell"><input class="master-input" data-pos="r4c4" placeholder="O5" /></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="legend">
-      <div><span class="swatch" style="background:var(--purple)"></span> Input values</div>
-      <div><span class="swatch" style="background:var(--white)"></span> Auto-filled</div>
-      <div><span class="swatch" style="background:var(--yellow)"></span> Free space</div>
-    </div>
-
-    <div class="cards" id="cards" aria-live="polite">
-      <div style="width:100%;text-align:center;padding:40px;color:#fff;font-style:italic;">
-        Click "Generate" to create your Bingo cards
-      </div>
-    </div>
-
-    <div class="footer-note">Enter values into the master grid (optional). Leave blank to auto-fill numbers automatically from each column's range. Then click Generate.</div>
+  <!-- top bar -->
+  <div class="top-bar">
+    <span class="title">Called numbers</span>
+    <span class="round-pill" id="roundPill">Round 1</span>
   </div>
 
-  <script>
-    const columnRanges = [
-      {min:1, max:15},   // B
-      {min:16, max:30},  // I
-      {min:31, max:45},  // N
-      {min:46, max:60},  // G
-      {min:61, max:75}   // O
+  <!-- label box -->
+  <div class="label-box" id="labelBox">
+    <span class="label-icon">🏷️</span>
+    <!-- display mode -->
+    <div class="label-display" id="labelDisplay">
+      <span class="label-placeholder" id="labelPlaceholder">No label set — add a game name, event, or date</span>
+      <span class="label-text hidden" id="labelText"></span>
+      <button class="label-edit-btn" id="labelEditBtn" onclick="startEdit()">+ Add label</button>
+    </div>
+    <!-- edit mode -->
+    <div class="label-form hidden" id="labelForm">
+      <input class="label-input" id="labelInput" type="text" maxlength="80"
+        placeholder="e.g. Friday Night Game · Hall B · June 2025"
+        onkeydown="if(event.key==='Enter')saveLabel()" />
+      <button class="label-save-btn" onclick="saveLabel()">Save</button>
+      <button class="label-cancel-btn" onclick="cancelEdit()">✕</button>
+    </div>
+  </div>
+
+  <!-- max balls -->
+  <div class="max-bar">
+    <span class="max-label">Max balls / round</span>
+    <div class="max-opts" id="maxOpts"></div>
+  </div>
+
+  <!-- progress -->
+  <div class="progress-row">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <span class="prog-txt" id="progTxt">0 / 48</span>
+  </div>
+
+  <!-- legend -->
+  <div class="legend">
+    <div class="leg-item">
+      <div class="leg-dot" style="background:#534AB7;border-color:#3C3489"></div> Called this round
+    </div>
+    <div class="leg-item">
+      <div class="leg-dot" style="background:#EEEDFE;border-color:#AFA9EC"></div> Previous rounds
+    </div>
+    <div class="leg-item">
+      <div class="leg-dot" style="background:white;border-color:#e5e7eb"></div> Not called
+    </div>
+  </div>
+
+  <!-- manual input -->
+  <div class="input-row">
+    <input class="num-input" id="numInput" type="number" min="1" max="75"
+      placeholder="Enter 1–75 and press Enter"
+      onkeydown="if(event.key==='Enter')highlightNum()" />
+    <button class="highlight-btn" onclick="highlightNum()">Highlight</button>
+  </div>
+
+  <!-- col headers -->
+  <div class="col-hdrs" id="colHdrs"></div>
+
+  <!-- ball grid -->
+  <div class="grid" id="grid"></div>
+
+  <!-- actions -->
+  <div class="actions">
+    <button class="act-btn" style="border:0.5px solid #0F6E56;color:#0F6E56" onclick="drawRandom()">Draw random</button>
+    <button class="act-btn" style="border:0.5px solid #854F0B;color:#854F0B" onclick="newRound()">New round</button>
+    <button class="act-btn" style="border:0.5px solid #A32D2D;color:#A32D2D" onclick="resetRound()">Reset</button>
+  </div>
+
+  <!-- stats -->
+  <div class="stats-row" id="statsRow"></div>
+
+  <!-- summary -->
+  <div class="summary" id="summary">
+    <span class="sum-bold">Frequency summary</span>
+    <div class="sum-row"><span class="sum-bold">Multiple hits:</span> <span id="multiHits">—</span></div>
+    <div class="sum-row"><span class="sum-bold">Top 5 most frequent:</span> <span id="top5"></span></div>
+  </div>
+
+</div>
+
+<script>
+  const MAX_BALL_OPTIONS = [25, 30, 35, 40, 44, 48];
+  const COLS = ["B","I","N","G","O"];
+  const COL_COLORS = ["#1D9E75","#378ADD","#7F77DD","#BA7517","#D85A30"];
+  const COL_LIGHT  = ["#E1F5EE","#E6F1FB","#EEEDFE","#FAEEDA","#FAECE7"];
+
+  let maxBalls = 48;
+  let called   = [];
+  let history  = [];
+  let round    = 1;
+  let labelVal = "";
+
+  // ── label ────────────────────────────────────────────────────────────────
+  function startEdit() {
+    document.getElementById('labelDisplay').classList.add('hidden');
+    const form = document.getElementById('labelForm');
+    form.classList.remove('hidden');
+    const inp = document.getElementById('labelInput');
+    inp.value = labelVal;
+    inp.focus();
+  }
+  function saveLabel() {
+    const v = document.getElementById('labelInput').value.trim();
+    labelVal = v;
+    document.getElementById('labelForm').classList.add('hidden');
+    document.getElementById('labelDisplay').classList.remove('hidden');
+    const ph  = document.getElementById('labelPlaceholder');
+    const txt = document.getElementById('labelText');
+    const btn = document.getElementById('labelEditBtn');
+    if (v) {
+      ph.classList.add('hidden');
+      txt.classList.remove('hidden');
+      txt.textContent = v;
+      btn.textContent = 'Edit';
+    } else {
+      ph.classList.remove('hidden');
+      txt.classList.add('hidden');
+      btn.textContent = '+ Add label';
+    }
+  }
+  function cancelEdit() {
+    document.getElementById('labelForm').classList.add('hidden');
+    document.getElementById('labelDisplay').classList.remove('hidden');
+  }
+
+  // ── freq ──────────────────────────────────────────────────────────────────
+  function getFreq() {
+    const f = {};
+    for (let i = 1; i <= 75; i++) f[i] = 0;
+    history.forEach(r => r.forEach(n => f[n]++));
+    called.forEach(n => f[n]++);
+    return f;
+  }
+
+  // ── build max buttons ─────────────────────────────────────────────────────
+  function buildMaxOpts() {
+    const el = document.getElementById('maxOpts');
+    el.innerHTML = '';
+    MAX_BALL_OPTIONS.forEach(opt => {
+      const b = document.createElement('button');
+      b.className = 'max-btn' + (opt === maxBalls ? ' active' : '');
+      b.textContent = opt;
+      b.onclick = () => { maxBalls = opt; buildMaxOpts(); render(); };
+      el.appendChild(b);
+    });
+  }
+
+  // ── build col headers ─────────────────────────────────────────────────────
+  function buildColHdrs() {
+    const el = document.getElementById('colHdrs');
+    el.innerHTML = '';
+    COLS.forEach((l, i) => {
+      const d = document.createElement('div');
+      d.className = 'col-hdr';
+      d.style.background = COL_LIGHT[i];
+      d.style.color = COL_COLORS[i];
+      d.innerHTML = `${l}<br><span style="font-size:10px;font-weight:400">${i*15+1}–${i*15+15}</span>`;
+      el.appendChild(d);
+    });
+  }
+
+  // ── toggle ────────────────────────────────────────────────────────────────
+  function toggle(n) {
+    if (called.includes(n)) {
+      called = called.filter(x => x !== n);
+    } else {
+      if (called.length >= maxBalls) { alert(`Max ${maxBalls} balls reached. Start a new round.`); return; }
+      called.push(n);
+      called.sort((a, b) => a - b);
+    }
+    render();
+  }
+
+  function highlightNum() {
+    const v = parseInt(document.getElementById('numInput').value);
+    if (isNaN(v) || v < 1 || v > 75) { alert('Enter a number between 1 and 75'); return; }
+    toggle(v);
+    document.getElementById('numInput').value = '';
+  }
+
+  function drawRandom() {
+    const avail = Array.from({length:75},(_,i)=>i+1).filter(n => !called.includes(n));
+    if (!avail.length) { alert('All 75 balls drawn!'); return; }
+    if (called.length >= maxBalls) { alert(`Max ${maxBalls} balls reached. Start a new round.`); return; }
+    const pick = avail[Math.floor(Math.random() * avail.length)];
+    called.push(pick);
+    called.sort((a,b)=>a-b);
+    render();
+  }
+
+  function newRound() {
+    if (!called.length) { alert('No balls drawn in current round.'); return; }
+    history.push([...called]);
+    called = [];
+    round++;
+    render();
+  }
+
+  function resetRound() {
+    called = [];
+    render();
+  }
+
+  // ── render ────────────────────────────────────────────────────────────────
+  function render() {
+    const freq = getFreq();
+    const pct  = maxBalls > 0 ? Math.min(100, Math.round(called.length / maxBalls * 100)) : 0;
+
+    // round pill
+    document.getElementById('roundPill').textContent = `Round ${round}`;
+
+    // progress
+    document.getElementById('fill').style.width = pct + '%';
+    document.getElementById('progTxt').textContent = `${called.length} / ${maxBalls}`;
+
+    // grid
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    for (let n = 1; n <= 75; n++) {
+      const active = called.includes(n);
+      const inPrev = !active && freq[n] > 0;
+      const total  = freq[n] || 0;
+
+      const div = document.createElement('div');
+      div.className = 'ball' + (active ? ' active' : inPrev ? ' prev' : '');
+      div.onclick = () => toggle(n);
+
+      const numSpan = document.createElement('span');
+      numSpan.className = 'ball-num';
+      numSpan.textContent = n;
+      div.appendChild(numSpan);
+
+      if (total > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'ball-badge' + (total > 1 ? ' multi' : '');
+        badge.textContent = total + 'x';
+        div.appendChild(badge);
+      }
+
+      grid.appendChild(div);
+    }
+
+    // stats
+    const statsRow = document.getElementById('statsRow');
+    const stats = [
+      { val: called.length,      lbl: 'Drawn' },
+      { val: 75 - called.length, lbl: 'Remaining' },
+      { val: history.length,     lbl: 'Rounds done' },
+      { val: maxBalls,           lbl: 'Max / round' },
     ];
-
-    function mulberry32(seed) {
-      let a = seed >>> 0;
-      return function() {
-        a |= 0;
-        a = a + 0x6D2B79F5 | 0;
-        let t = Math.imul(a ^ a >>> 15, 1 | a);
-        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-        return ((t ^ t >>> 14) >>> 0) / 4294967296;
-      };
-    }
-
-    function seededShuffle(array, rand) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(rand() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    function createRange(min, max) {
-      const arr = [];
-      for (let i = min; i <= max; i++) arr.push(i);
-      return arr;
-    }
-
-    function readMasterGrid() {
-      const inputs = document.querySelectorAll('.master-input');
-      const grid = Array.from({length:5}, () => Array(5).fill(''));
-      inputs.forEach(inp => {
-        const pos = inp.dataset.pos;
-        if (!pos) return;
-        const m = pos.match(/^r(\d)c(\d)$/);
-        if (!m) return;
-        const r = parseInt(m[1],10);
-        const c = parseInt(m[2],10);
-        grid[r][c] = inp.disabled ? 'FREE' : (inp.value || '').trim();
-      });
-      grid[2][2] = 'FREE';
-      return grid;
-    }
-
-    // Fixed generateCard function - ensures no duplicate numbers across all cards
-    function generateCards(masterGrid, count, rand) {
-      const cards = [];
-      const usedNumbers = new Set();
-      
-      // Create pools for each column
-      const pools = columnRanges.map(cr => createRange(cr.min, cr.max));
-      pools.forEach((p, idx) => seededShuffle(p, rand));
-      
-      // Track available numbers per column
-      const availableNumbers = pools.map(pool => [...pool]);
-      
-      for (let cardIndex = 0; cardIndex < count; cardIndex++) {
-        const card = Array.from({length:5}, () => Array(5).fill(''));
-        
-        for (let r = 0; r < 5; r++) {
-          for (let c = 0; c < 5; c++) {
-            if (r === 2 && c === 2) {
-              card[r][c] = 'FREE';
-              continue;
-            }
-            
-            const override = masterGrid[r][c];
-            if (override && override !== 'FREE') {
-              // Use the override value if available and not already used
-              if (!usedNumbers.has(override)) {
-                card[r][c] = override;
-                usedNumbers.add(override);
-              } else {
-                // Find an available number from the column
-                let val;
-                while (availableNumbers[c].length > 0) {
-                  val = availableNumbers[c].shift();
-                  if (!usedNumbers.has(val)) {
-                    card[r][c] = String(val);
-                    usedNumbers.add(val);
-                    break;
-                  }
-                }
-              }
-            } else {
-              // Find an available number from the column
-              let val;
-              while (availableNumbers[c].length > 0) {
-                val = availableNumbers[c].shift();
-                if (!usedNumbers.has(val)) {
-                  card[r][c] = String(val);
-                  usedNumbers.add(val);
-                  break;
-                }
-              }
-            }
-          }
-        }
-        cards.push(card);
-      }
-      
-      return cards;
-    }
-
-    function renderCards(cards) {
-      const container = document.getElementById('cards');
-      container.innerHTML = '';
-      
-      if (cards.length === 0) {
-        container.innerHTML = '<div style="width:100%;text-align:center;padding:40px;color:#fff;font-style:italic;">Click "Generate" to create your Bingo cards</div>';
-        return;
-      }
-      
-      cards.forEach((card, idx) => {
-        const cardEl = document.createElement('div');
-        cardEl.className = 'card';
-        const title = document.createElement('h3');
-        title.textContent = `Card ${idx + 1}`;
-        cardEl.appendChild(title);
-
-        const gridEl = document.createElement('div');
-        gridEl.className = 'grid';
-        for (let r = 0; r < 5; r++) {
-          for (let c = 0; c < 5; c++) {
-            const cell = document.createElement('div');
-            cell.className = 'cell';
-            if (r === 2 && c === 2) {
-              cell.classList.add('free');
-            } else {
-              const text = card[r][c];
-              if (text && isNaN(Number(text))) cell.classList.add('input-cell');
-              else cell.classList.add('auto-cell');
-            }
-            cell.textContent = card[r][c];
-            gridEl.appendChild(cell);
-          }
-        }
-        cardEl.appendChild(gridEl);
-        container.appendChild(cardEl);
-      });
-    }
-
-    document.getElementById('generateBtn').addEventListener('click', () => {
-      const count = Math.max(1, Math.min(100, parseInt(document.getElementById('cardsCount').value || '1', 10)));
-      const seedInput = (document.getElementById('seed').value || '').trim();
-      let numericSeed;
-      if (seedInput === '') {
-        numericSeed = Math.floor(Math.random() * 4294967295);
-      } else {
-        numericSeed = cyrb53(seedInput) >>> 0;
-      }
-      const rand = mulberry32(numericSeed);
-      const master = readMasterGrid();
-      
-      // Generate all cards at once to ensure no duplicates across cards
-      const cards = generateCards(master, count, rand);
-      renderCards(cards);
+    statsRow.innerHTML = '';
+    stats.forEach(({val, lbl}) => {
+      statsRow.innerHTML += `<div class="stat-box"><div class="stat-val">${val}</div><div class="stat-lbl">${lbl}</div></div>`;
     });
 
-    function cyrb53(str, seed = 0) {
-      let h1 = 0xDEADBEEF ^ seed, h2 = 0x41C6CE57 ^ seed;
-      for (let i = 0, ch; i < str.length; i++) {
-        ch = str.charCodeAt(i);
-        h1 = Math.imul(h1 ^ ch, 2654435761);
-        h2 = Math.imul(h2 ^ ch, 1597334677);
-      }
-      h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-      h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-      return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+    // summary
+    const hasAny = Object.values(freq).some(v => v > 0);
+    const summaryEl = document.getElementById('summary');
+    if (hasAny) {
+      summaryEl.classList.add('visible');
+      const multi = Object.entries(freq).filter(([,c])=>c>1).map(([n,c])=>`${n}(${c}x)`).join(', ') || '—';
+      const top5  = Object.entries(freq).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([n,c])=>`${n}(${c}x)`).join(', ') || '—';
+      document.getElementById('multiHits').textContent = multi;
+      document.getElementById('top5').textContent = top5;
+    } else {
+      summaryEl.classList.remove('visible');
     }
+  }
 
-    // Removed the automatic generation on page load
-  </script>
+  // ── init ──────────────────────────────────────────────────────────────────
+  buildMaxOpts();
+  buildColHdrs();
+  render();
+</script>
 </body>
 </html>
