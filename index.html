@@ -1,1000 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>BINGO FORTUNE</title>
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Bebas+Neue&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet"/>
-<style>
-  :root {
-    --B: #ff4e6a;
-    --I: #ff9f1c;
-    --N: #2ec4b6;
-    --G: #4cc9f0;
-    --O: #a855f7;
-    --bg: #0a0a12;
-    --surface: #13131f;
-    --border: rgba(255,255,255,0.08);
-    --text: #f0f0ff;
-    --muted: rgba(240,240,255,0.45);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── Floating Balls ── */
-  #ball-layer {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .ball {
-    position: absolute;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    opacity: 0;
-    animation: floatBall var(--dur, 18s) ease-in-out var(--delay, 0s) infinite;
-  }
-  .ball span { font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 1px; color: #fff; }
-  .ball strong { font-family: 'Black Han Sans', sans-serif; font-size: 15px; color: #fff; }
-
-  .ball.B { background: radial-gradient(circle at 35% 30%, #ff7a8a, var(--B)); box-shadow: 0 0 18px rgba(255,78,106,0.5); }
-  .ball.I { background: radial-gradient(circle at 35% 30%, #ffcb6b, var(--I)); box-shadow: 0 0 18px rgba(255,159,28,0.5); }
-  .ball.N { background: radial-gradient(circle at 35% 30%, #5ff0e8, var(--N)); box-shadow: 0 0 18px rgba(46,196,182,0.5); }
-  .ball.G { background: radial-gradient(circle at 35% 30%, #82dcf8, var(--G)); box-shadow: 0 0 18px rgba(76,201,240,0.5); }
-  .ball.O { background: radial-gradient(circle at 35% 30%, #c084fc, var(--O)); box-shadow: 0 0 18px rgba(168,85,247,0.5); }
-
-  @keyframes floatBall {
-    0%   { opacity: 0; transform: translateY(0px) scale(0.85) rotate(0deg); }
-    10%  { opacity: 0.22; }
-    50%  { opacity: 0.18; transform: translateY(-40px) scale(1) rotate(180deg); }
-    90%  { opacity: 0.22; }
-    100% { opacity: 0; transform: translateY(0px) scale(0.85) rotate(360deg); }
-  }
-
-  /* ── Pages ── */
-  .page { display: none; position: relative; z-index: 1; min-height: 100vh; }
-  .page.active { display: block; }
-
-  /* ── Menu ── */
-  #menu {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 40px 20px;
-  }
-
-  .menu-logo {
-    font-size: 72px;
-    animation: spinLogo 6s ease-in-out infinite;
-    margin-bottom: 8px;
-    filter: drop-shadow(0 0 24px rgba(168,85,247,0.7));
-  }
-  @keyframes spinLogo {
-    0%,100% { transform: rotate(-8deg) scale(1); }
-    50%      { transform: rotate(8deg) scale(1.1); }
-  }
-
-  .menu-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(48px, 10vw, 88px);
-    letter-spacing: 10px;
-    background: linear-gradient(135deg, var(--B), var(--I), var(--N), var(--G), var(--O));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 6px;
-    animation: shimmer 4s linear infinite;
-    background-size: 200%;
-  }
-  @keyframes shimmer {
-    0%   { background-position: 0% 50%; }
-    100% { background-position: 200% 50%; }
-  }
-
-  .menu-sub {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    letter-spacing: 4px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 48px;
-  }
-
-  .menu-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    width: 100%;
-    max-width: 420px;
-  }
-
-  .menu-btn {
-    position: relative;
-    padding: 16px 10px;
-    border: none;
-    border-radius: 14px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    overflow: hidden;
-    transition: transform 0.15s, box-shadow 0.15s;
-    color: #fff;
-  }
-  .menu-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(255,255,255,0.08);
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .menu-btn:hover::before { opacity: 1; }
-  .menu-btn:hover { transform: translateY(-3px); }
-  .menu-btn:active { transform: translateY(0); }
-
-  .menu-btn:nth-child(1)  { background: linear-gradient(135deg,#ff4e6a,#c0213a); box-shadow: 0 4px 20px rgba(255,78,106,.35); }
-  .menu-btn:nth-child(2)  { background: linear-gradient(135deg,#ff9f1c,#c97200); box-shadow: 0 4px 20px rgba(255,159,28,.35); }
-  .menu-btn:nth-child(3)  { background: linear-gradient(135deg,#2ec4b6,#1a8a80); box-shadow: 0 4px 20px rgba(46,196,182,.35); }
-  .menu-btn:nth-child(4)  { background: linear-gradient(135deg,#4cc9f0,#1a8ab8); box-shadow: 0 4px 20px rgba(76,201,240,.35); }
-  .menu-btn:nth-child(5)  { background: linear-gradient(135deg,#a855f7,#7209b7); box-shadow: 0 4px 20px rgba(168,85,247,.35); }
-  .menu-btn:nth-child(6)  { background: linear-gradient(135deg,#f72585,#b5179e); box-shadow: 0 4px 20px rgba(247,37,133,.35); }
-  .menu-btn:nth-child(7)  { background: linear-gradient(135deg,#7b2d8b,#560bad); box-shadow: 0 4px 20px rgba(123,45,139,.35); }
-  .menu-btn:nth-child(8)  { background: linear-gradient(135deg,#3a86ff,#0043b5); box-shadow: 0 4px 20px rgba(58,134,255,.35); }
-  .menu-btn:nth-child(9)  { background: linear-gradient(135deg,#fb5607,#b83700); box-shadow: 0 4px 20px rgba(251,86,7,.35); }
-  .menu-btn:nth-child(10) { background: linear-gradient(135deg,#06d6a0,#04865e); box-shadow: 0 4px 20px rgba(6,214,160,.35); }
-
-  /* ── Sub-pages ── */
-  .subpage {
-    padding: 32px 24px 60px;
-    max-width: 540px;
-    margin: 0 auto;
-  }
-
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 9px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-bottom: 28px;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .back-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
-
-  .page-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 42px;
-    letter-spacing: 5px;
-    margin-bottom: 6px;
-  }
-  .page-desc {
-    color: var(--muted);
-    font-size: 14px;
-    margin-bottom: 28px;
-    line-height: 1.6;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 16px;
-  }
-
-  .card h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 2px;
-    margin-bottom: 14px;
-    color: var(--text);
-  }
-
-  /* Bingo Card */
-  .bingo-card-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-  }
-  .bingo-header-cell {
-    text-align: center;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 2px;
-    padding: 6px 0;
-    border-radius: 8px;
-  }
-  .bingo-header-cell.B { color: var(--B); }
-  .bingo-header-cell.I { color: var(--I); }
-  .bingo-header-cell.N { color: var(--N); }
-  .bingo-header-cell.G { color: var(--G); }
-  .bingo-header-cell.O { color: var(--O); }
-
-  .bingo-cell {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Black Han Sans', sans-serif;
-    font-size: 16px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.15s;
-    user-select: none;
-  }
-  .bingo-cell:hover { background: rgba(255,255,255,0.09); }
-  .bingo-cell.marked {
-    border-color: transparent;
-    color: #fff;
-    box-shadow: 0 0 12px rgba(168,85,247,0.5);
-    transform: scale(0.95);
-  }
-  .bingo-cell.marked.B { background: var(--B); }
-  .bingo-cell.marked.I { background: var(--I); }
-  .bingo-cell.marked.N { background: var(--N); }
-  .bingo-cell.marked.G { background: var(--G); }
-  .bingo-cell.marked.O { background: var(--O); }
-  .bingo-cell.free {
-    background: linear-gradient(135deg, var(--O), var(--B));
-    border-color: transparent;
-    color: #fff;
-    font-size: 10px;
-    letter-spacing: 1px;
-  }
-
-  /* Balls row */
-  .balls-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .mini-ball {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Black Han Sans', sans-serif;
-    font-size: 13px;
-    color: #fff;
-    cursor: pointer;
-    transition: transform 0.1s;
-    flex-shrink: 0;
-    opacity: 0.4;
-    border: 2px solid transparent;
-  }
-  .mini-ball.selected { opacity: 1; transform: scale(1.15); border-color: rgba(255,255,255,0.4); }
-  .mini-ball.B { background: var(--B); }
-  .mini-ball.I { background: var(--I); }
-  .mini-ball.N { background: var(--N); }
-  .mini-ball.G { background: var(--G); }
-  .mini-ball.O { background: var(--O); }
-
-  /* Buttons */
-  .btn {
-    padding: 13px 28px;
-    border: none;
-    border-radius: 10px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 17px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: transform 0.1s, opacity 0.15s;
-    color: #fff;
-  }
-  .btn:hover { opacity: 0.88; transform: translateY(-2px); }
-  .btn:active { transform: translateY(0); }
-  .btn-primary { background: linear-gradient(135deg,#a855f7,#7209b7); }
-  .btn-danger  { background: linear-gradient(135deg,#ff4e6a,#c0213a); }
-  .btn-success { background: linear-gradient(135deg,#2ec4b6,#1a8a80); }
-  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
-
-  /* Tag badge */
-  .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-size: 12px;
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  /* Win banner */
-  .win-banner {
-    background: linear-gradient(135deg, #a855f7, #ff4e6a);
-    border-radius: 14px;
-    padding: 18px;
-    text-align: center;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    letter-spacing: 5px;
-    margin-bottom: 16px;
-    animation: pulse 1s ease-in-out infinite;
-    display: none;
-  }
-  .win-banner.show { display: block; }
-  @keyframes pulse {
-    0%,100% { transform: scale(1); }
-    50%      { transform: scale(1.02); }
-  }
-
-  /* Pattern grid */
-  .pattern-grid {
-    display: grid;
-    grid-template-columns: repeat(5,1fr);
-    gap: 5px;
-    max-width: 200px;
-  }
-  .pattern-cell {
-    aspect-ratio: 1;
-    border-radius: 7px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.12s;
-  }
-  .pattern-cell.on {
-    background: linear-gradient(135deg, var(--O), var(--B));
-    border-color: transparent;
-  }
-
-  /* Analyzer */
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-  }
-  .stat-row:last-child { border-bottom: none; }
-  .stat-label { color: var(--muted); }
-  .stat-value { font-family: 'Black Han Sans', sans-serif; font-size: 18px; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-
-  /* Number input */
-  .num-input {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    width: 100%;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .num-input:focus { border-color: rgba(168,85,247,0.6); }
-
-  label.field-label {
-    display: block;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 6px;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  /* Gallery thumbnails */
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-  .gallery-thumb {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px;
-    cursor: pointer;
-    transition: border-color 0.15s, transform 0.15s;
-    text-align: center;
-  }
-  .gallery-thumb:hover { border-color: rgba(168,85,247,0.5); transform: translateY(-3px); }
-  .gallery-thumb-grid {
-    display: grid;
-    grid-template-columns: repeat(5,1fr);
-    gap: 2px;
-    margin-bottom: 8px;
-  }
-  .gallery-thumb-cell {
-    aspect-ratio: 1;
-    border-radius: 3px;
-    background: rgba(255,255,255,0.05);
-  }
-  .gallery-thumb-cell.on { background: var(--O); opacity: 0.8; }
-  .gallery-thumb-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 13px;
-    letter-spacing: 2px;
-    color: var(--muted);
-  }
-
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bingo Fortune Flip</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(135deg, #4c00ff, #00aaff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            position: relative;
+        }
+        /* Bingo balls background */
+        
+        .bingo-background {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .ball {
+            position: absolute;
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            color: black;
+            background: white;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 3px solid black;
+        }
+        
+        .ball span.letter {
+            font-size: 16px;
+            line-height: 1;
+        }
+        
+        .ball span.number {
+            font-size: 22px;
+            line-height: 1;
+        }
+        /* Foreground content */
+        
+        .container {
+            position: relative;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: black;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00ff00;
+            font-size: 2rem;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+        }
+        
+        h1 {
+            color: white;
+            font-size: 2.3rem;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+        }
+        /* Buttons */
+        
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .buttons a {
+            width: 220px;
+            text-align: center;
+            padding: 15px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+        /* ✨ Highlight glow effect on hover */
+        
+        .buttons a:hover {
+            background: #555;
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
+
 <body>
 
-<!-- Floating Balls -->
-<div id="ball-layer"></div>
+    <!-- Bouncing Bingo Balls -->
+    <div class="bingo-background" id="bingoBackground"></div>
 
-<!-- MENU -->
-<div id="page-menu" class="page active">
-  <div id="menu">
-    <div class="menu-logo">🍀</div>
-    <h1 class="menu-title">BINGO FORTUNE</h1>
-    <p class="menu-sub">Your Lucky Card Companion</p>
-    <div class="menu-grid">
-      <button class="menu-btn" onclick="showPage('generate')">GENERATE</button>
-      <button class="menu-btn" onclick="showPage('pattern')">PATTERN</button>
-      <button class="menu-btn" onclick="showPage('checker')">CHECKER</button>
-      <button class="menu-btn" onclick="showPage('analyzer')">ANALYZER</button>
-      <button class="menu-btn" onclick="showPage('gallery')">GALLERY</button>
-      <button class="menu-btn" onclick="showPage('checker25')">CHECKER 25</button>
-      <button class="menu-btn" onclick="showPage('checker30')">CHECKER 30</button>
-      <button class="menu-btn" onclick="showPage('checker35')">CHECKER 35</button>
-      <button class="menu-btn" onclick="showPage('checker44')">CHECKER 44</button>
-      <button class="menu-btn" onclick="showPage('checker48')">CHECKER 48</button>
+    <!-- Foreground content -->
+    <div class="container">
+        <div class="logo">🍀</div>
+        <h1>BINGO FORTUNE </h1>
+        <div class="buttons">
+            <a href="./GENERATE.html">GENERATE</a>
+            <a href="./PATTERN.html">PATTERN</a>
+            <a href="./Untitled-4.html">CHECKER</a>
+            <a href="./ANAYZER.html">ANAYZER</a>
+            <a href="./PATTERN.html">GALLERY</a>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- GENERATE -->
-<div id="page-generate" class="page">
-  <div class="subpage">
-    <button class="back-btn" onclick="showPage('menu')">← Back</button>
-    <p class="page-title">GENERATE</p>
-    <p class="page-desc">Instantly generate a random BINGO card. Click any cell to mark it.</p>
-    <div class="card">
-      <h3>YOUR CARD</h3>
-      <div id="gen-card" class="bingo-card-grid"></div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="generateCard()">🎲 NEW CARD</button>
-      <button class="btn btn-danger"  onclick="clearCard()">✕ CLEAR</button>
-    </div>
-  </div>
-</div>
+    <script>
+        const background = document.getElementById("bingoBackground");
+        const balls = [];
+        const speeds = [];
 
-<!-- PATTERN -->
-<div id="page-pattern" class="page">
-  <div class="subpage">
-    <button class="back-btn" onclick="showPage('menu')">← Back</button>
-    <p class="page-title">PATTERN</p>
-    <p class="page-desc">Draw a custom winning pattern by toggling cells.</p>
-    <div class="card">
-      <h3>DRAW PATTERN</h3>
-      <div id="pattern-grid" class="pattern-grid"></div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="clearPattern()">CLEAR</button>
-      <button class="btn btn-success" onclick="fillPattern()">FILL ALL</button>
-    </div>
-  </div>
-</div>
+        // Create balls 1-75
+        for (let i = 1; i <= 75; i++) {
+            const ball = document.createElement("div");
+            ball.classList.add("ball");
 
-<!-- CHECKER -->
-<div id="page-checker" class="page">
-  <div class="subpage">
-    <button class="back-btn" onclick="showPage('menu')">← Back</button>
-    <p class="page-title">CHECKER</p>
-    <p class="page-desc">Select called numbers and mark your card. Check for BINGO!</p>
-    <div class="card">
-      <h3>CALLED NUMBERS</h3>
-      <div id="checker-balls" class="balls-row"></div>
-    </div>
-    <div class="card">
-      <h3>YOUR CARD</h3>
-      <div class="win-banner" id="checker-win">🎉 BINGO! 🎉</div>
-      <div id="checker-card" class="bingo-card-grid"></div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="generateCheckerCard()">NEW CARD</button>
-      <button class="btn btn-success" onclick="checkBingo()">CHECK BINGO</button>
-      <button class="btn btn-danger"  onclick="resetChecker()">RESET</button>
-    </div>
-  </div>
-</div>
+            const letterSpan = document.createElement("span");
+            letterSpan.classList.add("letter");
+            const numberSpan = document.createElement("span");
+            numberSpan.classList.add("number");
 
-<!-- ANALYZER -->
-<div id="page-analyzer" class="page">
-  <div class="subpage">
-    <button class="back-btn" onclick="showPage('menu')">← Back</button>
-    <p class="page-title">ANALYZER</p>
-    <p class="page-desc">Enter called numbers to analyze frequency and hot picks.</p>
-    <div class="card">
-      <label class="field-label">Enter Called Number (1–75)</label>
-      <div style="display:flex;gap:8px;margin-bottom:10px;">
-        <input class="num-input" id="analyzer-input" type="number" min="1" max="75" placeholder="e.g. 42" style="flex:1"/>
-        <button class="btn btn-primary" onclick="addAnalyzerNumber()" style="padding:10px 18px;font-size:15px;">ADD</button>
-      </div>
-      <div id="analyzer-called" class="balls-row" style="min-height:44px;"></div>
-    </div>
-    <div class="card">
-      <h3>STATISTICS</h3>
-      <div id="analyzer-stats"></div>
-    </div>
-    <button class="btn btn-danger" onclick="resetAnalyzer()">RESET</button>
-  </div>
-</div>
+            let letter = '';
+            let bgColor = '';
+            if (i <= 15) {
+                letter = 'B';
+                bgColor = '#4da6ff';
+            } else if (i <= 30) {
+                letter = 'I';
+                bgColor = '#ff6666';
+            } else if (i <= 45) {
+                letter = 'N';
+                bgColor = '#f0f0f0';
+            } else if (i <= 60) {
+                letter = 'G';
+                bgColor = '#66ff99';
+            } else {
+                letter = 'O';
+                bgColor = '#ffcc66';
+            }
 
-<!-- GALLERY -->
-<div id="page-gallery" class="page">
-  <div class="subpage">
-    <button class="back-btn" onclick="showPage('menu')">← Back</button>
-    <p class="page-title">GALLERY</p>
-    <p class="page-desc">Browse and load saved BINGO patterns.</p>
-    <div id="gallery-grid" class="gallery-grid"></div>
-  </div>
-</div>
+            letterSpan.textContent = letter;
+            numberSpan.textContent = i;
 
-<!-- CHECKER 25 -->
-<div id="page-checker25" class="page">
-  <div class="subpage">
-    <button class="back-btn" onclick="showPage('menu')">← Back</button>
-    <p class="page-title" style="color:var(--B)">CHECKER 25</p>
-    <p class="page-desc">25-ball variant — numbers 1 to 25 only.</p>
-    <div id="checker25-content"></div>
-  </div>
-</div>
+            ball.style.background = bgColor;
 
-<!-- CHECKER 30 -->
-<div id="page-checker30" class="page">
-  <div class="subpage">
-    <button class="back-btn" onclick="showPage('menu')">← Back</button>
-    <p class="page-title" style="color:var(--I)">CHECKER 30</p>
-    <p class="page-desc">30-ball variant — numbers 1 to 30 only.</p>
-    <div id="checker30-content"></div>
-  </div>
-</div>
+            ball.appendChild(letterSpan);
+            ball.appendChild(numberSpan);
 
-<!-- CHECKER 35 -->
-<div id="page-checker35" class="page">
-  <div class="subpage">
-    <button class="back-btn" onclick="showPage('menu')">← Back</button>
-    <p class="page-title" style="color:var(--N)">CHECKER 35</p>
-    <p class="page-desc">35-ball variant — numbers 1 to 35 only.</p>
-    <div id="checker35-content"></div>
-  </div>
-</div>
+            ball.style.top = Math.random() * (window.innerHeight - 80) + "px";
+            ball.style.left = Math.random() * (window.innerWidth - 80) + "px";
 
-<!-- CHECKER 44 -->
-<div id="page-checker44" class="page">
-  <div class="subpage">
-    <button class="back-btn" onclick="showPage('menu')">← Back</button>
-    <p class="page-title" style="color:var(--G)">CHECKER 44</p>
-    <p class="page-desc">44-ball variant — numbers 1 to 44 only.</p>
-    <div id="checker44-content"></div>
-  </div>
-</div>
+            background.appendChild(ball);
+            balls.push(ball);
 
-<!-- CHECKER 48 -->
-<div id="page-checker48" class="page">
-  <div class="subpage">
-    <button class="back-btn" onclick="showPage('menu')">← Back</button>
-    <p class="page-title" style="color:var(--O)">CHECKER 48</p>
-    <p class="page-desc">48-ball variant — numbers 1 to 48 only.</p>
-    <div id="checker48-content"></div>
-  </div>
-</div>
+            speeds.push({
+                dx: (Math.random() < 0.5 ? -1 : 1) * (0.5 + Math.random() * 1.5),
+                dy: (Math.random() < 0.5 ? -1 : 1) * (0.5 + Math.random() * 1.5)
+            });
+        }
 
-<script>
-/* ── Floating balls ── */
-const LETTERS = ["B","I","N","G","O"];
-const ballLayer = document.getElementById('ball-layer');
-for(let i=0;i<75;i++){
-  const num  = i + 1;
-  const let_ = LETTERS[Math.floor(i/15)];
-  const el   = document.createElement('div');
-  el.className = `ball ${let_}`;
-  el.style.cssText = `
-    top:${Math.random()*90}%;
-    left:${Math.random()*90}%;
-    --dur:${14+Math.random()*14}s;
-    --delay:${Math.random()*-20}s;
-  `;
-  el.innerHTML = `<span>${let_}</span><strong>${num}</strong>`;
-  ballLayer.appendChild(el);
-}
+        // Move balls
+        function moveBalls() {
+            balls.forEach((ball, i) => {
+                let rect = ball.getBoundingClientRect();
+                let x = rect.left + speeds[i].dx;
+                let y = rect.top + speeds[i].dy;
 
-/* ── Page router ── */
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  window.scrollTo(0,0);
-  if(id==='generate' && !document.getElementById('gen-card').children.length) generateCard();
-  if(id==='pattern'  && !document.getElementById('pattern-grid').children.length) initPattern();
-  if(id==='checker'  && !document.getElementById('checker-card').children.length) initChecker();
-  if(id==='analyzer') initAnalyzerUI();
-  if(id==='gallery') initGallery();
-  if(id==='checker25') initVariantChecker('checker25-content',25,'B');
-  if(id==='checker30') initVariantChecker('checker30-content',30,'I');
-  if(id==='checker35') initVariantChecker('checker35-content',35,'N');
-  if(id==='checker44') initVariantChecker('checker44-content',44,'G');
-  if(id==='checker48') initVariantChecker('checker48-content',48,'O');
-}
+                if (x <= 0 || x + rect.width >= window.innerWidth) speeds[i].dx *= -1;
+                if (y <= 0 || y + rect.height >= window.innerHeight) speeds[i].dy *= -1;
 
-/* ── Helpers ── */
-function shuffle(arr){ let a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-function getLetter(n){ return LETTERS[Math.floor((n-1)/15)]; }
-function range(from,to){ return Array.from({length:to-from+1},(_,i)=>from+i); }
+                ball.style.left = (rect.left + speeds[i].dx) + "px";
+                ball.style.top = (rect.top + speeds[i].dy) + "px";
+            });
+            requestAnimationFrame(moveBalls);
+        }
 
-/* ═══════════════ GENERATE ═══════════════ */
-let genCardData = null;
-let genMarked   = new Set();
-
-function generateCard(){
-  genMarked = new Set([12]); // FREE cell index
-  genCardData = [];
-  const cols = [[1,15],[16,30],[31,45],[46,60],[61,75]];
-  cols.forEach(([a,b])=>{
-    const picks = shuffle(range(a,b)).slice(0,5);
-    genCardData.push(picks);
-  });
-  renderGenCard();
-}
-
-function renderGenCard(){
-  const g = document.getElementById('gen-card');
-  g.innerHTML='';
-  // headers
-  LETTERS.forEach(l=>{
-    const h=document.createElement('div');
-    h.className=`bingo-header-cell ${l}`;
-    h.textContent=l;
-    g.appendChild(h);
-  });
-  // cells (row-major)
-  for(let row=0;row<5;row++){
-    for(let col=0;col<5;col++){
-      const idx = row*5+col;
-      const cell=document.createElement('div');
-      const isCol = col;
-      if(idx===12){
-        cell.className='bingo-cell free';
-        cell.textContent='FREE';
-      } else {
-        const num=genCardData[col][row];
-        const letter=LETTERS[col];
-        cell.className=`bingo-cell ${genMarked.has(idx)?'marked '+letter:''}`;
-        cell.textContent=num;
-        cell.dataset.idx=idx;
-        cell.onclick=()=>toggleGenCell(idx, cell, letter);
-      }
-      g.appendChild(cell);
-    }
-  }
-}
-
-function toggleGenCell(idx, cell, letter){
-  if(genMarked.has(idx)){ genMarked.delete(idx); cell.className='bingo-cell'; }
-  else { genMarked.add(idx); cell.className=`bingo-cell marked ${letter}`; }
-}
-
-function clearCard(){
-  genMarked = new Set([12]);
-  renderGenCard();
-}
-
-/* ═══════════════ PATTERN ═══════════════ */
-let patternState = Array(25).fill(false);
-
-function initPattern(){
-  const g = document.getElementById('pattern-grid');
-  g.innerHTML='';
-  patternState = Array(25).fill(false);
-  for(let i=0;i<25;i++){
-    const c=document.createElement('div');
-    c.className='pattern-cell';
-    c.dataset.i=i;
-    c.onclick=()=>togglePattern(i,c);
-    g.appendChild(c);
-  }
-}
-
-function togglePattern(i,c){
-  patternState[i]=!patternState[i];
-  c.classList.toggle('on',patternState[i]);
-}
-function clearPattern(){
-  patternState.fill(false);
-  document.querySelectorAll('.pattern-cell').forEach(c=>c.classList.remove('on'));
-}
-function fillPattern(){
-  patternState.fill(true);
-  document.querySelectorAll('.pattern-cell').forEach(c=>c.classList.add('on'));
-}
-
-/* ═══════════════ CHECKER ═══════════════ */
-let checkerCard    = null;
-let calledNumbers  = new Set();
-
-function initChecker(){
-  generateCheckerCard();
-  renderCheckerBalls();
-}
-
-function generateCheckerCard(){
-  calledNumbers = new Set();
-  checkerCard = [];
-  const cols = [[1,15],[16,30],[31,45],[46,60],[61,75]];
-  cols.forEach(([a,b])=>{
-    checkerCard.push(shuffle(range(a,b)).slice(0,5));
-  });
-  document.getElementById('checker-win').classList.remove('show');
-  renderCheckerCard();
-  renderCheckerBalls();
-}
-
-function renderCheckerBalls(){
-  const row = document.getElementById('checker-balls');
-  row.innerHTML='';
-  for(let n=1;n<=75;n++){
-    const l=getLetter(n);
-    const b=document.createElement('div');
-    b.className=`mini-ball ${l}${calledNumbers.has(n)?' selected':''}`;
-    b.textContent=n;
-    b.onclick=()=>toggleCalledNumber(n,b);
-    row.appendChild(b);
-  }
-}
-
-function toggleCalledNumber(n,el){
-  if(calledNumbers.has(n)){calledNumbers.delete(n);el.classList.remove('selected');}
-  else{calledNumbers.add(n);el.classList.add('selected');}
-  renderCheckerCard();
-}
-
-function renderCheckerCard(){
-  const g = document.getElementById('checker-card');
-  g.innerHTML='';
-  LETTERS.forEach(l=>{
-    const h=document.createElement('div');
-    h.className=`bingo-header-cell ${l}`;
-    h.textContent=l;
-    g.appendChild(h);
-  });
-  for(let row=0;row<5;row++){
-    for(let col=0;col<5;col++){
-      const cell=document.createElement('div');
-      if(row===2&&col===2){
-        cell.className='bingo-cell free';
-        cell.textContent='FREE';
-      } else {
-        const num=checkerCard[col][row];
-        const letter=LETTERS[col];
-        const marked=calledNumbers.has(num);
-        cell.className=`bingo-cell${marked?' marked '+letter:''}`;
-        cell.textContent=num;
-      }
-      g.appendChild(cell);
-    }
-  }
-}
-
-function checkBingo(){
-  if(!checkerCard) return;
-  const marked=[];
-  for(let row=0;row<5;row++){
-    for(let col=0;col<5;col++){
-      if(row===2&&col===2){ marked.push(true); continue; }
-      marked.push(calledNumbers.has(checkerCard[col][row]));
-    }
-  }
-  let win=false;
-  // rows
-  for(let r=0;r<5;r++){if([0,1,2,3,4].every(c=>marked[r*5+c])){win=true;break;}}
-  // cols
-  if(!win) for(let c=0;c<5;c++){if([0,1,2,3,4].every(r=>marked[r*5+c])){win=true;break;}}
-  // diags
-  if(!win && [0,6,12,18,24].every(i=>marked[i])) win=true;
-  if(!win && [4,8,12,16,20].every(i=>marked[i])) win=true;
-  document.getElementById('checker-win').classList.toggle('show',win);
-  if(!win) alert('No BINGO yet. Keep calling numbers!');
-}
-
-function resetChecker(){
-  calledNumbers = new Set();
-  document.getElementById('checker-win').classList.remove('show');
-  renderCheckerCard();
-  renderCheckerBalls();
-}
-
-/* ═══════════════ ANALYZER ═══════════════ */
-let analyzerNumbers = [];
-
-function initAnalyzerUI(){
-  renderAnalyzerBalls();
-  renderAnalyzerStats();
-}
-
-function addAnalyzerNumber(){
-  const inp = document.getElementById('analyzer-input');
-  const n = parseInt(inp.value);
-  if(isNaN(n)||n<1||n>75){ alert('Enter a valid number between 1 and 75.'); return; }
-  if(analyzerNumbers.includes(n)){ alert('Already added!'); return; }
-  analyzerNumbers.push(n);
-  inp.value='';
-  renderAnalyzerBalls();
-  renderAnalyzerStats();
-}
-
-function renderAnalyzerBalls(){
-  const row = document.getElementById('analyzer-called');
-  row.innerHTML='';
-  analyzerNumbers.forEach(n=>{
-    const l=getLetter(n);
-    const b=document.createElement('div');
-    b.className=`mini-ball ${l} selected`;
-    b.textContent=n;
-    row.appendChild(b);
-  });
-}
-
-function renderAnalyzerStats(){
-  const el=document.getElementById('analyzer-stats');
-  if(!analyzerNumbers.length){ el.innerHTML='<p style="color:var(--muted);font-size:14px;">No numbers added yet.</p>'; return; }
-  const total=analyzerNumbers.length;
-  const byCols=[0,0,0,0,0];
-  analyzerNumbers.forEach(n=>{ byCols[Math.floor((n-1)/15)]++; });
-  const hot=analyzerNumbers.slice().sort((a,b)=>b-a).slice(0,3);
-  el.innerHTML=`
-    <div class="stat-row"><span class="stat-label">Total Called</span><span class="stat-value">${total}</span></div>
-    ${LETTERS.map((l,i)=>`<div class="stat-row"><span class="stat-label">${l} Column</span><span class="stat-value" style="color:var(--${l})">${byCols[i]}</span></div>`).join('')}
-    <div class="stat-row"><span class="stat-label">Recent Numbers</span><span class="stat-value" style="font-size:14px">${analyzerNumbers.slice(-5).join(', ')}</span></div>
-  `;
-}
-
-function resetAnalyzer(){
-  analyzerNumbers=[];
-  document.getElementById('analyzer-input').value='';
-  renderAnalyzerBalls();
-  renderAnalyzerStats();
-}
-
-/* ═══════════════ GALLERY ═══════════════ */
-const GALLERY_PATTERNS = [
-  { name:'STRAIGHT LINE', cells:[0,1,2,3,4] },
-  { name:'DIAGONAL /', cells:[4,8,12,16,20] },
-  { name:'DIAGONAL \\', cells:[0,6,12,18,24] },
-  { name:'X PATTERN',   cells:[0,4,6,8,12,16,18,20,24] },
-  { name:'BLACKOUT',    cells:Array.from({length:25},(_,i)=>i) },
-  { name:'CORNERS',     cells:[0,4,20,24] },
-  { name:'T-SHAPE',     cells:[0,1,2,3,4,7,12,17,22] },
-  { name:'FRAME',       cells:[0,1,2,3,4,5,9,10,14,15,19,20,21,22,23,24] },
-];
-
-function initGallery(){
-  const g=document.getElementById('gallery-grid');
-  g.innerHTML='';
-  GALLERY_PATTERNS.forEach(p=>{
-    const thumb=document.createElement('div');
-    thumb.className='gallery-thumb';
-    const mini=document.createElement('div');
-    mini.className='gallery-thumb-grid';
-    for(let i=0;i<25;i++){
-      const c=document.createElement('div');
-      c.className=`gallery-thumb-cell${p.cells.includes(i)?' on':''}`;
-      mini.appendChild(c);
-    }
-    const name=document.createElement('div');
-    name.className='gallery-thumb-name';
-    name.textContent=p.name;
-    thumb.appendChild(mini);
-    thumb.appendChild(name);
-    thumb.onclick=()=>loadGalleryPattern(p);
-    g.appendChild(thumb);
-  });
-}
-
-function loadGalleryPattern(p){
-  showPage('pattern');
-  setTimeout(()=>{
-    patternState.fill(false);
-    p.cells.forEach(i=>{ patternState[i]=true; });
-    document.querySelectorAll('.pattern-cell').forEach((c,i)=>c.classList.toggle('on',patternState[i]));
-  },50);
-}
-
-/* ═══════════════ VARIANT CHECKERS ═══════════════ */
-const variantState = {};
-
-function initVariantChecker(containerId, maxNum, colorClass){
-  if(variantState[containerId]) return; // already built
-  variantState[containerId] = { called: new Set(), maxNum, colorClass };
-  const container = document.getElementById(containerId);
-  container.innerHTML='';
-
-  // Balls row
-  const ballsCard = document.createElement('div');
-  ballsCard.className='card';
-  ballsCard.innerHTML=`<h3>NUMBERS 1–${maxNum}</h3>`;
-  const ballsRow = document.createElement('div');
-  ballsRow.className='balls-row';
-  ballsRow.id=containerId+'-balls';
-  for(let n=1;n<=maxNum;n++){
-    const b=document.createElement('div');
-    b.className=`mini-ball ${colorClass}`;
-    b.id=`${containerId}-ball-${n}`;
-    b.textContent=n;
-    b.onclick=()=>{
-      const s=variantState[containerId];
-      if(s.called.has(n)){s.called.delete(n);b.classList.remove('selected');}
-      else{s.called.add(n);b.classList.add('selected');}
-    };
-    ballsRow.appendChild(b);
-  }
-  ballsCard.appendChild(ballsRow);
-  container.appendChild(ballsCard);
-
-  // Info
-  const info = document.createElement('p');
-  info.style.cssText='font-size:13px;color:var(--muted);margin-bottom:16px;';
-  info.textContent=`Toggle numbers that have been called. Standard 5×5 BINGO rules apply.`;
-  container.appendChild(info);
-
-  // Btn row
-  const btnRow=document.createElement('div');
-  btnRow.className='btn-row';
-  const rst=document.createElement('button');
-  rst.className=`btn btn-danger`;
-  rst.textContent='RESET';
-  rst.onclick=()=>{
-    variantState[containerId].called.clear();
-    document.querySelectorAll(`#${containerId}-balls .mini-ball`).forEach(b=>b.classList.remove('selected'));
-  };
-  btnRow.appendChild(rst);
-  container.appendChild(btnRow);
-}
-
-/* ── Input enter key ── */
-document.getElementById('analyzer-input').addEventListener('keydown',e=>{if(e.key==='Enter')addAnalyzerNumber();});
-</script>
-</body>
-</html>
+        moveBalls();
+    </script>
 
 </body>
-
-</html>
 
