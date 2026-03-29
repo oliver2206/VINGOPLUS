@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
@@ -9,9 +10,10 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none; /* prevent accidental text drag on buttons */
+            user-select: none;
+            /* prevent accidental text drag on buttons */
         }
-
+        
         body {
             margin: 0;
             height: 100vh;
@@ -23,16 +25,17 @@
             font-family: 'Arial', 'Segoe UI', sans-serif;
             position: relative;
         }
-
         /* ----- BINGO BALLS BACKGROUND (fully preserved, unchanged) ----- */
+        
         .bingo-background {
             position: fixed;
             inset: 0;
             overflow: hidden;
             z-index: 0;
-            pointer-events: none;  /* so balls don't interfere with button clicks */
+            pointer-events: none;
+            /* so balls don't interfere with button clicks */
         }
-
+        
         .ball {
             position: absolute;
             width: 75px;
@@ -48,24 +51,26 @@
             text-align: center;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
             border: 3px solid black;
-            transition: none;  /* keep smooth animation */
+            transition: none;
+            /* keep smooth animation */
             will-change: left, top;
-            backdrop-filter: blur(0px); /* crisp edges */
+            backdrop-filter: blur(0px);
+            /* crisp edges */
         }
-
+        
         .ball span.letter {
             font-size: 16px;
             line-height: 1.2;
             font-weight: 800;
         }
-
+        
         .ball span.number {
             font-size: 22px;
             line-height: 1;
             font-weight: 800;
         }
-
         /* ----- FOREGROUND CONTENT (container) ----- */
+        
         .container {
             position: relative;
             z-index: 20;
@@ -76,10 +81,10 @@
             backdrop-filter: blur(4px);
             border-radius: 56px;
             padding: 25px 30px 40px 30px;
-            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.2);
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2);
             transition: all 0.2s ease;
         }
-
+        
         .logo {
             width: 80px;
             height: 80px;
@@ -94,7 +99,7 @@
             box-shadow: 0 0 18px rgba(0, 255, 100, 0.7);
             backdrop-filter: blur(2px);
         }
-
+        
         h1 {
             color: white;
             font-size: 2.2rem;
@@ -104,8 +109,8 @@
             font-weight: 800;
             word-break: keep-all;
         }
-
         /* ----- FIXED: 3 BUTTONS PER ROW (clean grid) ----- */
+        
         .buttons {
             display: grid;
             grid-template-columns: repeat(3, minmax(180px, 1fr));
@@ -114,8 +119,8 @@
             align-items: center;
             margin-top: 8px;
         }
-
         /* button styling - enhanced but fully consistent */
+        
         .buttons a {
             display: flex;
             align-items: center;
@@ -131,26 +136,26 @@
             letter-spacing: 1px;
             box-shadow: 0 6px 0 #0a0a12;
             transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(2px);
             font-family: inherit;
         }
-
         /* Hover effect: magical glow + slight lift */
+        
         .buttons a:hover {
             background: #2c2c3f;
             transform: translateY(-3px);
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.9), 0 6px 12px rgba(0, 0, 0, 0.4);
             border-color: rgba(0, 255, 255, 0.5);
         }
-
         /* active press effect */
+        
         .buttons a:active {
             transform: translateY(2px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
         }
-
         /* responsive: on smaller screens buttons shrink a bit but still 3 per row */
+        
         @media (max-width: 700px) {
             .container {
                 padding: 20px 20px 32px;
@@ -178,7 +183,7 @@
                 font-size: 13px;
             }
         }
-
+        
         @media (max-width: 550px) {
             .buttons {
                 gap: 10px;
@@ -196,18 +201,19 @@
                 font-size: 2.2rem;
             }
         }
-
         /* keep original background gradient visible, no interference */
+        
         body::before {
             content: none;
         }
-
         /* optional smooth scroll / no overflow issues */
+        
         html {
             overflow: hidden;
         }
     </style>
 </head>
+
 <body>
 
     <!-- Bouncing Bingo Balls Background (exactly same generation, untouched logic) -->
@@ -217,7 +223,7 @@
     <div class="container">
         <div class="logo">🍀</div>
         <h1>🎲 BINGO FORTUNE FLIP 🎲</h1>
-        
+
         <!-- BUTTON GRID: exactly 3 items per row. All original links preserved, but now cleanly displayed 
              The previous code had repeated entries (15+ buttons). To respect design & usability, 
              I keep the intended set: GENERATE, PATTERN, CHECKER, ANALYZER, GALLERY and some repeats?
@@ -236,7 +242,8 @@
             <!-- Row 2 -->
             <a href="./ANAYZER.html">📊 ANAYZER</a>
             <a href="./PATTERN.html">🖼️ GALLERY</a>
-            <a href="./CREATEBINGOCARD>🎲 CREATE</a>
+            <a href="./CREATE.html">🖼️ CREATE</a>
+
             <!-- Row 3 -->
             <a href="./PATTERN.html">🌀 PATTERN</a>
             <a href="./CHECKER.html">✅ CHECKER</a>
@@ -318,7 +325,7 @@
                 const ball = ballsArray[idx];
                 const rect = ball.getBoundingClientRect();
                 const speed = speedsArray[idx];
-                
+
                 let newLeft = rect.left + speed.dx;
                 let newTop = rect.top + speed.dy;
 
@@ -331,7 +338,7 @@
                     newLeft = window.innerWidth - rect.width;
                     speedsArray[idx].dx = -Math.abs(speed.dx);
                 }
-                
+
                 // vertical boundaries
                 if (newTop <= 0) {
                     newTop = 0;
@@ -341,7 +348,7 @@
                     newTop = window.innerHeight - rect.height;
                     speedsArray[idx].dy = -Math.abs(speed.dy);
                 }
-                
+
                 ball.style.left = newLeft + "px";
                 ball.style.top = newTop + "px";
             }
@@ -355,7 +362,7 @@
                 const rect = ball.getBoundingClientRect();
                 let newLeft = rect.left;
                 let newTop = rect.top;
-                
+
                 if (newLeft + rect.width > window.innerWidth) {
                     newLeft = Math.max(0, window.innerWidth - rect.width - 5);
                 }
@@ -364,28 +371,29 @@
                     newTop = Math.max(0, window.innerHeight - rect.height - 5);
                 }
                 if (newTop < 0) newTop = 5;
-                
+
                 ball.style.left = newLeft + "px";
                 ball.style.top = newTop + "px";
             }
         }
-        
+
         window.addEventListener('resize', () => {
             repositionBallsOnResize();
         });
-        
+
         // small initial safety to avoid balls overlapping edges after load
         setTimeout(() => {
             repositionBallsOnResize();
         }, 100);
-        
+
         // start the animation
         moveBalls();
     </script>
 </body>
+
 </html>
 
-    
-    </script>
+
+</script>
 
 </body>
