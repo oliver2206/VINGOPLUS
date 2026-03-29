@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 Bingo Cards - Validated Number Input</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+            font-size: 1em;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card-container {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .card-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .card-buttons button {
+            padding: 5px 10px;
+            font-size: 11px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .card-buttons button:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .card-buttons .clear-btn {
+            background: #f44336;
+        }
+
+        .card-buttons .clear-btn:hover {
+            background: #da190b;
+        }
+
+        .bingo-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .bingo-header {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .header-cell {
+            padding: 12px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .header-cell:last-child {
+            border-right: none;
+        }
+
+        .bingo-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .bingo-cell {
+            aspect-ratio: 1;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            position: relative;
+        }
+
+        .bingo-cell:hover {
+            background: #f0f0f0;
+            transform: scale(0.97);
+        }
+
+        .bingo-cell.filled {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .bingo-cell.invalid {
+            background: #ffebee;
+            border: 2px solid #f44336;
+        }
+
+        .bingo-cell input {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            background: #fff3cd;
+            outline: none;
+            font-family: inherit;
+            cursor: text;
+        }
+
+        .bingo-cell .value {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .free-space {
+            background: #ffd700;
+            font-weight: bold;
+        }
+
+        .global-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .global-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-save-all {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-save-all:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76,175,80,0.3);
+        }
+
+        .btn-clear-all {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-clear-all:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+        }
+
+        .btn-random-all {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-random-all:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            background: #9e9e9e;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #757575;
+            transform: translateY(-2px);
+        }
+
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .range-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .range-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .range-badge.b { background: #d32f2f; color: white; }
+        .range-badge.i { background: #f57c00; color: white; }
+        .range-badge.n { background: #7b1fa2; color: white; }
+        .range-badge.g { background: #388e3c; color: white; }
+        .range-badge.o { background: #1976d2; color: white; }
+
+        @media (max-width: 900px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .header-cell {
+                padding: 8px;
+                font-size: 16px;
+            }
+            
+            .bingo-cell {
+                font-size: 12px;
+            }
+            
+            .card-title {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 4 Bingo Cards</h1>
+        <p class="subtitle">Click on any cell to enter numbers - Each column has specific number ranges!</p>
+
+        <div class="range-info">
+            <span class="range-badge b">B: 1-15</span>
+            <span class="range-badge i">I: 16-30</span>
+            <span class="range-badge n">N: 31-45</span>
+            <span class="range-badge g">G: 46-60</span>
+            <span class="range-badge o">O: 61-75</span>
+        </div>
+
+        <div class="cards-grid" id="cardsGrid"></div>
+
+        <div class="global-controls">
+            <button class="global-btn btn-save-all" onclick="saveAllCards()">💾 Save All Cards</button>
+            <button class="global-btn btn-random-all" onclick="randomFillAll()">🎲 Random Fill All</button>
+            <button class="global-btn btn-clear-all" onclick="clearAllCards()">🗑️ Clear All Cards</button>
+            <button class="global-btn btn-back" onclick="goBack()">← Back</button>
+        </div>
+
+        <div class="info">
+            💡 <strong>Validation Rules:</strong><br>
+            • <strong style="color:#d32f2f">B Column</strong>: Only numbers 1-15 are allowed<br>
+            • <strong style="color:#f57c00">I Column</strong>: Only numbers 16-30 are allowed<br>
+            • <strong style="color:#7b1fa2">N Column</strong>: Only numbers 31-45 are allowed<br>
+            • <strong style="color:#388e3c">G Column</strong>: Only numbers 46-60 are allowed<br>
+            • <strong style="color:#1976d2">O Column</strong>: Only numbers 61-75 are allowed<br>
+            • Example: If you try to enter 18 in column B, it will be rejected!
+        </div>
+    </div>
+
+    <script>
+        // Initialize 4 empty 5x5 cards
+        let cards = [];
+
+        // Define valid ranges for each column
+        const columnRanges = {
+            0: { min: 1, max: 15, letter: 'B' },    // B column
+            1: { min: 16, max: 30, letter: 'I' },   // I column
+            2: { min: 31, max: 45, letter: 'N' },   // N column
+            3: { min: 46, max: 60, letter: 'G' },   // G column
+            4: { min: 61, max: 75, letter: 'O' }    // O column
+        };
+
+        for (let i = 0; i < 4; i++) {
+            cards.push({
+                id: i,
+                name: `Card ${i + 1}`,
+                data: [
+                    ["", "", "", "", ""],
+                    ["", "", "", "", ""],
+                    ["", "", "", "", ""],
+                    ["", "", "", "", ""],
+                    ["", "", "", "", ""]
+                ],
+                editingCell: null,
+                validationError: null
+            });
+        }
+
+        const bingoLetters = ['B', 'I', 'N', 'G', 'O'];
+
+        // Validate a number for a specific column
+        function validateNumber(num, col) {
+            const range = columnRanges[col];
+            if (!range) return { valid: false, message: 'Invalid column' };
+            
+            if (num === '' || num === null) return { valid: true, message: '' };
+            
+            const number = parseInt(num);
+            if (isNaN(number)) {
+                return { valid: false, message: `Please enter a valid number for column ${range.letter}` };
+            }
+            
+            if (number >= range.min && number <= range.max) {
+                return { valid: true, message: '' };
+            } else {
+                return { 
+                    valid: false, 
+                    message: `Column ${range.letter} only accepts numbers ${range.min}-${range.max}. ${number} is not allowed!` 
+                };
+            }
+        }
+
+        // Render all cards
+        function renderAllCards() {
+            const container = document.getElementById('cardsGrid');
+            let html = '';
+
+            cards.forEach(card => {
+                html += `
+                    <div class="card-container" data-card-id="${card.id}">
+                        <div class="card-header">
+                            <div class="card-title">${card.name}</div>
+                            <div class="card-buttons">
+                                <button onclick="saveCard(${card.id})">💾 Save</button>
+                                <button onclick="randomFillCard(${card.id})">🎲 Random</button>
+                                <button class="clear-btn" onclick="clearCard(${card.id})">🗑️ Clear</button>
+                            </div>
+                        </div>
+                        <div class="bingo-card" id="card-${card.id}">
+                            ${renderCardHTML(card)}
+                        </div>
+                        ${card.validationError ? `<div style="color:#f44336; font-size:12px; margin-top:5px; text-align:center;">⚠️ ${card.validationError}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Render individual card HTML
+        function renderCardHTML(card) {
+            // Header
+            let html = '<div class="bingo-header">';
+            bingoLetters.forEach(letter => {
+                html += `<div class="header-cell">${letter}</div>`;
+            });
+            html += '</div>';
+
+            // Grid
+            for (let row = 0; row < 5; row++) {
+                html += '<div class="bingo-row">';
+                for (let col = 0; col < 5; col++) {
+                    const value = card.data[row][col];
+                    const isCenter = (row === 2 && col === 2);
+                    let isValid = true;
+                    let validationMessage = '';
+                    
+                    if (value && !isCenter) {
+                        const validation = validateNumber(value, col);
+                        isValid = validation.valid;
+                        validationMessage = validation.message;
+                    }
+                    
+                    const cellClass = `bingo-cell ${value ? 'filled' : ''} ${isCenter && !value ? 'free-space' : ''} ${!isValid ? 'invalid' : ''}`;
+                    
+                    if (card.editingCell && card.editingCell.row === row && card.editingCell.col === col) {
+                        // Editing mode
+                        html += `<div class="${cellClass} editing" style="background:#fff3cd">
+                                    <input type="text" class="edit-input-${card.id}-${row}-${col}" 
+                                           value="${value}" maxlength="3" placeholder="Num" autofocus>
+                                </div>`;
+                    } else {
+                        // Display mode
+                        let displayValue = value;
+                        if (isCenter && !value) {
+                            displayValue = 'FREE';
+                        } else if (!value) {
+                            displayValue = '✏️';
+                        }
+                        const title = !isValid ? validationMessage : `Click to edit (${columnRanges[col].letter}: ${columnRanges[col].min}-${columnRanges[col].max})`;
+                        html += `<div class="${cellClass}" onclick="startEdit(${card.id}, ${row}, ${col})" title="${title}">
+                                    <div class="value">${displayValue}</div>
+                                </div>`;
+                    }
+                }
+                html += '</div>';
+            }
+            return html;
+        }
+
+        // Start editing a cell
+        function startEdit(cardId, row, col) {
+            // Clear editing state from all cards
+            cards.forEach(c => {
+                c.editingCell = null;
+                c.validationError = null;
+            });
+            
+            const card = cards.find(c => c.id === cardId);
+            card.editingCell = { row, col };
+            renderAllCards();
+            
+            // Focus on the input after rendering
+            setTimeout(() => {
+                const input = document.querySelector(`.edit-input-${cardId}-${row}-${col}`);
+                if (input) {
+                    input.focus();
+                    input.addEventListener('blur', () => saveEdit(cardId));
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            saveEdit(cardId);
+                        }
+                    });
+                }
+            }, 10);
+        }
+
+        // Save the edited value with validation
+        function saveEdit(cardId) {
+            const card = cards.find(c => c.id === cardId);
+            if (card && card.editingCell) {
+                const { row, col } = card.editingCell;
+                const input = document.querySelector(`.edit-input-${cardId}-${row}-${col}`);
+                
+                if (input) {
+                    let value = input.value.trim();
+                    const isCenter = (row === 2 && col === 2);
+                    
+                    if (value === '' || value === 'FREE' || value === 'free' || value === 'Free') {
+                        if (isCenter) {
+                            card.data[row][col] = '';
+                        } else {
+                            card.data[row][col] = '';
+                        }
+                        card.validationError = null;
+                    } else if (!isNaN(value) && value !== '') {
+                        const number = parseInt(value);
+                        // Validate based on column
+                        const validation = validateNumber(number, col);
+                        
+                        if (validation.valid) {
+                            card.data[row][col] = number.toString();
+                            card.validationError = null;
+                        } else {
+                            card.validationError = validation.message;
+                            card.editingCell = null;
+                            renderAllCards();
+                            // Show alert for invalid number
+                            alert(validation.message);
+                            return;
+                        }
+                    } else if (isCenter && (value.toUpperCase() === 'FREE' || value.toUpperCase() === 'FREE')) {
+                        card.data[row][col] = '';
+                    } else {
+                        card.validationError = `Invalid input: "${value}" is not a valid number!`;
+                        card.editingCell = null;
+                        renderAllCards();
+                        alert(card.validationError);
+                        return;
+                    }
+                }
+            }
+            card.editingCell = null;
+            renderAllCards();
+        }
+
+        // Save individual card to localStorage
+        function saveCard(cardId) {
+            const card = cards.find(c => c.id === cardId);
+            localStorage.setItem(`bingoCard_${cardId}`, JSON.stringify(card.data));
+            alert(`✅ ${card.name} saved successfully!`);
+        }
+
+        // Clear individual card
+        function clearCard(cardId) {
+            if (confirm(`Clear all numbers on Card ${cardId + 1}?`)) {
+                const card = cards.find(c => c.id === cardId);
+                card.data = [
+                    ["", "", "", "", ""],
+                    ["", "", "", "", ""],
+                    ["", "", "", "", ""],
+                    ["", "", "", "", ""],
+                    ["", "", "", "", ""]
+                ];
+                card.validationError = null;
+                renderAllCards();
+            }
+        }
+
+        // Random fill individual card with validated bingo numbers
+        function randomFillCard(cardId) {
+            if (confirm(`Generate random numbers for Card ${cardId + 1}?`)) {
+                const card = cards.find(c => c.id === cardId);
+                const newData = [];
+                for (let row = 0; row < 5; row++) {
+                    newData[row] = [];
+                    for (let col = 0; col < 5; col++) {
+                        if (row === 2 && col === 2) {
+                            newData[row][col] = 'FREE';
+                        } else {
+                            const range = columnRanges[col];
+                            const num = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+                            newData[row][col] = num.toString();
+                        }
+                    }
+                }
+                card.data = newData;
+                card.validationError = null;
+                renderAllCards();
+            }
+        }
+
+        // Save all cards
+        function saveAllCards() {
+            cards.forEach(card => {
+                localStorage.setItem(`bingoCard_${card.id}`, JSON.stringify(card.data));
+            });
+            alert('✅ All 4 cards saved successfully!');
+        }
+
+        // Clear all cards
+        function clearAllCards() {
+            if (confirm('Clear ALL numbers on ALL 4 cards?')) {
+                cards.forEach(card => {
+                    card.data = [
+                        ["", "", "", "", ""],
+                        ["", "", "", "", ""],
+                        ["", "", "", "", ""],
+                        ["", "", "", "", ""],
+                        ["", "", "", "", ""]
+                    ];
+                    card.validationError = null;
+                });
+                renderAllCards();
+            }
+        }
+
+        // Random fill all cards
+        function randomFillAll() {
+            if (confirm('Generate random numbers for ALL 4 cards?')) {
+                cards.forEach(card => {
+                    const newData = [];
+                    for (let row = 0; row < 5; row++) {
+                        newData[row] = [];
+                        for (let col = 0; col < 5; col++) {
+                            if (row === 2 && col === 2) {
+                                newData[row][col] = 'FREE';
+                            } else {
+                                const range = columnRanges[col];
+                                const num = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+                                newData[row][col] = num.toString();
+                            }
+                        }
+                    }
+                    card.data = newData;
+                    card.validationError = null;
+                });
+                renderAllCards();
+            }
+        }
+
+        // Load saved cards on page load
+        function loadSavedCards() {
+            cards.forEach(card => {
+                const saved = localStorage.getItem(`bingoCard_${card.id}`);
+                if (saved) {
+                    card.data = JSON.parse(saved);
+                }
+            });
+            renderAllCards();
+        }
+
+        // Back function
+        function goBack() {
+            if (confirm('Go back? Unsaved changes will be lost!')) {
+                window.history.back();
+            }
+        }
+
+        // Initialize
+        loadSavedCards();
+
+        // Keyboard shortcut Ctrl+S to save all cards
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveAllCards();
+            }
+        });
+    </script>
+</body>
+</html>
